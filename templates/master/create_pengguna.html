@@ -1,0 +1,41 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block contents%}
+<form method="post">
+	{% csrf_token %}
+<table>
+	<tr>
+		<td class="p-2">Username:</td>
+		<td class="p-2">{{ forms.username }}</td>
+	</tr>
+	<tr>
+		<td class="p-2">Password:</td>
+		<td class="p-2">{{forms.password}}</td>
+	</tr>
+    <tr>
+		<td class="p-2">Email:</td>
+		<td class="p-2">{{ forms.email}}</td>
+	</tr>
+    <hr>
+	<tr>
+		<td class="p-2">Ijin Membuat Master Data:</td>
+		<td class="p-2">{{forms.is_create}}</td>
+	</tr>
+    <tr>
+		<td class="p-2">Ijin Edit Master Data:</td>
+		<td class="p-2">{{forms.is_edit}}</td>
+	</tr>
+    <tr>
+		<td class="p-2">Ijin Hapus Master Data:</td>
+		<td class="p-2">{{forms.is_delete}}</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="p-2 text-left">
+			<input type='submit' value='+ Menambah Pengguna'/>
+		</td>
+	</tr>
+</table>
+</form>
+
+{% endblock%}

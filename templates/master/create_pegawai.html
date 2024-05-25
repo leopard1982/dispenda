@@ -1,0 +1,36 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block contents%}
+<form method="post">
+	{% csrf_token %}
+<table>
+	<tr>
+		<td class="p-2">N.I.P:</td>
+		<td class="p-2">{{ forms.nik }}</td>
+	</tr>
+	<tr>
+		<td class="p-2">Nama:</td>
+		<td class="p-2">{{forms.nama}}</td>
+	</tr>
+    <tr>
+		<td class="p-2">Golongan:</td>
+		<td class="p-2">{{ forms.kode_golongan}}</td>
+	</tr>
+	<tr>
+		<td class="p-2">Jabatan:</td>
+		<td class="p-2">{{forms.kode_jabatan}}</td>
+	</tr>
+    <tr>
+		<td class="p-2">Apakah Kepala:</td>
+		<td class="p-2">{{forms.is_kepala}}</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="p-2 text-left">
+			<input type='submit' value='+ Menambah Pegawai'/>
+		</td>
+	</tr>
+</table>
+</form>
+
+{% endblock%}

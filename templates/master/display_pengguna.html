@@ -1,0 +1,100 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block contents%}
+<table class="table">
+    <thead>
+        <th style="width:50px">No.</th>
+        <th style="width:100px">Username</th>
+        <th style="width:300px">Email</th>
+        <th style="width:100px">SPV</th>
+        <th style="width:100px">Create</th>
+        <th style="width:100px">Update</th>
+        <th style="width:100px">Delete</th>
+        <th style="width:150px">UpdatedBy</th>
+        <th style="width:150px">UpdatedAt</th>
+        <th style="width:200px"></th>
+    </thead>
+    {% for list in lists%}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{list.username}}</td>
+        <td>{{list.email}}</td>
+        <td>{%if list.is_superuser%}yes{% else%}no{%endif%}</td>
+        <td>{%if list.is_create%}yes{% else%}no{%endif%}</td>
+        <td>{%if list.is_edit%}yes{% else%}no{%endif%}</td>
+        <td>{%if list.is_delete%}yes{% else%}no{%endif%}</td>
+        <td>{{list.updatedBy}}</td>
+        <td>{{list.updatedAt}}</td>
+        <td>
+            <a class="btn" data-toggle="modal" data-target="#editModal"><i class="fa fa-user-edit"></i></a>
+            <a class="btn" data-toggle="modal"  onclick="deletePengguna('{{list.username}}','{{list.email}}')"><i class="fa fa-trash"></i></a>
+        </td>
+    </tr>
+    {% endfor%}
+</table>
+<div>
+    halaman: 
+    {% for hal in paginator.page_range%}
+        <a class="button" href="{% url 'displayPengguna'%}?page={{hal}}">{{hal}}</a> 
+    {% endfor %}
+</div>
+
+<!-- Edit Modal-->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Master Golongan</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Detail Master Golongan</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Delete Modal-->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete Master Pengguna Aplikasi</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah benar akan menghapus Data Master ini?</p>
+                    <p>Username: <span id="del_upengguna"></span></p>
+                    <p>Email: <span id="del_epengguna"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" type="button" data-dismiss="modal"  onclick="delPenggunaID()">Hapus</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    let kodenya=null;
+    function deletePengguna(kode,nama) {
+        document.getElementById('del_upengguna').innerText=kode;
+        document.getElementById('del_epengguna').innerText=nama;
+        kodenya=kode;
+        $("#deleteModal").modal('show');
+    }
+
+    function delPenggunaID() {
+        document.location.href="/master/user/del/" +kodenya +"/";
+    }
+</script>
+
+{% endblock%}

@@ -1,0 +1,23 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block contents%}
+<form method="post">
+	{% csrf_token %}
+<table>
+	<tr>
+		<td class="p-2">Kode Jabatan:</td>
+		<td class="p-2">{{ forms.kode_jabatan }}</td>
+	</tr>
+	<tr>
+		<td class="p-2">Keterangan:</td>
+		<td class="p-2">{{forms.keterangan}}</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="p-2 text-left">
+			<input type='submit' value='+ Menambah Jabatan'/>
+		</td>
+	</tr>
+</table>
+</form>
+{% endblock%}

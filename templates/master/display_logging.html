@@ -1,0 +1,31 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block contents%}
+<table class="table">
+    <thead>
+        <th style="width:50px">No.</th>
+        <th style="width:100px">User</th>
+        <th style="width:100px">Grouping</th>
+        <th style="width:400px">Transaction</th>
+        <th style="width:150px">Updated At</th>
+    </thead>
+    {% for list in lists%}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{list.user.username}}</td>
+        <td>{{list.grouping}}</td>
+        <td>{{list.transaction}}</td>
+        <td>{{list.updatedAt}}</td>
+    </tr>
+    {% endfor%}
+</table>
+<div>
+    halaman: 
+    {% for hal in paginator.page_range%}
+        <a class="button" href="{% url 'displayLog'%}?page={{hal}}">{{hal}}</a> 
+    {% endfor %}
+</div>
+
+
+{% endblock%}
