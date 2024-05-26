@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-from load_dotenv import load_dotenv
+# from load_dotenv import load_dotenv
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,8 +27,8 @@ SECRET_KEY = os.getenv('DJ_SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.50','127.0.0.1','localhost']
-CSRF_TRUSTED_ORIGINS = ['http://192.168.1.50','http://192.168.1.50:8000','http://127.0.0.1:8000']
+ALLOWED_HOSTS = ['192.168.1.50','127.0.0.1','localhost','leopard1982.pythonanywhere.com']
+CSRF_TRUSTED_ORIGINS = ['http://192.168.1.50','http://192.168.1.50:8000','http://127.0.0.1:8000','https://leopard1982.pythonanywhere.com']
 
 
 # Application definition
@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'dispenda.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-load_dotenv()
+# load_dotenv()
 
 DATABASES = {
     'default': {
