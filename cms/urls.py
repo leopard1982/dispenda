@@ -3,6 +3,7 @@ from cms.views import dashboard,  addGolongan, addJabatan, displayGolongan, disp
 from cms.views import delGolongan, delJabatan, addPegawai, displayPegawai, delPegawai, addPengguna
 from cms.views import displayPengguna, delPengguna, loginuser,logoutuser, displayLog 
 from cms.views import displayGolonganID, displayJabatanID, displayPegawaiID, displayPenggunaID, displayLogID
+from cms.views import addNomorSurat
 
 urlpatterns = [
     path('', dashboard, name='dashboard'),
@@ -25,5 +26,6 @@ urlpatterns = [
     path('master/user/dis/<str:id>',displayPenggunaID,name="displayPenggunaID"),
     path('master/user/del/<str:id>/',delPengguna,name="delPengguna"),
     path('logs/',displayLog,name="displayLog"),
-    path('logs/<str:id>',displayLogID,name="displayLogID")
+    path('logs/<str:id>',displayLogID,name="displayLogID"),
+    path('surat/add/',addNomorSurat,name='addNomorSurat')
 ]

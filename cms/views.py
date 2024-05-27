@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect
-from cms.forms import inputGolongan, inputJabatan, inputPegawai, inputPengguna
+from cms.forms import inputGolongan, inputJabatan, inputPegawai, inputPengguna, inputSuratTugas
 from surat_tugas.models import MasterGolongan,MasterJabatan,MasterPegawai, Pengguna, Logging
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate,login,logout
@@ -237,6 +237,7 @@ def addPengguna(request):
 		username = request.POST['username']
 		password = request.POST['password']
 		email = request.POST['username']
+		
 		try:
 			is_create = request.POST['is_create']
 			is_create = True
@@ -376,7 +377,8 @@ def displayLog(request):
 		'paginator':p,
 		'menuname':'Daftar Log User',
 		'pathway':'log transaksi',
-		'username':request.user.username
+		'username':request.user.username,
+		'mywebsite': '/logs/'
 	}
 	return render(request,'master/display_logging.html',context)
 
@@ -520,3 +522,31 @@ def displayLogID(request,id):
 
 	}
 	return render(request,'master/display_logging.html',context)
+
+def addNomorSurat(request):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	# if request.method=="POST":
+	# 	nomor_surat = request.POST['nomor_surat']
+
+
+		# try:
+		# 	jabatan = MasterPegawai.objects.create(
+		# 		nik = nik,
+		# 		nama=nama,
+		# 		kode_jabatan=MasterJabatan.objects.get(kode_jabatan=kode_jabatan),
+		# 		kode_golongan=MasterGolongan.objects.get(kode_golongan=kode_golongan),
+		# 		is_kepala=is_kepala,
+		# 		updatedBy=request.user.username
+		# 	)
+		# 	jabatan.save()
+		# 	addLogging(request.user.username,"master_pegawai",f"create NIP: {nik} - {nama}" )
+		# except:
+		# 	pass
+	context={
+		'forms':inputSuratTugas,
+		'menuname':'Menambah Surat Tugas',
+		'pathway':'Transaksi Surat Tugas - Menambah Surat Tugas',
+		'username':request.user.username
+	}
+	return render(request,'master/create_surat_tugas1.html',context)

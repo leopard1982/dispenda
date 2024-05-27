@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('DJ_SECRET')
+SECRET_KEY = 'it-my-secret-beib-*1=&#3!=j_(a)!mh!@@tgyx2@4+8g&8(9pkae7q0omvf#m5mwk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'surat_tugas',
     'rest_framework',
     'corsheaders',
-    'cms'
+    'cms',
+    "bootstrap_datepicker_plus",
 ]
 
 MIDDLEWARE = [
@@ -142,8 +143,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS=[os.path.join(BASE_DIR,'static')]
 
+
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
-MEDIA_URL = 'media/'
 
 STATIC_ROOT = os.path.join(BASE_DIR,'staticroot')
 

@@ -1,0 +1,51 @@
+{% extends 'base.html'%}
+
+{% load static %}
+
+{% block contents%}
+
+<h5>Langkah 1: Membuat Header Surat Tugas</h5>
+<hr/>
+
+<form method="post">
+    {{forms.media}}
+<table>
+    <tr>
+		<td style="width: 300px">Nomor Surat Tugas:</td>
+		<td style="width: 500px">{{forms.nomor_surat}}</td>
+	</tr>
+    <tr>
+		<td style="width: 300px">Lokasi Dibuat Surat:</td>
+		<td >{{forms.lokasi_surat}}</td>
+	</tr>
+    <tr>
+		<td style="width: 300px">Tanggal Dibuat Surat:</td>
+		<td >{{forms.tgl_surat}}</td>
+	</tr>
+    <tr>
+		<td style="width: 300px">Tujuan Penugasan:</td>
+		<td >{{forms.tujuan}}</td>
+	</tr>
+    <tr>
+		<td style="width: 300px">Lokasi Penugasan:</td>
+		<td >{{forms.lokasi}}</td>
+	</tr>
+    <tr>
+		<td style="width: 300px">Tanggal Mulai Tugas:</td>
+		<td >{{forms.tgl_awal_tugas}}</td>
+	</tr>
+    <tr>
+		<td style="width: 300px">Tanggal Akhir Tugas:</td>
+		<td >{{forms.tgl_akhir_tugas}}</td>
+	</tr>
+    
+    <tr class="p-2">
+        <td colspan="2"><input type="checkbox" class="my-3" id="konfirmasi"><label for="konfirmasi" class="small fw-bold"><i>saya mengkonfirmasi pembuatan surat tugas</i> </label></td>
+    </tr>
+	<tr class="p-2">
+		<td colspan="2"><input type="submit" value="Berikutnya ->" class="btn btn-primary"></td>
+	</tr>
+</table>
+</form>
+
+{% endblock%}
