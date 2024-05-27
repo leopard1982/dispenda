@@ -205,7 +205,7 @@ def addPegawai(request):
 				request.session['status']="Master Pegawai Gagal dibuat! Kepala Pegawai sudah pernah ada!"
 		except:
 			addLogging(request.user.username,"master_pegawai",f"gagal[master pegawai sudah ada]-create NIP: {nik} - {nama}" )
-			request.session['status']="Master Pegawai Gagal dibuat! Master Pegawai sudah pernah ada!"
+			request.session['status']="Master Pegawai Gagal dibuat! Master Pegawai sudah pernah ada atau Kepala Pegawai sudah ada!"
 		return HttpResponseRedirect('/master/peg/dis/')
 	
 	context={
