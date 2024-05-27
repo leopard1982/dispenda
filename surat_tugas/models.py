@@ -57,8 +57,12 @@ class MasterPegawai(models.Model):
             super(MasterPegawai,self).save(*args,**kwargs)
 
     def __str__(self):
-        return self.nama
-
+        jumlah=MasterPegawai.objects.all().filter(nik=self.nik).count()
+        if jumlah>0:
+            return self.nama
+        else:
+            return None
+        
 class ConfigDispenda(models.Model):
     is_PLT = models.BooleanField(default=False)
     kepala = models.ForeignKey(MasterPegawai,on_delete=models.RESTRICT)

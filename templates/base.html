@@ -425,10 +425,14 @@
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">{{menuname}}</h1><sub>{{pathway}}</sub>
                     </div>
-
+                    {% if status%}
+                        <div class="alert alert-success w-100">
+                            {{status}}        
+                        </div>
+                    {%endif%}
                     <!-- Content Row -->
                     {% block contents%}
-                    {{form.media}}
+                    
                     {% endblock %}
 
                 </div>

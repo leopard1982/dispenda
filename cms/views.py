@@ -39,15 +39,19 @@ def addGolongan(request):
 				updatedBy=request.user.username
 			)
 			golongan.save()
-			addLogging(request.user.username,"master_golongan",f"create kode: {kode_golongan} - {keterangan}" )
+			addLogging(request.user.username,"master_golongan",f"berhasil - create kode: {kode_golongan} - {keterangan}" )
+			request.session['status']='Penambahan Master Golongan Berhasil!'
 		except:
-			pass
-
+			request.session['status']="Penambahan Master Golongan Gagal! Data Pernah Dibuat!"
+			addLogging(request.user.username,"master_golongan",f"gagal[data sudah ada] - create kode: {kode_golongan} - {keterangan}" )
+		return HttpResponseRedirect('/master/gol/dis/')
+	
 	context={
 		'forms':inputGolongan,
 		'menuname':'Menambah Golongan',
 		'pathway':'Master Golongan - Menambah Golongan',
-		'username': request.user.username
+		'username': request.user.username,
+		'status':request.session['status']
 	}
 	return render(request,'master/create_golongan.html',context)
 
@@ -73,8 +77,10 @@ def displayGolongan(request):
 		'menuname':'Daftar Golongan',
 		'pathway':'Master Golongan - Daftar Golongan',
 		'username':request.user.username,
-		'mywebsite': '/master/gol/dis/'
+		'mywebsite': '/master/gol/dis/',
+		'status':request.session['status']
 	}
+	request.session['status']=""
 	return render(request,'master/display_golongan.html',context)
 
 
@@ -92,10 +98,12 @@ def addJabatan(request):
 				updatedBy=request.user.username
 			)
 			jabatan.save()
-			addLogging(request.user.username,"master_jabatan",f"create kode: {kode_jabatan} - {keterangan}" )
+			addLogging(request.user.username,"master_jabatan",f"berhasil - create kode: {kode_jabatan} - {keterangan}" )
+			request.session['status']="Penambahan Master Jabatan Berhasil!"
 		except:
-			pass
-
+			request.session['status']="Penambahan Master Jabatan Gagal! Data pernah dibuat!"
+			addLogging(request.user.username,"master_golongan",f"gagal[data sudah ada] - create kode: {kode_golongan} - {keterangan}" )
+		return HttpResponseRedirect('/master/jab/dis/')
 
 	context={
 		'forms':inputJabatan,
@@ -131,8 +139,11 @@ def displayJabatan(request):
 		'menuname':'Daftar Jabatan',
 		'pathway':'Master Jabatan - Daftar Jabatan',
 		'username':request.user.username,
-		'mywebsite': '/master/jab/dis/'
+		'mywebsite': '/master/jab/dis/',
+		'status':request.session['status']
 	}
+
+	request.session['status']=""
 	return render(request,'master/display_jabatan.html',context)
 
 def delGolongan(request,id):
@@ -140,9 +151,12 @@ def delGolongan(request,id):
 		return HttpResponseRedirect('/auth/')
 	try:
 		MasterGolongan.objects.filter(kode_golongan=id).delete()
-		addLogging(request.user.username,"master_golongan",f"delete kode: {id}" )
+		addLogging(request.user.username,"master_golongan",f"berhasil - delete kode: {id}" )
+		request.session['status']="Master Golongan Berhasil dihapus!"
 	except:
-		pass
+		addLogging(request.user.username,"master_golongan",f"Gagal[data sudah terpakai] - delete kode: {id}" )
+		request.session['status']="Master Golongan Gagal dihapus!"
+
 	return HttpResponseRedirect('/master/gol/dis/')
 
 def delJabatan(request,id):
@@ -150,10 +164,12 @@ def delJabatan(request,id):
 		return HttpResponseRedirect('/auth/')
 	try:
 		MasterJabatan.objects.filter(kode_jabatan=id).delete()
-		addLogging(request.user.username,"master_jabatan",f"delete kode: {id}" )
+		addLogging(request.user.username,"master_jabatan",f"berhasil-delete kode: {id}" )
+		request.session['status']="Master Golongan Berhasil dihapus!"
 	except:
-		pass
-	return HttpResponseRedirect('/master/jab/dis/')
+		addLogging(request.user.username,"master_jabatan",f"gagal[data sudah terpakai] - delete kode: {id}" )
+		request.session['status']="Master Golongan Gagal dihapus!"
+	return HttpResponseRedirect('/master/jab/dis/',{'status':status})
 
 def addPegawai(request):
 	if(request.user.is_authenticated != True):
@@ -170,7 +186,7 @@ def addPegawai(request):
 			is_kepala=False
 
 		try:
-			jabatan = MasterPegawai.objects.create(
+			pegawai = MasterPegawai.objects.create(
 				nik = nik,
 				nama=nama,
 				kode_jabatan=MasterJabatan.objects.get(kode_jabatan=kode_jabatan),
@@ -178,10 +194,20 @@ def addPegawai(request):
 				is_kepala=is_kepala,
 				updatedBy=request.user.username
 			)
-			jabatan.save()
-			addLogging(request.user.username,"master_pegawai",f"create NIP: {nik} - {nama}" )
+			pegawai.save()
+			print(pegawai)
+			
+			if(pegawai!=None):
+				addLogging(request.user.username,"master_pegawai",f"berhasil-create NIP: {nik} - {nama}" )
+				request.session['status']="Master Pegawai Berhasil dibuat!"
+			else:
+				addLogging(request.user.username,"master_pegawai",f"gagal[kepala pegawai sudah dibuat]-create NIP: {nik} - {nama}" )
+				request.session['status']="Master Pegawai Gagal dibuat! Kepala Pegawai sudah pernah ada!"
 		except:
-			pass
+			addLogging(request.user.username,"master_pegawai",f"gagal[master pegawai sudah ada]-create NIP: {nik} - {nama}" )
+			request.session['status']="Master Pegawai Gagal dibuat! Master Pegawai sudah pernah ada!"
+		return HttpResponseRedirect('/master/peg/dis/')
+	
 	context={
 		'forms':inputPegawai,
 		'menuname':'Menambah Pegawai',
@@ -216,8 +242,10 @@ def displayPegawai(request):
 		'menuname':'Daftar Pegawai',
 		'pathway':'Master Pegawai - Daftar Pegawai',
 		'username':request.user.username,
-		'mywebsite': '/master/peg/dis/'
+		'mywebsite': '/master/peg/dis/',
+		'status':request.session['status']
 	}
+	request.session['status']=""
 	return render(request,'master/display_pegawai.html',context)
 
 def delPegawai(request,id):
@@ -225,10 +253,12 @@ def delPegawai(request,id):
 		return HttpResponseRedirect('/auth/')
 	try:
 		MasterPegawai.objects.filter(nik=id).delete()
-		addLogging(request.user.username,"master_pegawai",f"delete kode: {id}" )
+		addLogging(request.user.username,"master_pegawai",f"berhasil-delete kode: {id}" )
+		request.session['status']="Master Pegawai Berhasil dihapus"
 	except:
-		pass
-	return HttpResponseRedirect('/master/peg/dis/')
+		addLogging(request.user.username,"master_pegawai",f"gagal[data sudah terpakai]-delete kode: {id}" )
+		request.session['status']="Master Pegawai Gagal dihapus"
+	return HttpResponseRedirect('/master/peg/dis/',{'status':status})
 
 def addPengguna(request):
 	if(request.user.is_authenticated != True):
@@ -270,10 +300,13 @@ def addPengguna(request):
 			pengguna=Pengguna.objects.get(username=username)
 			pengguna.set_password(password)
 			pengguna.save()
-			addLogging(request.user.username,"master_pengguna",f"create username: {username} - {email}" )
+			addLogging(request.user.username,"master_pengguna",f"berhasil-create username: {username} - {email}" )
+			request.session['status']="Master Pengguna Berhasil ditambahkan!"
 		except:
-			pass
-
+			addLogging(request.user.username,"master_pengguna",f"gagal[data sudah ada]-create username: {username} - {email}" )
+			request.session['status']="Master Pengguna Gagal ditambahkan!"
+		return HttpResponseRedirect('/master/user/dis/')
+	
 	context={
 		'forms':inputPengguna,
 		'menuname':'Menambah Pengguna Aplikasi',
@@ -308,8 +341,10 @@ def displayPengguna(request):
 		'menuname':'Daftar Pengguna Aplikasi',
 		'pathway':'Master Pengguna - Daftar Pengguna',
 		'username':request.user.username,
-		'mywebsite': '/master/user/dis/'
+		'mywebsite': '/master/user/dis/',
+		'status':request.session['status']
 	}
+	request.session['status']=""
 	return render(request,'master/display_pengguna.html',context)
 
 def delPengguna(request,id):
@@ -317,13 +352,16 @@ def delPengguna(request,id):
 		return HttpResponseRedirect('/auth/')
 	try:
 		Pengguna.objects.filter(username=id).delete()
-		addLogging(request.user.username,"master_pengguna",f"delete kode: {id}" )
+		addLogging(request.user.username,"master_pengguna",f"berhasil-delete kode: {id}" )
+		request.session['status']="Master Pengguna Berhasil dihapus!"
 	except:
-		pass
-	return HttpResponseRedirect('/master/user/dis/')
+		addLogging(request.user.username,"master_pengguna",f"gagal[data sudah dipakai]-delete kode: {id}" )
+		request.session['status']="Master Pengguna Gagal dihapus!"
+	return HttpResponseRedirect('/master/user/dis/',)
 
 def loginuser(request):
 	if request.method=="POST":
+		request.session['status']=''
 		username=request.POST['username']
 		password=request.POST['password']
 		user = authenticate(username=username,password=password)
@@ -527,8 +565,22 @@ def addNomorSurat(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
 	# if request.method=="POST":
-	# 	nomor_surat = request.POST['nomor_surat']
-
+		# nomor_surat = request.POST['nomor_surat']
+		# tgl_surat =  request.POST['tgl_surat']
+		# lokasi_surat = request.POST['lokasi_surat']
+		# tujuan = request.POST['tujuan']
+	# nomor_surat = models.CharField(max_length=50,unique=True,blank=False,primary_key=True,default="")
+    # tgl_surat = models.DateField(auto_now_add=False,null=True)
+    # lokasi_surat = models.CharField(max_length=50)
+    # tujuan = models.CharField(max_length=50)
+    # lokasi = models.CharField(max_length=50)
+    # tgl_awal_tugas = models.DateField(auto_now_add=False,null=True)
+    # tgl_akhir_tugas = models.DateField(auto_now_add=False,null=True)
+    # updatedAt = models.DateTimeField(auto_now_add=True,null=True)
+    # kepala_nama = models.CharField(max_length=50,null=True,blank=True)
+    # kepala_nik = models.CharField(max_length=50,null=True,blank=True)
+    # kepala_jabatan = models.CharField(max_length=50,null=True,blank=True)
+    # kepala_golongan = models.CharField(max_length=50,null=True,blank=True)
 
 		# try:
 		# 	jabatan = MasterPegawai.objects.create(
