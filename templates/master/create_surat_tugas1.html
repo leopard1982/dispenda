@@ -9,6 +9,7 @@
 
 <form method="post">
     {{forms.media}}
+	{% csrf_token%}
 <table>
     <tr>
 		<td style="width: 300px">Nomor Surat Tugas:</td>
@@ -40,7 +41,7 @@
 	</tr>
     
     <tr class="p-2">
-        <td colspan="2"><input type="checkbox" class="my-3" id="konfirmasi"><label for="konfirmasi" class="small fw-bold"><i>saya mengkonfirmasi pembuatan surat tugas</i> </label></td>
+        <td colspan="2"><input type="checkbox" class="my-3" id="konfirmasi" required><label for="konfirmasi" class="small fw-bold"><i>saya mengkonfirmasi pembuatan surat tugas</i> </label></td>
     </tr>
 	<tr class="p-2">
 		<td colspan="2"><input type="submit" value="Berikutnya ->" class="btn btn-primary"></td>

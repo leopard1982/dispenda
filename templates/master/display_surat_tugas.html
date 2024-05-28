@@ -4,21 +4,38 @@
 {% block contents%}
 <div style="text-wrap: wrap; overflow-x: scroll;">
 <table class="table">
+    
     <thead>
-        <th style="width:50px">No.</th>
-        <th style="width:100px">Kode</th>
-        <th style="width:300px">Keterangan</th>
-        <th style="width:200px">Updated By</th>
-        <th style="width:300px">Updated At</th>
-        <th style="width:200px"</th>
+        <th style="min-width:50px">No.</th>
+        <th style="min-width:250px">No.Surat</th>
+        <th style="min-width:100px">Lokasi Dibuat</th>
+        <th style="min-width:250px">Tujuan Tugas</th>
+        <th style="min-width:100px">Lokasi Tugas</th>
+        <th style="min-width:150px">Tgl Awal Tugas</th>
+        <th style="min-width:150px">Tgl Akhir Tugas</th>
+        <th style="min-width:250px">Nama Kepala</th>
+        <th  style="min-width:250px">N.I.P</th>
+        <th  style="min-width:250px">Jabatan</th>
+        <th  style="min-width:100px">Updated By</th>
+        <th  style="min-width:150px">Updated At</th>
+        <th  style="min-width:50px">Status</th>
+        <th  style="min-width:200px"></th>
     </thead>
     {% for list in lists%}
     <tr>
         <td>{{forloop.counter}}</td>
-        <td>{{list.kode_golongan}}</td>
-        <td>{{list.keterangan}}</td>
+        <td>{{list.nomor_surat}}</td>
+        <td>{{list.lokasi_surat}}</td>
+        <td>{{list.tujuan}}</td>
+        <td>{{list.lokasi}}</td>
+        <td>{{list.tgl_awal_tugas}}</td>
+        <td>{{list.tgl_akhir_tugas}}</td>
+        <td>{{list.kepala_nama}}</td>
+        <td>{{list.kepala_nik}}</td>
+        <td>{{list.kepala_jabatan}}</td>
         <td>{{list.updatedBy}}</td>
         <td>{{list.updatedAt}}</td>
+        <td>{% if list.submit is False %}<span class="text-danger">pending</span>{%else%}<span class="text-success">kirim</span>{%endif%}</td>
         <td>
             <a class="btn" data-toggle="modal" data-target="#editModal"><i class="fa fa-user-edit"></i></a>
             <a class="btn" data-toggle="modal"  onclick="deleteGolongan('{{list.kode_golongan}}','{{list.keterangan}}')"><i class="fa fa-trash"></i></a>

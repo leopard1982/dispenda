@@ -93,6 +93,7 @@ class TrxSuratTugas(models.Model):
     kepala_nik = models.CharField(max_length=50,null=True,blank=True)
     kepala_jabatan = models.CharField(max_length=50,null=True,blank=True)
     kepala_golongan = models.CharField(max_length=50,null=True,blank=True)
+    is_plt = models.BooleanField(default=False)
     submit = models.BooleanField(default=False)
     updatedBy = models.CharField(max_length=20,blank=True,null=True)
 
@@ -102,6 +103,7 @@ class TrxSuratTugas(models.Model):
             self.kepala_nik = ConfigDispenda.objects.all()[0].kepala.nik
             self.kepala_jabatan = ConfigDispenda.objects.all()[0].kepala.kode_jabatan.keterangan
             self.kepala_golongan = ConfigDispenda.objects.all()[0].kepala.kode_golongan.keterangan
+            self.is_plt = ConfigDispenda.objects.all()[0].kepala.is_kepala
             super(TrxSuratTugas,self).save(*args,**kwargs)
         else:
             return

@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block contents%}
+<div style="text-wrap: wrap; overflow-x: scroll;">
 <table class="table">
     <thead>
         <th style="width:50px">No.</th>
@@ -29,6 +30,7 @@
     </tr>
     {% endfor%}
 </table>
+</div>
 <div>
     halaman: 
     {% for hal in paginator.page_range%}

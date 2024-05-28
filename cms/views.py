@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponseRedirect
 from cms.forms import inputGolongan, inputJabatan, inputPegawai, inputPengguna, inputSuratTugas
 from surat_tugas.models import MasterGolongan,MasterJabatan,MasterPegawai, Pengguna, Logging
+from surat_tugas.models import TrxSuratTugas, ConfigDispenda
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
@@ -564,41 +565,81 @@ def displayLogID(request,id):
 def addNomorSurat(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
-	# if request.method=="POST":
-		# nomor_surat = request.POST['nomor_surat']
-		# tgl_surat =  request.POST['tgl_surat']
-		# lokasi_surat = request.POST['lokasi_surat']
-		# tujuan = request.POST['tujuan']
-	# nomor_surat = models.CharField(max_length=50,unique=True,blank=False,primary_key=True,default="")
-    # tgl_surat = models.DateField(auto_now_add=False,null=True)
-    # lokasi_surat = models.CharField(max_length=50)
-    # tujuan = models.CharField(max_length=50)
-    # lokasi = models.CharField(max_length=50)
-    # tgl_awal_tugas = models.DateField(auto_now_add=False,null=True)
-    # tgl_akhir_tugas = models.DateField(auto_now_add=False,null=True)
-    # updatedAt = models.DateTimeField(auto_now_add=True,null=True)
-    # kepala_nama = models.CharField(max_length=50,null=True,blank=True)
-    # kepala_nik = models.CharField(max_length=50,null=True,blank=True)
-    # kepala_jabatan = models.CharField(max_length=50,null=True,blank=True)
-    # kepala_golongan = models.CharField(max_length=50,null=True,blank=True)
+	if request.method=="POST":
+		nomor_surat = request.POST['nomor_surat']
+		tgl_surat =  request.POST['tgl_surat']
+		lokasi_surat = request.POST['lokasi_surat']
+		tujuan = request.POST['tujuan']
+		lokasi = request.POST['lokasi']
+		tgl_awal_tugas = request.POST['tgl_awal_tugas']
+		tgl_akhir_tugas = request.POST['tgl_akhir_tugas']
 
-		# try:
-		# 	jabatan = MasterPegawai.objects.create(
-		# 		nik = nik,
-		# 		nama=nama,
-		# 		kode_jabatan=MasterJabatan.objects.get(kode_jabatan=kode_jabatan),
-		# 		kode_golongan=MasterGolongan.objects.get(kode_golongan=kode_golongan),
-		# 		is_kepala=is_kepala,
-		# 		updatedBy=request.user.username
-		# 	)
-		# 	jabatan.save()
-		# 	addLogging(request.user.username,"master_pegawai",f"create NIP: {nik} - {nama}" )
-		# except:
-		# 	pass
+		confignya = ConfigDispenda.objects.all()
+
+		if(confignya.count()==0):
+			request.session['status']="Penambahan Surat Tugas! Kepala Kantor Belum Disetting!"
+			addLogging(request.user.username,'trx_surat_tugas_header',"gagal[kepala kantor belum disetting]")
+			return HttpResponseRedirect('/surat/dis/')
+		else:
+			try:
+				trxsurattugas = TrxSuratTugas.objects.create(
+					nomor_surat=nomor_surat,
+					tgl_surat=tgl_surat,
+					tgl_akhir_tugas = tgl_akhir_tugas,
+					lokasi_surat = lokasi_surat,
+					tujuan=tujuan,
+					tgl_awal_tugas=tgl_awal_tugas,
+					updatedBy=request.user.username,
+					lokasi=lokasi,
+					submit=False
+				)
+				trxsurattugas.save()
+				request.session['status']="Penambahan Surat Tugas Berhasil!"
+				addLogging(request.user.username,f'trx_surat_tugas_header',"berhasil-Nomor Surat: {nomor_surat}")			
+				return HttpResponseRedirect('/surat/dis/')
+			except:
+				request.session['status']="Penambahan Surat Tugas Gagal! Nomor Surat Pernah Dibuat!"
+				addLogging(request.user.username,f'trx_surat_tugas_header',"gagal[Nomor Surat Pernah Dibuat]")
+
 	context={
 		'forms':inputSuratTugas,
 		'menuname':'Menambah Surat Tugas',
 		'pathway':'Transaksi Surat Tugas - Menambah Surat Tugas',
-		'username':request.user.username
+		'username':request.user.username,
+		'status':request.session['status']
 	}
+	request.session['status']=""
 	return render(request,'master/create_surat_tugas1.html',context)
+
+def displaySuratTugas(request):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+
+	try:
+		page=request.GET['page']
+	except:
+		page=1
+	if page==None:
+		page=1
+
+	listTrxSuratTugas = TrxSuratTugas.objects.all().order_by('-updatedAt')
+	
+	p=Paginator(listTrxSuratTugas,10)
+	
+	
+	try:
+		halaman = p.page(page)
+	except:
+		halaman = p.page(1)
+	
+	context={
+		'lists':halaman,
+		'paginator':p,
+		'menuname':'Daftar Surat Tugas',
+		'pathway':'Transaksi Surat Tugas - Daftar Surat Tugas',
+		'username':request.user.username,
+		'mywebsite': '/logs/',
+		'status':request.session['status']
+	}
+	request.session['status']=''
+	return render(request,'master/display_surat_tugas.html',context)
