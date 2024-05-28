@@ -425,11 +425,11 @@
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">{{menuname}}</h1><sub>{{pathway}}</sub>
                     </div>
-                    {% if status%}
+                    
                         <div class="alert alert-success w-100">
                             {{status}}        
                         </div>
-                    {%endif%}
+                    
                     <!-- Content Row -->
                     {% block contents%}
                     
@@ -468,12 +468,12 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Keluar dari sistem</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-body">Apakah <span class="fw-bold">{{user.username|title}}</span> akan keluar dari Dispenda Surat Tugas? Jika Ya, silakan tekan tombol Logout, atau tekan tombol Cancel untuk membatalkan.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     <a class="btn btn-primary" href="/logout/">Logout</a>

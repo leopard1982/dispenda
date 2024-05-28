@@ -169,7 +169,7 @@ def delJabatan(request,id):
 	except:
 		addLogging(request.user.username,"master_jabatan",f"gagal[data sudah terpakai] - delete kode: {id}" )
 		request.session['status']="Master Golongan Gagal dihapus!"
-	return HttpResponseRedirect('/master/jab/dis/',{'status':status})
+	return HttpResponseRedirect('/master/jab/dis/')
 
 def addPegawai(request):
 	if(request.user.is_authenticated != True):
@@ -258,7 +258,7 @@ def delPegawai(request,id):
 	except:
 		addLogging(request.user.username,"master_pegawai",f"gagal[data sudah terpakai]-delete kode: {id}" )
 		request.session['status']="Master Pegawai Gagal dihapus"
-	return HttpResponseRedirect('/master/peg/dis/',{'status':status})
+	return HttpResponseRedirect('/master/peg/dis/')
 
 def addPengguna(request):
 	if(request.user.is_authenticated != True):
@@ -357,7 +357,7 @@ def delPengguna(request,id):
 	except:
 		addLogging(request.user.username,"master_pengguna",f"gagal[data sudah dipakai]-delete kode: {id}" )
 		request.session['status']="Master Pengguna Gagal dihapus!"
-	return HttpResponseRedirect('/master/user/dis/',)
+	return HttpResponseRedirect('/master/user/dis/')
 
 def loginuser(request):
 	if request.method=="POST":
