@@ -595,7 +595,7 @@ def addNomorSurat(request):
 				)
 				trxsurattugas.save()
 				request.session['status']="Penambahan Surat Tugas Berhasil!"
-				addLogging(request.user.username,f'trx_surat_tugas_header',"berhasil-Nomor Surat: {nomor_surat}")			
+				addLogging(request.user.username,f'trx_surat_tugas_header',f"berhasil-Nomor Surat: {nomor_surat}")			
 				return HttpResponseRedirect('/surat/dis/')
 			except:
 				request.session['status']="Penambahan Surat Tugas Gagal! Nomor Surat Pernah Dibuat!"
