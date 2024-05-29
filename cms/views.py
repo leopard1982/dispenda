@@ -18,11 +18,23 @@ def addLogging(username,grouping,message):
 def dashboard(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
+	
+	jml_pending_surattugas = TrxSuratTugas.objects.all().filter(submit=False).count()
+	jml_sukses_surattugas = TrxSuratTugas.objects.all().filter(submit=True).count()
+	jml_master_pegawai = MasterPegawai.objects.all()
+	configdispenda = ConfigDispenda.objects.all()
+	if configdispenda.count()==0:
+		configdispenda=None
+	else:
+		configdispenda=configdispenda[0]
 
 	context={
-		'menuname':'Dashboard',
-		'pathway': '',
-		'username': request.user.username
+		
+		'username': request.user.username,
+		'jml_pending_surattugas': jml_pending_surattugas,
+		'jml_sukses_surattugas': jml_sukses_surattugas,
+		'jml_master_pegawai':jml_master_pegawai,
+		'kepala':configdispenda
 	}
 	return render(request,'master/dashboard.html',context)
 

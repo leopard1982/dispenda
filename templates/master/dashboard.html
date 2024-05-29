@@ -2,5 +2,80 @@
 {% load static %}
 
 {% block contents%}
-test
+<!-- Color System -->
+                            <div class="row">
+                                <div class="col-12 mb-4">
+                                    <div class="card bg-light h4 shadow border-secondary">
+                                        <div class="rounded m-2 text-center  p-2" style="color:rgba(0, 0, 0, 0.6);background-color: lightgray;">Pejabat Kantor</div>
+                                        <div class="card-body d-flex justify-content-center">
+                                            <table>
+                                                <tr>
+                                                    <td class="p-1 h5" style="width: 200px;">Nama:</td>
+                                                    <td class="p-1 h5 ">{% if kepala.is_PLT %}Plt. {%endif%}{{kepala.kepala.nama}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="p-1 h5 ">N.I.P:</td>
+                                                    <td class="p-1 h5 ">{{kepala.kepala.nik}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="p-1 h5 ">Jabatan:</td>
+                                                    <td class="p-1 h5 ">{{kepala.kepala.kode_jabatan}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="p-1 h5 ">Golongan:</td>
+                                                    <td class="p-1 h5 ">{{kepala.kepala.kode_golongan}}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-4">
+                                    <div class="card bg-success text-white shadow">
+                                        <div class="card-body">
+                                            Total Surat Tugas Selesai
+                                            <div class="text-white-50 h4">{{jml_sukses_surattugas}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-4">
+                                    <div class="card bg-primary text-white shadow">
+                                        <div class="card-body">
+                                            Total Surat Tugas Pending
+                                            <div class="text-white-50 h4">{{jml_pending_surattugas}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="col-lg-6 mb-4">
+                                    <div class="card bg-info text-white shadow">
+                                        <div class="card-body">
+                                            Total Evaluasi Tugas Selesai
+                                            <div class="text-white-50 h4">{{jml_sukses_surattugas}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-4">
+                                    <div class="card bg-warning text-white shadow">
+                                        <div class="card-body">
+                                            Total Evaluasi Tugas Pending
+                                            <div class="text-white-50 h4">{{jml_pending_surattugas}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="col-lg-6 mb-4">
+                                    <div class="card bg-danger text-white shadow">
+                                        <div class="card-body">
+                                            Laporan Tugas Selesai
+                                            <div class="text-white-50 h4">{{jml_sukses_surattugas}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-4">
+                                    <div class="card bg-secondary text-white shadow">
+                                        <div class="card-body">
+                                            Laporan Tugas Pending
+                                            <div class="text-white-50 h4">{{jml_pending_surattugas}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 {% endblock%}
