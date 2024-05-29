@@ -61,8 +61,10 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">login:<br>{{user.last_login}}</h6>
                         <a class="collapse-item" href="#">Profilku</a>
-                        <a class="collapse-item" href="#">Setting Sistem</a>
+                        {% if user.is_superuser %}
+                        <a class="collapse-item" href="/conf/">Setting Sistem</a>
                         <a class="collapse-item" href="/logs/">Catatan Aktivitas (LOG)</a>
+                        {% endif %}
                         <a class="collapse-item text-danger fs-italic fw-bold" style="cursor: pointer;"  data-toggle="modal" data-target="#logoutModal">Logout</a>
                     </div>
                 </div>
@@ -129,6 +131,7 @@
             </li>
 
             <!-- Nav Item - Pages Collapse Menu -->
+            {% if user.is_superuser%}
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pengguna"
                     aria-expanded="true" aria-controls="collapseTwo">
@@ -143,6 +146,7 @@
                     </div>
                 </div>
             </li>
+            {%endif%}
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">

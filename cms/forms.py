@@ -1,7 +1,7 @@
 from django import forms
 from surat_tugas.models import MasterGolongan, MasterJabatan, MasterPegawai, Pengguna, TrxSuratTugas
 from bootstrap_datepicker_plus.widgets import DatePickerInput
-from surat_tugas.models import ST_DasarTugas, ST_Peserta, MasterDasarST
+from surat_tugas.models import ST_DasarTugas, ST_Peserta, MasterDasarST, ConfigDispenda
 
 
 
@@ -74,4 +74,13 @@ class inputMasterDasarST(forms.ModelForm):
 		widgets= {
 			'kode_dasar': forms.TextInput(attrs={'required':'required','placeholder':'kode dasar surat tugas','class':'form-control'}),
 			'keterangan': forms.TextInput(attrs={'required':'required','placeholder':'kode dasar surat tugas','class':'form-control'})
+		}
+
+class inputConfig(forms.ModelForm):
+	class Meta:
+		model = ConfigDispenda
+		fields = ['kepala','is_PLT']
+
+		widgets= {
+			'kepala': forms.Select(attrs={'required':'required','class':'form-control'})
 		}

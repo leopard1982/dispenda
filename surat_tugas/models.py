@@ -70,12 +70,10 @@ class ConfigDispenda(models.Model):
     updatedAt = models.DateTimeField(auto_now_add=True,null=True)
 
     def save(self,*args,**kwargs):
-        if(self.kepala.is_kepala):
-            if(ConfigDispenda.objects.all().count()>0):
-                ConfigDispenda.objects.all().delete()
-            super(ConfigDispenda,self).save(*args,**kwargs)
-        else:
-            return
+        ConfigDispenda.objects.all().delete()
+        super(ConfigDispenda,self).save(*args,**kwargs)
+        MasterPegawai.objects.all().update(is_kepala=False)
+        MasterPegawai.objects.all().filter(nik=self.kepala.nik).update(is_kepala=True)
 
     def __str__(self):
         return self.kepala.nama

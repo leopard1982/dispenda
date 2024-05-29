@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponseRedirect
 from cms.forms import inputGolongan, inputJabatan, inputPegawai, inputPengguna, inputSuratTugas
-from cms.forms import inputMasterDasarST
+from cms.forms import inputMasterDasarST, inputConfig
 from surat_tugas.models import MasterGolongan,MasterJabatan,MasterPegawai, Pengguna, Logging
 from surat_tugas.models import TrxSuratTugas, ConfigDispenda, MasterDasarST
 from django.core.paginator import Paginator
@@ -277,6 +277,10 @@ def delPegawai(request,id):
 def addPengguna(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
+	
+	if(request.user.is_superuser!=True):
+		return HttpResponseRedirect('/')
+	
 	if request.method=="POST":
 		username = request.POST['username']
 		password = request.POST['password']
@@ -332,6 +336,10 @@ def addPengguna(request):
 def displayPengguna(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
+	
+	if(request.user.is_superuser!=True):
+		return HttpResponseRedirect('/')
+	
 	try:
 		page=request.GET['page']
 	except:
@@ -364,6 +372,10 @@ def displayPengguna(request):
 def delPengguna(request,id):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
+	
+	if(request.user.is_superuser!=True):
+		return HttpResponseRedirect('/')
+	
 	try:
 		Pengguna.objects.filter(username=id).delete()
 		addLogging(request.user.username,"master_pengguna",f"berhasil-delete kode: {id}" )
@@ -515,6 +527,10 @@ def displayPegawaiID(request,id):
 def displayPenggunaID(request,id):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
+	
+	if(request.user.is_superuser!=True):
+		return HttpResponseRedirect('/')
+
 	try:
 		page=request.GET['page']
 	except:
@@ -767,3 +783,40 @@ def delMasterDasarSuratTugas(request,id):
 		addLogging(request.user.username,"master_dasarsurat",f"gagal[data sudah dipakai]-delete kode: {id}" )
 		request.session['status']="Master Dasar Surat Tugas Gagal dihapus!"
 	return HttpResponseRedirect('/master/sur/dis/')
+
+def updateConfig(request):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	if(request.user.is_superuser !=True):
+		return HttpResponseRedirect('/')
+	
+	if request.method=="POST":
+		kepala = request.POST['kepala']
+		try:
+			is_PLT = request.POST['is_PLT']
+			is_PLT=True
+		except:
+			is_PLT=False
+
+		try:
+			configured = ConfigDispenda.objects.create(
+				kepala=MasterPegawai.objects.get(nik=kepala),
+				is_PLT=is_PLT
+			)
+			configured.save()
+			addLogging(request.user.username,"config",f"berhasil - kepala: {kepala} - {is_PLT}" )
+			request.session['status']="Konfigurasi Sistem Berhasil!"
+		except Exception as ex:
+			print(ex)
+			# print(ex)
+			request.session['status']="Konfigurasi Sistem Gagal!"
+			addLogging(request.user.username,"config",f"gagal[{ex}]" )
+		return HttpResponseRedirect('/')
+
+	context={
+		'forms':inputConfig,
+		'menuname':'Konfigurasi Aplikasi',
+		'pathway':'Profile - Setting Sistem',
+		'username':request.user.username
+	}
+	return render(request,'master/display_config.html',context)

@@ -3,7 +3,7 @@ from cms.views import dashboard,  addGolongan, addJabatan, displayGolongan, disp
 from cms.views import delGolongan, delJabatan, addPegawai, displayPegawai, delPegawai, addPengguna
 from cms.views import displayPengguna, delPengguna, loginuser,logoutuser, displayLog 
 from cms.views import displayGolonganID, displayJabatanID, displayPegawaiID, displayPenggunaID, displayLogID
-from cms.views import addNomorSurat, displaySuratTugas
+from cms.views import addNomorSurat, displaySuratTugas, updateConfig
 from cms.views import addDasarSurat, displayMasterDasarSurat,displayMasterDasarSuratID, delMasterDasarSuratTugas
 
 urlpatterns = [
@@ -34,4 +34,5 @@ urlpatterns = [
     path('master/sur/dis/',displayMasterDasarSurat,name='displayMasterDasarSurat'),
     path('master/sur/dis/<str:id>',displayMasterDasarSuratID,name='displayMasterDasarSuratID'),
     path('master/sur/del/<str:id>/',delMasterDasarSuratTugas,name="delMasterDasarSuratTugas"),
+    path('conf/',updateConfig,name="updateConfig"),
 ]

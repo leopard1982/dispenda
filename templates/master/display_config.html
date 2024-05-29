@@ -1,0 +1,23 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block contents%}
+<form method="post">
+	{% csrf_token %}
+<table>
+	<tr>
+		<td class="p-2">Pilih Kepala Kantor:</td>
+		<td class="p-2">{{ forms.kepala }}</td>
+	</tr>
+	<tr>
+		<td class="p-2">Apakah PLT:</td>
+		<td class="p-2">{{forms.is_PLT}}</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="p-2 text-left">
+			<input type='submit' value='Update Config'/>
+		</td>
+	</tr>
+</table>
+</form>
+{% endblock%}
