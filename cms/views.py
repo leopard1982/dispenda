@@ -813,10 +813,17 @@ def updateConfig(request):
 			addLogging(request.user.username,"config",f"gagal[{ex}]" )
 		return HttpResponseRedirect('/')
 
+	kepala = ConfigDispenda.objects.all()
+	if(kepala.count()==0):
+		kepala=None
+	else:
+		kepala=kepala[0]
+
 	context={
 		'forms':inputConfig,
 		'menuname':'Konfigurasi Aplikasi',
 		'pathway':'Profile - Setting Sistem',
-		'username':request.user.username
+		'username':request.user.username,
+		'kepala':kepala
 	}
 	return render(request,'master/display_config.html',context)
