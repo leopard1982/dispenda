@@ -144,6 +144,22 @@
                 </div>
             </li>
 
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#dasarsurat"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Master Dasar Surat</span>
+                </a>
+                <div id="dasarsurat" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Manajemen Dasar Surat:</h6>
+                        <a class="collapse-item" href="/master/sur/dis/">Daftar Dasar Surat</a>
+                        <a class="collapse-item" href="/master/sur/add/">Menambah Dasar Surat</a>
+                    </div>
+                </div>
+            </li>
+
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -227,10 +243,11 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
+                    {% if mywebsite is not None %}
                     <!-- Topbar Search -->
                     <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group {%if mywebsite is None%}d-none{%endif%}">
+                        <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Mencari dari Daftar..."
                                 aria-label="Search" aria-describedby="basic-addon2" id="coba">
                             <div class="input-group-append">
@@ -240,12 +257,15 @@
                             </div>
                         </div>
                     </form>
+                    {% endif %}
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
                         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
                         <li class="nav-item dropdown no-arrow d-sm-none">
+                            {% if mywebsite is None %}
+                            {%else%}
                             <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-search fa-fw"></i>
@@ -266,6 +286,7 @@
                                     </div>
                                 </form>
                             </div>
+                            {%endif%}
                         </li>
 
                         <!-- Nav Item - Alerts -->

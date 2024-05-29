@@ -4,6 +4,7 @@ from cms.views import delGolongan, delJabatan, addPegawai, displayPegawai, delPe
 from cms.views import displayPengguna, delPengguna, loginuser,logoutuser, displayLog 
 from cms.views import displayGolonganID, displayJabatanID, displayPegawaiID, displayPenggunaID, displayLogID
 from cms.views import addNomorSurat, displaySuratTugas
+from cms.views import addDasarSurat, displayMasterDasarSurat,displayMasterDasarSuratID, delMasterDasarSuratTugas
 
 urlpatterns = [
     path('', dashboard, name='dashboard'),
@@ -28,5 +29,9 @@ urlpatterns = [
     path('logs/',displayLog,name="displayLog"),
     path('logs/<str:id>',displayLogID,name="displayLogID"),
     path('surat/add/',addNomorSurat,name='addNomorSurat'),
-    path('surat/dis/',displaySuratTugas,name='displaySuratTugas')
+    path('surat/dis/',displaySuratTugas,name='displaySuratTugas'),
+    path('master/sur/add/',addDasarSurat,name='addDasarSurat'),
+    path('master/sur/dis/',displayMasterDasarSurat,name='displayMasterDasarSurat'),
+    path('master/sur/dis/<str:id>',displayMasterDasarSuratID,name='displayMasterDasarSuratID'),
+    path('master/sur/del/<str:id>/',delMasterDasarSuratTugas,name="delMasterDasarSuratTugas"),
 ]

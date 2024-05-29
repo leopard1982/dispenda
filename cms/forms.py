@@ -1,6 +1,7 @@
 from django import forms
 from surat_tugas.models import MasterGolongan, MasterJabatan, MasterPegawai, Pengguna, TrxSuratTugas
 from bootstrap_datepicker_plus.widgets import DatePickerInput
+from surat_tugas.models import ST_DasarTugas, ST_Peserta, MasterDasarST
 
 
 
@@ -63,4 +64,14 @@ class inputSuratTugas(forms.ModelForm):
 			'tgl_awal_tugas':DatePickerInput(attrs={'required':'required','class':'form-control'}), #(attrs={'id':'tgl_awal_tugas','required':'required','class':'form-control'}),
 			'tgl_akhir_tugas': DatePickerInput(attrs={'required':'required','class':'form-control'})#forms.DateInput(attrs={'id':'tgl_akhir_tugas','required':'required','class':'form-control'})
 			
+		}
+
+class inputMasterDasarST(forms.ModelForm):
+	class Meta:
+		model = MasterDasarST
+		fields = ['kode_dasar','keterangan']
+
+		widgets= {
+			'kode_dasar': forms.TextInput(attrs={'required':'required','placeholder':'kode dasar surat tugas','class':'form-control'}),
+			'keterangan': forms.TextInput(attrs={'required':'required','placeholder':'kode dasar surat tugas','class':'form-control'})
 		}

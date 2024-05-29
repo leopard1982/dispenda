@@ -11,19 +11,19 @@
                                             <table>
                                                 <tr>
                                                     <td class="p-1 h5" style="width: 200px;">Nama:</td>
-                                                    <td class="p-1 h5 ">{% if kepala.is_PLT %}Plt. {%endif%}{{kepala.kepala.nama}}</td>
+                                                    <td class="p-1 h5 ">{% if kepala.is_PLT %}Plt. {%endif%}{{kepala.kepala.nama|title}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="p-1 h5 ">N.I.P:</td>
-                                                    <td class="p-1 h5 ">{{kepala.kepala.nik}}</td>
+                                                    <td class="p-1 h5 ">{{kepala.kepala.nik|title}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="p-1 h5 ">Jabatan:</td>
-                                                    <td class="p-1 h5 ">{{kepala.kepala.kode_jabatan}}</td>
+                                                    <td class="p-1 h5 ">{{kepala.kepala.kode_jabatan|title}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="p-1 h5 ">Golongan:</td>
-                                                    <td class="p-1 h5 ">{{kepala.kepala.kode_golongan}}</td>
+                                                    <td class="p-1 h5 ">{{kepala.kepala.kode_golongan|title}}</td>
                                                 </tr>
                                             </table>
                                         </div>

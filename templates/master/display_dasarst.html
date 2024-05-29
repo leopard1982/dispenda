@@ -1,0 +1,94 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block contents%}
+<div style="text-wrap: wrap; overflow-x: scroll;">
+<table class="table">
+    <thead>
+        <th style="width:50px">No.</th>
+        <th style="width:100px">Kode </th>
+        <th style="width:300px">Keterangan</th>
+        <th style="width:200px">Updated By</th>
+        <th style="width:300px">Updated At</th>
+        <th style="width:200px"</th>
+    </thead>
+    {% for list in lists%}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{list.kode_dasar}}</td>
+        <td>{{list.keterangan}}</td>
+        <td>{{list.updatedBy}}</td>
+        <td>{{list.updatedAt}}</td>
+        <td>
+            <a class="btn" data-toggle="modal" data-target="#editModal"><i class="fa fa-user-edit"></i></a>
+            <a class="btn" data-toggle="modal"  onclick="deleteDasarSurat('{{list.kode_dasar}}','{{list.keterangan}}')"><i class="fa fa-trash"></i></a>
+        </td>
+    </tr>
+    {% endfor%}
+</table>
+</div>
+<div>
+    halaman: 
+    {% for hal in paginator.page_range%}
+        <a class="button" href="{% url 'displayGolongan'%}?page={{hal}}">{{hal}}</a> 
+    {% endfor %}
+</div>
+
+<!-- Edit Modal-->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Master Golongan</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Detail Master Golongan</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Delete Modal-->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete Master Golongan</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah benar akan menghapus Data Master ini?</p>
+                    <p>Kode Dasar Surat: <span id="del_ksurat"></span></p>
+                    <p>Nama Dasar Surat: <span id="del_nsurat"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" type="button" data-dismiss="modal"  onclick="delSurID()">Hapus</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    let kodenya=null;
+    function deleteDasarSurat(kode,nama) {
+        document.getElementById('del_ksurat').innerText=kode;
+        document.getElementById('del_nsurat').innerText=nama;
+        kodenya=kode;
+        $("#deleteModal").modal('show');
+    }
+
+    function delSurID() {
+        document.location.href="/master/sur/del/" +kodenya +"/";
+    }
+</script>
+
+{% endblock%}

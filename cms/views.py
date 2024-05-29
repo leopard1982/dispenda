@@ -1,7 +1,8 @@
 from django.shortcuts import render, HttpResponseRedirect
 from cms.forms import inputGolongan, inputJabatan, inputPegawai, inputPengguna, inputSuratTugas
+from cms.forms import inputMasterDasarST
 from surat_tugas.models import MasterGolongan,MasterJabatan,MasterPegawai, Pengguna, Logging
-from surat_tugas.models import TrxSuratTugas, ConfigDispenda
+from surat_tugas.models import TrxSuratTugas, ConfigDispenda, MasterDasarST
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
@@ -655,3 +656,114 @@ def displaySuratTugas(request):
 	}
 	request.session['status']=''
 	return render(request,'master/display_surat_tugas.html',context)
+
+def addDasarSurat(request):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	if request.method=="POST":
+		kode_surat = request.POST['kode_dasar']
+		keterangan = request.POST['keterangan']
+
+		try:
+			dasarsurat = MasterDasarST.objects.create(
+				kode_dasar=kode_surat,
+				keterangan=keterangan,
+				updatedBy=request.user.username
+			)
+			dasarsurat.save()
+			addLogging(request.user.username,"master_dasarsurat",f"berhasil - create kode: {kode_surat} - {keterangan}" )
+			request.session['status']="Penambahan Master Dasar Surat Tugas Berhasil!"
+		except Exception as ex:
+			# print(ex)
+			request.session['status']="Penambahan Master Dasar Surat Tugas Gagal! Data pernah dibuat!"
+			addLogging(request.user.username,"master_dasarsurat",f"gagal[data sudah ada] - create kode: {kode_surat} - {keterangan}" )
+		return HttpResponseRedirect('/master/sur/dis/')
+
+	context={
+		'forms':inputMasterDasarST,
+		'menuname':'Menambah Master Dasar Surat Tugas',
+		'pathway':'Master Surat Tugas - Menambah Surat Tugas',
+		'username':request.user.username
+	}
+	return render(request,'master/create_dasarst.html',context)
+
+def displayMasterDasarSurat(request):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	try:
+		page=request.GET['page']
+	except:
+		page=1
+	if page==None:
+		page=1
+
+	listSurat = MasterDasarST.objects.all().order_by('-updatedAt')
+	
+	p=Paginator(listSurat,5)
+	
+	
+	try:
+		halaman = p.page(page)
+	except:
+		halaman = p.page(1)
+	
+	context={
+		'lists':halaman,
+		'paginator':p,
+		'menuname':'Daftar Dasar Surat Tugas',
+		'pathway':'Master Dasar Surat Tugas - Daftar Dasar Surat Tugas',
+		'username':request.user.username,
+		'mywebsite': '/master/sur/dis/',
+		'status':request.session['status']
+	}
+	request.session['status']=""
+	return render(request,'master/display_dasarst.html',context)
+
+def displayMasterDasarSuratID(request,id):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	if(request.user.is_superuser !=True):
+		return HttpResponseRedirect('/')
+	
+	#get the parameters query 
+	print(request.GET.dict())
+
+	try:
+		page=request.GET['page']
+	except:
+		page=1
+	if page==None:
+		page=1
+
+	listDasar = MasterDasarST.objects.all().filter(Q(kode_dasar__icontains=id) | Q(keterangan__icontains=id)).order_by('-updatedAt')
+	
+	p=Paginator(listDasar,10)
+	
+	
+	try:
+		halaman = p.page(page)
+	except:
+		halaman = p.page(1)
+	
+	context={
+		'lists':halaman,
+		'paginator':p,
+		'menuname':'Daftar Dasar Surat Tugas ['+str(id).upper()+']',
+		'pathway':'Master Dasar Surat Tugas - Display Dasar Surat Tugas',
+		'username':request.user.username,
+		'mywebsite': '/master/sur/dis/'
+
+	}
+	return render(request,'master/display_dasarst.html',context)
+
+def delMasterDasarSuratTugas(request,id):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	try:
+		MasterDasarST.objects.filter(kode_dasar=id).delete()
+		addLogging(request.user.username,"master_dasarsurat",f"berhasil-delete kode: {id}" )
+		request.session['status']="Master Dasar Surat Tugas berhasil dihapus!"
+	except:
+		addLogging(request.user.username,"master_dasarsurat",f"gagal[data sudah dipakai]-delete kode: {id}" )
+		request.session['status']="Master Dasar Surat Tugas Gagal dihapus!"
+	return HttpResponseRedirect('/master/sur/dis/')
