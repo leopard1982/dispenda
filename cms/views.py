@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from cms.forms import inputGolongan, inputJabatan, inputPegawai, inputPengguna, inputSuratTugas
 from cms.forms import inputMasterDasarST, inputConfig
 from surat_tugas.models import MasterGolongan,MasterJabatan,MasterPegawai, Pengguna, Logging
@@ -827,3 +827,9 @@ def updateConfig(request):
 		'kepala':kepala
 	}
 	return render(request,'master/display_config.html',context)
+
+def readGet(request):
+	x=request.GET.items()
+	for xx in x:
+		print(xx)
+	return HttpResponse(x)
