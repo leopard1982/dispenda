@@ -79,7 +79,8 @@ class ConfigDispenda(models.Model):
         return self.kepala.nama
 
 class TrxSuratTugas(models.Model):
-    nomor_surat = models.CharField(max_length=50,unique=True,blank=False,primary_key=True,default="")
+    id_surat = models.CharField(max_length=16,unique=True,blank=False,primary_key=True,default="")
+    nomor_surat = models.CharField(max_length=50,unique=True,blank=False,default="")
     tgl_surat = models.DateField(auto_now_add=False,null=True)
     lokasi_surat = models.CharField(max_length=50)
     tujuan = models.CharField(max_length=50)
@@ -113,13 +114,13 @@ class TrxSuratTugas(models.Model):
             super(TrxSuratTugas,self).delete(*args,**kwargs)
 
 class ST_Peserta(models.Model):
-    nomor_surat = models.ForeignKey(TrxSuratTugas,on_delete=models.RESTRICT)
+    id_surat = models.ForeignKey(TrxSuratTugas,on_delete=models.RESTRICT)
     peserta = models.ForeignKey(MasterPegawai,on_delete=models.RESTRICT)
     updatedAt = models.DateTimeField(auto_now_add=True,null=True)
     updatedBy = models.CharField(max_length=20,blank=True,null=True)
 
     class Meta:
-        unique_together=['nomor_surat','peserta']
+        unique_together=['id_surat','peserta']
 
     def save(self,*args,**kwargs):
         isSubmitted=TrxSuratTugas.objects.get(nomor_surat=self.nomor_surat.nomor_surat)
@@ -136,13 +137,13 @@ class ST_Peserta(models.Model):
             return
 
 class ST_DasarTugas(models.Model):
-    nomor_surat = models.ForeignKey(TrxSuratTugas,on_delete=models.RESTRICT)
+    id_surat = models.ForeignKey(TrxSuratTugas,on_delete=models.RESTRICT)
     dasar_tugas = models.ForeignKey(MasterDasarST,on_delete=models.RESTRICT)
     updatedAt = models.DateTimeField(auto_now_add=True,null=True)
     updatedBy = models.CharField(max_length=20,blank=True,null=True)
 
     class Meta:
-        unique_together=['nomor_surat','dasar_tugas']
+        unique_together=['id_surat','dasar_tugas']
 
     def save(self,*args,**kwargs):
         # print(self.nomor_surat)

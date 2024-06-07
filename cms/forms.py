@@ -84,3 +84,22 @@ class inputConfig(forms.ModelForm):
 		widgets= {
 			'kepala': forms.Select(attrs={'required':'required','class':'form-control'})
 		}
+
+
+class inputDasarSuratTugas(forms.ModelForm):
+	class Meta:
+		model = ST_DasarTugas
+		fields = ['dasar_tugas']
+
+		widgets= {
+			'dasar_tugas': forms.Select(attrs={'required':'required','class':'form-control'}),			
+		}
+
+class inputPesertaTugas(forms.ModelForm):
+	class Meta:
+		model = ST_Peserta
+		fields = ['peserta']
+
+		widgets= {
+			'peserta': forms.Select(attrs={'required':'required','class':'form-control'}),			
+		}

@@ -1,11 +1,12 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from cms.forms import inputGolongan, inputJabatan, inputPegawai, inputPengguna, inputSuratTugas
-from cms.forms import inputMasterDasarST, inputConfig
+from cms.forms import inputMasterDasarST, inputConfig, inputPesertaTugas, inputDasarSuratTugas
 from surat_tugas.models import MasterGolongan,MasterJabatan,MasterPegawai, Pengguna, Logging
-from surat_tugas.models import TrxSuratTugas, ConfigDispenda, MasterDasarST
+from surat_tugas.models import TrxSuratTugas, ConfigDispenda, MasterDasarST, ST_DasarTugas, ST_Peserta
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
+import uuid
 
 def addLogging(username,grouping,message):
 	loggingnya=Logging.objects.create(
@@ -612,6 +613,7 @@ def addNomorSurat(request):
 		else:
 			try:
 				trxsurattugas = TrxSuratTugas.objects.create(
+					id_surat=str(uuid.uuid4()),
 					nomor_surat=nomor_surat,
 					tgl_surat=tgl_surat,
 					tgl_akhir_tugas = tgl_akhir_tugas,
@@ -638,7 +640,7 @@ def addNomorSurat(request):
 		'status':request.session['status']
 	}
 	request.session['status']=""
-	return render(request,'master/create_surat_tugas1.html',context)
+	return render(request,'master/create_surat_tugas.html',context)
 
 def displaySuratTugas(request):
 	if(request.user.is_authenticated != True):
@@ -697,7 +699,7 @@ def addDasarSurat(request):
 
 	context={
 		'forms':inputMasterDasarST,
-		'menuname':'Menambah Master Dasar Surat Tugas',
+		'menuname':'Transaksi Surat Tugas',
 		'pathway':'Master Surat Tugas - Menambah Surat Tugas',
 		'username':request.user.username
 	}
@@ -828,8 +830,27 @@ def updateConfig(request):
 	}
 	return render(request,'master/display_config.html',context)
 
-def readGet(request):
-	x=request.GET.items()
-	for xx in x:
-		print(xx)
-	return HttpResponse(x)
+
+def detailSuratTugas(request,id):
+	data = TrxSuratTugas.objects.get(id_surat=id)
+	forms1_hasil= inputDasarSuratTugas(instance=data)
+	forms2_hasil= inputPesertaTugas(instance=data)
+
+	list_surat_tugas=ST_DasarTugas.objects.all().filter(id_surat=data)
+	list_peserta_tugas=ST_Peserta.objects.all().filter(id_surat=data)
+
+	forms1_isi = inputDasarSuratTugas()
+	forms2_isi = inputPesertaTugas()
+
+	context={
+		'forms1_hasil':forms1_hasil,
+		'forms2_hasil':forms2_hasil,
+		'forms1_isi':forms1_isi,
+		'forms2_isi':forms2_isi,
+		'list_surat':list_surat_tugas,
+		'list_peserta':list_peserta_tugas,
+		'menuname':'Transaksi Surat Tugas',
+		'pathway':'Master Surat Tugas - Menambah Surat Tugas - Detail',
+		'username':request.user.username
+	}
+	return render(request,'master/create_surat_tugas_detail.html',context)

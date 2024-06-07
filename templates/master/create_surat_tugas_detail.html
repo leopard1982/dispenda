@@ -1,0 +1,82 @@
+{% extends 'base.html'%}
+
+{% load static %}
+
+{% block contents%}
+
+<h5>Langkah 2: Mengisi Detail Surat Tugas</h5>
+
+
+<div class="p-2 border border-info rounded my-4">
+ <p class="w-100 bg-info rounded text-white p-3 text-center">Daftar Dasar Surat Tugas</p>
+ <div class="overflow-auto">
+    <table class="table border rounded">
+        <thead>
+            <th style="min-width:100px">No.</th>
+            <th style="min-width:200px">Kode</th>
+            <th>Detail</th>
+        </thead>
+        {% if list_surat.count == 0%}
+        <tr>
+            <td colspan="3" class="p-4 text-center small"><i>Belum Ada Dasar Surat Tugas</i></td>
+        </tr>
+        {% else %}
+        {% for surat in list_surat %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{surat.dasar_tugas.kode_dasar}}</td>
+            <td>{{surat.dasar_tugas.keterangan}}</td>
+        </tr>
+        {% endfor%}
+        {% endif %}
+    </table>
+ </div>
+ <br>
+
+ <p>Menambah Dasar Surat Tugas:</p>
+ <div class="my-2">
+    {{forms1_isi.as_div}}
+ </div>
+ <form class="form">
+    <button type="submit" class="btn btn-secondary">+ Tambah Dasar Surat Tugas</button>
+</form>
+</div>
+
+<div class="p-2 border border-primary rounded my-4">
+ <p class="w-100 bg-primary text-white p-3 text-center rounded">Daftar Peserta Tugas</p>
+ <div class="overflow-auto">
+    <table class="table border rounded">
+        <thead>
+            <th style="min-width:100px">No.</th>
+            <th style="min-width:200px">N.I.P</th>
+            <th  style="min-width:300px">Nama Pegawai</th>
+            <th style="min-width:300px">Jabatan</th>
+        </thead>
+         {% if list_peserta.count == 0%}
+        <tr>
+            <td colspan="4" class="p-4 text-center small"><i>Belum Ada Peserta Tugas</i></td>
+        </tr>
+        {% else %}
+        {% endif %}
+    </table>
+ </div>
+ <br>
+
+ <p>Menambah Peserta Tugas:</p>
+ <div class="my-2">
+    {{forms2_isi.as_div}}
+</div>
+<form class="form">
+    <button type="submit" class="btn btn-secondary">+ Tambah Peserta Tugas</button>
+</form>
+</div>
+
+ <div class="w-100">
+    {% if list_peserta > 0 and list_surat > 0 %}
+        <button class="form-control btn btn-success" > <i class="fa fa-signature" aria-hidden="true"></i> Konfirmasi Pembuatan Surat Tugas <i class="fa fa-signature" aria-hidden="true"></i></button>
+    {% else %}
+        <button class="form-control btn btn-success" disabled> <i class="fa fa-signature" aria-hidden="true"></i> Konfirmasi Pembuatan Surat Tugas <i class="fa fa-signature" aria-hidden="true"></i></button>
+    {% endif %}
+</div>
+
+{% endblock%}

@@ -5,7 +5,7 @@ from cms.views import displayPengguna, delPengguna, loginuser,logoutuser, displa
 from cms.views import displayGolonganID, displayJabatanID, displayPegawaiID, displayPenggunaID, displayLogID
 from cms.views import addNomorSurat, displaySuratTugas, updateConfig
 from cms.views import addDasarSurat, displayMasterDasarSurat,displayMasterDasarSuratID, delMasterDasarSuratTugas
-from cms.views import readGet
+from cms.views import detailSuratTugas
 
 urlpatterns = [
     path('', dashboard, name='dashboard'),
@@ -36,5 +36,5 @@ urlpatterns = [
     path('master/sur/dis/<str:id>',displayMasterDasarSuratID,name='displayMasterDasarSuratID'),
     path('master/sur/del/<str:id>/',delMasterDasarSuratTugas,name="delMasterDasarSuratTugas"),
     path('conf/',updateConfig,name="updateConfig"),
-    path('coba/',readGet,name='readGet')
+    path('surat/add/<str:id>',detailSuratTugas,name='detailSuratTugas'),
 ]
