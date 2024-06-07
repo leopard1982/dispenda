@@ -8,7 +8,7 @@
 
 
 <div class="p-2 border border-info rounded my-4">
- <p class="w-100 bg-info rounded text-white p-3 text-center">Daftar Dasar Surat Tugas</p>
+ <p class="w-100 bg-secondary rounded text-white p-3 text-center">Daftar Dasar Surat Tugas</p>
  <div class="overflow-auto">
     <table class="table border rounded">
         <thead>
@@ -35,15 +35,17 @@
 
  <p>Menambah Dasar Surat Tugas:</p>
  <div class="my-2">
-    {{forms1_isi.as_div}}
+    
  </div>
  <form class="form">
-    <button type="submit" class="btn btn-secondary">+ Tambah Dasar Surat Tugas</button>
+    {% csrf_token%}
+    {{forms1_isi.as_div}}
+    <button type="submit" class="btn btn-primary">+ Tambah Dasar Surat Tugas</button>
 </form>
 </div>
 
 <div class="p-2 border border-primary rounded my-4">
- <p class="w-100 bg-primary text-white p-3 text-center rounded">Daftar Peserta Tugas</p>
+ <p class="w-100 bg-secondary text-white p-3 text-center rounded">Daftar Peserta Tugas</p>
  <div class="overflow-auto">
     <table class="table border rounded">
         <thead>
@@ -64,10 +66,12 @@
 
  <p>Menambah Peserta Tugas:</p>
  <div class="my-2">
-    {{forms2_isi.as_div}}
+    
 </div>
 <form class="form">
-    <button type="submit" class="btn btn-secondary">+ Tambah Peserta Tugas</button>
+    {% csrf_token%}
+    {{forms2_isi.as_div}}
+    <button type="submit" class="btn btn-primary">+ Tambah Peserta Tugas</button>
 </form>
 </div>
 
