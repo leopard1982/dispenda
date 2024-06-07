@@ -113,8 +113,11 @@ class TrxSuratTugas(models.Model):
         else:
             super(TrxSuratTugas,self).delete(*args,**kwargs)
 
+    def __str__(self):
+        return self.nomor_surat
+
 class ST_Peserta(models.Model):
-    id_surat = models.ForeignKey(TrxSuratTugas,on_delete=models.RESTRICT)
+    id_surat = models.CharField(max_length=50)
     peserta = models.ForeignKey(MasterPegawai,on_delete=models.RESTRICT)
     updatedAt = models.DateTimeField(auto_now_add=True,null=True)
     updatedBy = models.CharField(max_length=20,blank=True,null=True)
@@ -123,21 +126,30 @@ class ST_Peserta(models.Model):
         unique_together=['id_surat','peserta']
 
     def save(self,*args,**kwargs):
-        isSubmitted=TrxSuratTugas.objects.get(nomor_surat=self.nomor_surat.nomor_surat)
-        if(not isSubmitted.submit):
-            super(ST_Peserta,self).save(*args,**kwargs)
-        else:
+        print(self.id_surat)
+        print(self.peserta)
+        isSubmitted=TrxSuratTugas.objects.get(nomor_surat=self.id_surat)
+        print(isSubmitted.submit)
+        try:
+            if(isSubmitted.submit!=True):
+                super(ST_Peserta,self).save(*args,**kwargs)
+            else:
+                return
+        except Exception as ex:
+            print(ex)
             return
-
+        
     def delete(self,*args,**kwargs):
+        print('delete')
         isSubmitted=TrxSuratTugas.objects.get(nomor_surat=self.nomor_surat.nomor_surat)
-        if(not isSubmitted.submit):
+        print(isSubmitted.submit)
+        if(isSubmitted.submit!=True):
             super(ST_Peserta,self).delete(*args,**kwargs)
         else:
             return
 
 class ST_DasarTugas(models.Model):
-    id_surat = models.ForeignKey(TrxSuratTugas,on_delete=models.RESTRICT)
+    id_surat = models.CharField(max_length=50)
     dasar_tugas = models.ForeignKey(MasterDasarST,on_delete=models.RESTRICT)
     updatedAt = models.DateTimeField(auto_now_add=True,null=True)
     updatedBy = models.CharField(max_length=20,blank=True,null=True)
@@ -147,15 +159,22 @@ class ST_DasarTugas(models.Model):
 
     def save(self,*args,**kwargs):
         # print(self.nomor_surat)
-        isSubmitted=TrxSuratTugas.objects.get(nomor_surat=self.nomor_surat.nomor_surat)
-        if not isSubmitted.submit :
-            super(ST_DasarTugas,self).save(*args,**kwargs)
-        else:
+        try:
+            isSubmitted=TrxSuratTugas.objects.get(nomor_surat=self.id_surat)
+            
+            if isSubmitted.submit!=True :
+                super(ST_DasarTugas,self).save(*args,**kwargs)
+            else:
+                return
+        except Exception as ex:
+            print(ex)
             return
 
     def delete(self,*args,**kwargs):
-        isSubmitted=TrxSuratTugas.objects.get(nomor_surat=self.nomor_surat.nomor_surat)
-        if(not isSubmitted.submit):
+        print('delete')
+        isSubmitted=TrxSuratTugas.objects.get(id_surat=self.id_surat.nomor_surat)
+        print(isSubmitted.submit)
+        if(isSubmitted.submit!=True):
             super(ST_DasarTugas,self).delete(*args,**kwargs)
         else:
             return

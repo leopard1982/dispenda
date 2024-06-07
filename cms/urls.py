@@ -5,7 +5,8 @@ from cms.views import displayPengguna, delPengguna, loginuser,logoutuser, displa
 from cms.views import displayGolonganID, displayJabatanID, displayPegawaiID, displayPenggunaID, displayLogID
 from cms.views import addNomorSurat, displaySuratTugas, updateConfig
 from cms.views import addDasarSurat, displayMasterDasarSurat,displayMasterDasarSuratID, delMasterDasarSuratTugas
-from cms.views import detailSuratTugas
+from cms.views import detailSuratTugas, detailSuratTugas_add_pegawai,detailSuratTugas_add_surat
+from cms.views import detailSuratTugas_del_pegawai, detailSuratTugas_del_surat, detailSuratTugas_submit
 
 urlpatterns = [
     path('', dashboard, name='dashboard'),
@@ -37,4 +38,9 @@ urlpatterns = [
     path('master/sur/del/<str:id>/',delMasterDasarSuratTugas,name="delMasterDasarSuratTugas"),
     path('conf/',updateConfig,name="updateConfig"),
     path('surat/add/<str:id>',detailSuratTugas,name='detailSuratTugas'),
+    path('surat/add/dasar/',detailSuratTugas_add_surat,name='detailSuratTugas_add_surat'),
+    path('surat/del/dasar/',detailSuratTugas_del_surat,name='detailSuratTugas_del_surat'),
+    path('surat/add/peserta/',detailSuratTugas_add_pegawai,name='detailSuratTugas_add_pegawai'),
+    path('surat/del/peserta/',detailSuratTugas_del_pegawai,name='detailSuratTugas_del_pegawai'),
+    path('surat/submit/',detailSuratTugas_submit,name='detailSuratTugas_submit'),
 ]

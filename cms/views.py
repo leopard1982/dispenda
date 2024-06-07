@@ -612,8 +612,9 @@ def addNomorSurat(request):
 			return HttpResponseRedirect('/surat/dis/')
 		else:
 			try:
+				id_surat=str(uuid.uuid4())
 				trxsurattugas = TrxSuratTugas.objects.create(
-					id_surat=str(uuid.uuid4()),
+					id_surat=id_surat,
 					nomor_surat=nomor_surat,
 					tgl_surat=tgl_surat,
 					tgl_akhir_tugas = tgl_akhir_tugas,
@@ -624,10 +625,10 @@ def addNomorSurat(request):
 					lokasi=lokasi,
 					submit=False
 				)
-				trxsurattugas.save()
+				
 				request.session['status']="Penambahan Surat Tugas Berhasil!"
 				addLogging(request.user.username,f'trx_surat_tugas_header',f"berhasil-Nomor Surat: {nomor_surat}")			
-				return HttpResponseRedirect('/surat/dis/')
+				return HttpResponseRedirect('/surat/add/'+id_surat)
 			except:
 				request.session['status']="Penambahan Surat Tugas Gagal! Nomor Surat Pernah Dibuat!"
 				addLogging(request.user.username,f'trx_surat_tugas_header',"gagal[Nomor Surat Pernah Dibuat]")
@@ -688,7 +689,7 @@ def addDasarSurat(request):
 				keterangan=keterangan,
 				updatedBy=request.user.username
 			)
-			dasarsurat.save()
+			
 			addLogging(request.user.username,"master_dasarsurat",f"berhasil - create kode: {kode_surat} - {keterangan}" )
 			request.session['status']="Penambahan Master Dasar Surat Tugas Berhasil!"
 		except Exception as ex:
@@ -832,25 +833,77 @@ def updateConfig(request):
 
 
 def detailSuratTugas(request,id):
-	data = TrxSuratTugas.objects.get(id_surat=id)
-	forms1_hasil= inputDasarSuratTugas(instance=data)
-	forms2_hasil= inputPesertaTugas(instance=data)
+	try:
+		data = TrxSuratTugas.objects.get(id_surat=id)
 
-	list_surat_tugas=ST_DasarTugas.objects.all().filter(id_surat=data)
-	list_peserta_tugas=ST_Peserta.objects.all().filter(id_surat=data)
+		list_surat_tugas=ST_DasarTugas.objects.all().filter(id_surat=data)
+		list_peserta_tugas=ST_Peserta.objects.all().filter(id_surat=data)
 
-	forms1_isi = inputDasarSuratTugas()
-	forms2_isi = inputPesertaTugas()
+		form_dasar = inputDasarSuratTugas()
+		form_peserta = inputPesertaTugas()
 
-	context={
-		'forms1_hasil':forms1_hasil,
-		'forms2_hasil':forms2_hasil,
-		'forms1_isi':forms1_isi,
-		'forms2_isi':forms2_isi,
-		'list_surat':list_surat_tugas,
-		'list_peserta':list_peserta_tugas,
-		'menuname':'Transaksi Surat Tugas',
-		'pathway':'Master Surat Tugas - Menambah Surat Tugas - Detail',
-		'username':request.user.username
-	}
-	return render(request,'master/create_surat_tugas_detail.html',context)
+		context={
+			'form_dasar':form_dasar,
+			'form_peserta':form_peserta,
+			'list_surat':list_surat_tugas,
+			'list_peserta':list_peserta_tugas,
+			'menuname':'Transaksi Surat Tugas',
+			'pathway':'Master Surat Tugas - Menambah Surat Tugas - Detail',
+			'username':request.user.username,
+			'id_surat':id,
+			'data':data
+		}
+		return render(request,'master/create_surat_tugas_detail.html',context)
+	except Exception as ex:
+		print(ex)
+		return HttpResponseRedirect('/surat/dis/')
+	
+def detailSuratTugas_add_surat(request):
+	if request.method=="POST":
+		id_surat = request.GET['id']
+		dasar_tugas = request.POST['dasar_tugas']
+		print(id_surat)
+		print(dasar_tugas)
+		surat = ST_DasarTugas.objects.create(
+			id_surat = TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat,
+			dasar_tugas = MasterDasarST.objects.get(kode_dasar=dasar_tugas),
+			updatedBy=request.user.username
+		)
+		
+	return HttpResponseRedirect('/surat/add/' + id_surat)
+
+def detailSuratTugas_add_pegawai(request):
+	if request.method=="POST":
+		id_surat = request.GET['id']
+		peserta = request.POST['peserta']
+		print(MasterPegawai.objects.get(nik=peserta))
+		pesertanya = ST_Peserta.objects.create(
+			id_surat = TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat,
+			peserta = MasterPegawai.objects.get(nik=peserta),
+			updatedBy=request.user.username
+		)
+		
+	return HttpResponseRedirect('/surat/add/' + id_surat)
+
+def detailSuratTugas_del_surat(request):
+	id_surat = request.GET['id']
+	dasar_tugas = request.GET['dasar_tugas']
+	cek_submit = TrxSuratTugas.objects.get(id_surat=id_surat)
+	if(cek_submit.submit!=True):
+		ST_DasarTugas.objects.all().filter(Q(id_surat=TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat) & Q(dasar_tugas = MasterDasarST.objects.get(kode_dasar=dasar_tugas))).delete()
+		
+	return HttpResponseRedirect('/surat/add/' + id_surat)
+
+def detailSuratTugas_del_pegawai(request):
+	id_surat = request.GET['id']
+	peserta = request.GET['peserta']
+	cek_submit = TrxSuratTugas.objects.get(id_surat=id_surat)
+	if(cek_submit.submit!=True):
+		ST_Peserta.objects.filter(Q(id_surat = TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat) & Q(peserta = MasterPegawai.objects.get(nik=peserta))).delete()
+		
+	return HttpResponseRedirect('/surat/add/' + id_surat)
+
+def detailSuratTugas_submit(request):
+	id_surat = request.GET['id']
+	TrxSuratTugas.objects.filter(id_surat=id_surat).update(submit=True)		
+	return HttpResponseRedirect('/surat/dis/')

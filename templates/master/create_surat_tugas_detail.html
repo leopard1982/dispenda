@@ -8,13 +8,14 @@
 
 
 <div class="p-2 border border-info rounded my-4">
- <p class="w-100 bg-secondary rounded text-white p-3 text-center">Daftar Dasar Surat Tugas</p>
+ <p class="w-100 bg-secondary rounded text-white p-3 text-center h4">Daftar Dasar Surat Tugas</p>
  <div class="overflow-auto">
     <table class="table border rounded">
         <thead>
             <th style="min-width:100px">No.</th>
             <th style="min-width:200px">Kode</th>
             <th>Detail</th>
+            <th></th>
         </thead>
         {% if list_surat.count == 0%}
         <tr>
@@ -26,26 +27,29 @@
             <td>{{forloop.counter}}</td>
             <td>{{surat.dasar_tugas.kode_dasar}}</td>
             <td>{{surat.dasar_tugas.keterangan}}</td>
+            <td>{% if data.submit %}{%else%}<a href="/surat/del/dasar/?id={{id_surat}}&dasar_tugas={{surat.dasar_tugas.kode_dasar}}"><i class="fa fa-trash"></i></a>{%endif%}</td>
         </tr>
         {% endfor%}
         {% endif %}
     </table>
  </div>
  <br>
-
+ {% if data.submit%}
+ {% else%}
  <p>Menambah Dasar Surat Tugas:</p>
  <div class="my-2">
     
  </div>
- <form class="form">
+ <form class="form" method="post" action="/surat/add/dasar/?id={{id_surat}}">
     {% csrf_token%}
-    {{forms1_isi.as_div}}
-    <button type="submit" class="btn btn-primary">+ Tambah Dasar Surat Tugas</button>
+    {{form_dasar}}
+    <button type="submit" class="btn btn-primary my-2">+ Tambah Dasar Surat Tugas</button>
 </form>
+{% endif %}
 </div>
 
 <div class="p-2 border border-primary rounded my-4">
- <p class="w-100 bg-secondary text-white p-3 text-center rounded">Daftar Peserta Tugas</p>
+ <p class="w-100 bg-secondary text-white p-3 text-center rounded fw-bold h4">Daftar Peserta Tugas</p>
  <div class="overflow-auto">
     <table class="table border rounded">
         <thead>
@@ -53,34 +57,51 @@
             <th style="min-width:200px">N.I.P</th>
             <th  style="min-width:300px">Nama Pegawai</th>
             <th style="min-width:300px">Jabatan</th>
+            <th></th>
         </thead>
          {% if list_peserta.count == 0%}
         <tr>
             <td colspan="4" class="p-4 text-center small"><i>Belum Ada Peserta Tugas</i></td>
         </tr>
         {% else %}
+        {% for peserta in list_peserta %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{peserta.peserta.nik}}</td>
+            <td>{{peserta.peserta.nama}}</td>
+            <td>{{peserta.peserta.kode_jabatan.keterangan}}</td>
+            <td>{% if data.submit %}{%else%}<a href="/surat/del/peserta/?id={{id_surat}}&peserta={{peserta.peserta.nik}}"><i class="fa fa-trash"></i></a>{%endif%}</td>
+        </tr>
+        {% endfor%}
         {% endif %}
     </table>
  </div>
  <br>
 
+ {% if data.submit%}
+ {% else%}
  <p>Menambah Peserta Tugas:</p>
  <div class="my-2">
     
 </div>
-<form class="form">
+<form class="form" method="post" action="/surat/add/peserta/?id={{id_surat}}" >
     {% csrf_token%}
-    {{forms2_isi.as_div}}
-    <button type="submit" class="btn btn-primary">+ Tambah Peserta Tugas</button>
+    {{form_peserta}}
+    <button type="submit" class="btn btn-primary my-2">+ Tambah Peserta Tugas</button>
 </form>
+{% endif %}
 </div>
 
  <div class="w-100">
-    {% if list_peserta > 0 and list_surat > 0 %}
-        <button class="form-control btn btn-success" > <i class="fa fa-signature" aria-hidden="true"></i> Konfirmasi Pembuatan Surat Tugas <i class="fa fa-signature" aria-hidden="true"></i></button>
+{% if data.submit %}
+    <button class="form-control btn btn-info" > <i class="fa fa-download" aria-hidden="true"></i> Download Surat Tugas <i class="fa fa-download" aria-hidden="true"></i></button>
+{% else%}
+    {% if list_peserta.count > 0 and list_surat.count > 0 %}
+        <button class="form-control btn btn-success" onclick="window.location.href='/surat/submit/?id={{id_surat}}'"> <i class="fa fa-signature" aria-hidden="true"></i> Konfirmasi Pembuatan Surat Tugas <i class="fa fa-signature" aria-hidden="true"></i></button>
     {% else %}
         <button class="form-control btn btn-success" disabled> <i class="fa fa-signature" aria-hidden="true"></i> Konfirmasi Pembuatan Surat Tugas <i class="fa fa-signature" aria-hidden="true"></i></button>
     {% endif %}
+{% endif%}
 </div>
 
 {% endblock%}
