@@ -7,7 +7,7 @@ from cms.views import addNomorSurat, displaySuratTugas, updateConfig
 from cms.views import addDasarSurat, displayMasterDasarSurat,displayMasterDasarSuratID, delMasterDasarSuratTugas
 from cms.views import detailSuratTugas, detailSuratTugas_add_pegawai,detailSuratTugas_add_surat
 from cms.views import detailSuratTugas_del_pegawai, detailSuratTugas_del_surat, detailSuratTugas_submit
-from cms.views import delNomorSurat
+from cms.views import delNomorSurat, Exportkan
 
 urlpatterns = [
     path('', dashboard, name='dashboard'),
@@ -45,4 +45,5 @@ urlpatterns = [
     path('surat/add/peserta/',detailSuratTugas_add_pegawai,name='detailSuratTugas_add_pegawai'),
     path('surat/del/peserta/',detailSuratTugas_del_pegawai,name='detailSuratTugas_del_pegawai'),
     path('surat/submit/',detailSuratTugas_submit,name='detailSuratTugas_submit'),
+    path('surat/export/<str:id>',Exportkan,name="Exportkan")
 ]

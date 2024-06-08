@@ -1,4 +1,8 @@
+import os
+from django.conf import settings
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
+import docx
+from docx.shared import Pt,Cm
 from cms.forms import inputGolongan, inputJabatan, inputPegawai, inputPengguna, inputSuratTugas
 from cms.forms import inputMasterDasarST, inputConfig, inputPesertaTugas, inputDasarSuratTugas
 from surat_tugas.models import MasterGolongan,MasterJabatan,MasterPegawai, Pengguna, Logging
@@ -979,3 +983,142 @@ def detailSuratTugas_submit(request):
 	except:
 		request.session['status']="Detail Surat Tugas Gagal dikirim!"	
 	return HttpResponseRedirect('/surat/dis/')
+
+def Exportkan(request,id):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	try:
+		surattugas = TrxSuratTugas.objects.get(Q(id_surat=id) & Q(submit=True))
+		nomorsurat=surattugas.nomor_surat
+	except Exception as ex:
+		print(ex)
+		nomorsurat = None
+	try:
+		if nomorsurat is not None:
+			document = docx.Document()
+
+			font = document.styles['Normal'].font
+			font.name = "Time New Roman"
+			font.size = Pt(12)
+
+			sections = document.sections
+			for section in sections:
+				section.top_margin = Cm(2)
+				section.left_margin = Cm(2)
+				section.right_margin = Cm(2)
+				section.bottom_margin = Cm(2)
+
+			document.add_picture(os.path.join(settings.BASE_DIR,'static/img/kop_surat.png'),width=Cm(17), height=Cm(4))
+			paragraph = document.add_paragraph()
+			runner = paragraph.add_run("SURAT PERINTAH TUGAS")
+			runner.bold=True
+			runner.underline=True
+			runner = paragraph.add_run("\nNomor: %s"%surattugas.nomor_surat)
+			paragraph.alignment = 1
+
+			table = document.add_table(rows=1,cols=2)
+			row = table.rows[0].cells
+			paragraph=row[0].add_paragraph()
+			runner = paragraph.add_run("DASAR:")
+			runner.bold=True
+			row[1].add_paragraph("Keputusan Menteri Dalam Negeri Nomor 16 Tahun 2013 tanggal 23 Januari 2013 tentang Pelaksanaan Perjalanan Dinas;",style="List Number")
+			row[1].add_paragraph("Peraturan Daerah Provinsi Jawa Tengah Nomor 12 Tahun 2021 tentang Anggaran Pendapatan dan Belanja Daerah Provinsi Jawa Tengah Tahun Anggaran 2022;",style="List Number")
+			row[1].add_paragraph("Peraturan Gubernur Jawa Tengah Nomor 17 Tahun 2013 tentang Perjalanan Dinas Gubernur / Wakil Gubernur, Pimpinan dan Anggota Dewan Perwakilan Rakyat Daerah, Pegawai Negeri Sipil, Calon Pegawai Negeri Sipil Dan Pegawai Non Pegawai Negeri Sipil;",style="List Number")
+			row[1].add_paragraph("Peraturan Gubernur Jawa Tengah Nomor 27 Tahun 2020  tentang Standar Harga Satuan Provinsi Jawa;",style="List Number")
+			
+			#lookup for dasar tambahan
+			dasar = ST_DasarTugas.objects.all().filter(id_surat=surattugas.nomor_surat)
+			for dasarnya in dasar:
+				row[1].add_paragraph(dasarnya.dasar_tugas.keterangan + ";",style="List Number")
+
+			for cell in table.columns[0].cells:
+				cell.width = Cm(3)
+			for cell in table.columns[1].cells:
+				cell.width = Cm(14)
+
+			paragraph = document.add_paragraph()
+			runner = paragraph.add_run("\nMEMERINTAHKAN")
+			runner.bold=True
+			paragraph.alignment = 1
+
+			table = document.add_table(rows=1,cols=2)
+			row = table.rows[0].cells
+
+			peserta_tugas = ST_Peserta.objects.all().filter(id_surat=surattugas.nomor_surat)
+			
+			paragraph = row[0].add_paragraph()
+			runner = paragraph.add_run("KEPADA:")
+			runner.bold=True
+			parnya = row[1].add_paragraph("1.   Nama:\t" + peserta_tugas[0].peserta.nama)
+			runner = parnya.add_run("\n      NIP:\t" + peserta_tugas[0].peserta.nik)
+			runner = parnya.add_run("\n      Jabatan:\t" + peserta_tugas[0].peserta.kode_jabatan.keterangan)
+
+
+			#lookup for peserta tambahan
+			counter=2
+			peserta_ke=0
+			for pesertanya in peserta_tugas:
+				if peserta_ke>0:
+					parnya = row[1].add_paragraph(str(counter)+".   Nama:\t" + pesertanya.peserta.nama)
+					runner = parnya.add_run("\n      NIP:\t" + pesertanya.peserta.nik)
+					runner = parnya.add_run("\n      Jabatan:\t" + pesertanya.peserta.kode_jabatan.keterangan)
+				peserta_ke+=1
+
+			for cell in table.columns[0].cells:
+				cell.width = Cm(3)
+			for cell in table.columns[1].cells:
+				cell.width = Cm(14)
+
+			table = document.add_table(rows=1,cols=2)
+			row = table.rows[0].cells
+			paragraph=row[0].add_paragraph()
+			runner = paragraph.add_run("UNTUK:")
+			runner.bold=True
+			mypar=row[1].add_paragraph("")
+			runner = mypar.add_run("1.   Melaksanakan tugas:\t%s\n"%surattugas.tujuan)
+			runner = mypar.add_run("      di:\t\t\t\t%s\n"%surattugas.lokasi)
+			runner = mypar.add_run("      tanggal:\t\t\t%s-%s\n"%(surattugas.tgl_awal_tugas,surattugas.tgl_akhir_tugas))
+			runner = mypar.add_run("2.   Tidak menerima gratifikasi dalam bentuk apapun sesuai ketentuan;\n")
+			runner = mypar.add_run("3.   Melapor kepada Pejabat setempat guna pelaksanaan tugas tersebut;\n")
+			runner = mypar.add_run("4.   Melaporkan Hasil Pelaksanaan Tugas kepada Pejabat pemberi tugas.")
+			print(surattugas)
+			
+			for cell in table.columns[0].cells:
+				cell.width = Cm(3)
+			for cell in table.columns[1].cells:
+				cell.width = Cm(14)
+
+			paragraph = document.add_paragraph()
+			runner = paragraph.add_run("\n\t\t\t\t\t\t\tDitetapkan di:\tSemarang\n")
+			runner = paragraph.add_run("\t\t\t\t\t\t\tpada tanggal:\t\t%s\n" %surattugas.tgl_surat)
+			runner = paragraph.add_run("\t\t\t\t\t\t\t___________________________________________________\n")
+			
+			Config = ConfigDispenda.objects.all()[0]
+			if(Config.is_PLT):
+				PLT="Plt. "
+			else:
+				PLT=""
+			runner = paragraph.add_run(PLT + "\t\t\t\t\t\t\tKEPADA BADAN PENGELOLA PENDAPATAN\n")
+			runner = paragraph.add_run("\t\t\t\t\t\t\tDAERAH PROVINSI JAWA TENGAH\n")
+			runner = paragraph.add_run("\t\t\t\t\t\t\t"+Config.kepala.kode_jabatan.keterangan)
+			runner = paragraph.add_run("\n\n\n\n\n\n")
+			runner = paragraph.add_run("\t\t\t\t\t\t\t")
+			runner = paragraph.add_run(Config.kepala.nama)
+			runner.underline=True
+			runner = paragraph.add_run("\n\t\t\t\t\t\t\t"+Config.kepala.kode_golongan.keterangan)
+
+			document.save(os.path.join(settings.BASE_DIR,str(id) + '.docx'))
+
+			document = open(os.path.join(settings.BASE_DIR,str(id) + '.docx'),'rb')
+	
+			resp = HttpResponse(document,content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+			filename = str(id) + '.docx'
+			resp['Content-Disposition']='attachment;filename=%s'%format(filename)
+			request.session['status']="Surat Tugas Berhasil Di Download (Unduh)!"
+			return resp
+			return HttpResponseRedirect('/surat/dis/')	
+	except:
+		request.session['status']="Surat Tugas Gagal Di Download (Unduh)!"
+		return HttpResponseRedirect('/surat/dis/')		
+	else:
+		return HttpResponseRedirect('/surat/dis/')
