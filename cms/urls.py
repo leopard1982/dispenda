@@ -45,5 +45,5 @@ urlpatterns = [
     path('surat/add/peserta/',detailSuratTugas_add_pegawai,name='detailSuratTugas_add_pegawai'),
     path('surat/del/peserta/',detailSuratTugas_del_pegawai,name='detailSuratTugas_del_pegawai'),
     path('surat/submit/',detailSuratTugas_submit,name='detailSuratTugas_submit'),
-    path('surat/export/<str:id>',Exportkan,name="Exportkan")
+    path('surat/export/<str:id>/',Exportkan,name="Exportkan")
 ]

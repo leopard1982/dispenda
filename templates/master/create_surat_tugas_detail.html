@@ -94,7 +94,7 @@
 
  <div class="w-100">
 {% if data.submit %}
-    <button class="form-control btn btn-info" > <i class="fa fa-download" aria-hidden="true"></i> Download Surat Tugas <i class="fa fa-download" aria-hidden="true"></i></button>
+    <button class="form-control btn btn-info" onclick="window.location.href='/surat/export/{{id_surat}}/'"> <i class="fa fa-download" aria-hidden="true"></i> Download Surat Tugas <i class="fa fa-download" aria-hidden="true"></i></button>
 {% else%}
     {% if list_peserta.count > 0 and list_surat.count > 0 %}
         <button class="form-control btn btn-success" onclick="window.location.href='/surat/submit/?id={{id_surat}}'"> <i class="fa fa-signature" aria-hidden="true"></i> Konfirmasi Pembuatan Surat Tugas <i class="fa fa-signature" aria-hidden="true"></i></button>

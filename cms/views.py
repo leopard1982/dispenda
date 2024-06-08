@@ -1114,11 +1114,11 @@ def Exportkan(request,id):
 			resp = HttpResponse(document,content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
 			filename = str(id) + '.docx'
 			resp['Content-Disposition']='attachment;filename=%s'%format(filename)
-			request.session['status']="Surat Tugas Berhasil Di Download (Unduh)!"
+			# request.session['status']="Surat Tugas Berhasil Di Download (Unduh)!"
 			return resp
-			return HttpResponseRedirect('/surat/dis/')	
+			# return HttpResponseRedirect('/surat/dis/')	
 	except:
-		request.session['status']="Surat Tugas Gagal Di Download (Unduh)!"
+		# request.session['status']="Surat Tugas Gagal Di Download (Unduh)!"
 		return HttpResponseRedirect('/surat/dis/')		
 	else:
 		return HttpResponseRedirect('/surat/dis/')
