@@ -1077,7 +1077,7 @@ def Exportkan(request,id):
 			mypar=row[1].add_paragraph("")
 			runner = mypar.add_run("1.   Melaksanakan tugas:\t%s\n"%surattugas.tujuan)
 			runner = mypar.add_run("      di:\t\t\t\t%s\n"%surattugas.lokasi)
-			runner = mypar.add_run("      tanggal:\t\t\t%s-%s\n"%(surattugas.tgl_awal_tugas,surattugas.tgl_akhir_tugas))
+			runner = mypar.add_run("      tanggal:\t\t\t%s s/d %s\n"%(surattugas.tgl_awal_tugas,surattugas.tgl_akhir_tugas))
 			runner = mypar.add_run("2.   Tidak menerima gratifikasi dalam bentuk apapun sesuai ketentuan;\n")
 			runner = mypar.add_run("3.   Melapor kepada Pejabat setempat guna pelaksanaan tugas tersebut;\n")
 			runner = mypar.add_run("4.   Melaporkan Hasil Pelaksanaan Tugas kepada Pejabat pemberi tugas.")
@@ -1089,23 +1089,23 @@ def Exportkan(request,id):
 				cell.width = Cm(14)
 
 			paragraph = document.add_paragraph()
-			runner = paragraph.add_run("\n\t\t\t\t\t\t\tDitetapkan di:\tSemarang\n")
-			runner = paragraph.add_run("\t\t\t\t\t\t\tpada tanggal:\t\t%s\n" %surattugas.tgl_surat)
-			runner = paragraph.add_run("\t\t\t\t\t\t\t___________________________________________________\n")
+			runner = paragraph.add_run("\n\t\t\t\t\t\tDitetapkan di:\tSemarang\n")
+			runner = paragraph.add_run("\t\t\t\t\t\tpada tanggal:\t\t%s\n" %surattugas.tgl_surat)
+			runner = paragraph.add_run("\t\t\t\t\t\t___________________________________________________\n")
 			
 			Config = ConfigDispenda.objects.all()[0]
 			if(Config.is_PLT):
 				PLT="Plt. "
 			else:
 				PLT=""
-			runner = paragraph.add_run(PLT + "\t\t\t\t\t\t\tKEPADA BADAN PENGELOLA PENDAPATAN\n")
-			runner = paragraph.add_run("\t\t\t\t\t\t\tDAERAH PROVINSI JAWA TENGAH\n")
-			runner = paragraph.add_run("\t\t\t\t\t\t\t"+Config.kepala.kode_jabatan.keterangan)
+			runner = paragraph.add_run(f"\t\t\t\t\t\t{PLT}KEPADA BADAN PENGELOLA PENDAPATAN\n")
+			runner = paragraph.add_run("\t\t\t\t\t\tDAERAH PROVINSI JAWA TENGAH\n")
+			runner = paragraph.add_run("\t\t\t\t\t\t"+Config.kepala.kode_jabatan.keterangan)
 			runner = paragraph.add_run("\n\n\n\n\n\n")
-			runner = paragraph.add_run("\t\t\t\t\t\t\t")
+			runner = paragraph.add_run("\t\t\t\t\t\t")
 			runner = paragraph.add_run(Config.kepala.nama)
 			runner.underline=True
-			runner = paragraph.add_run("\n\t\t\t\t\t\t\t"+Config.kepala.kode_golongan.keterangan)
+			runner = paragraph.add_run("\n\t\t\t\t\t\t"+Config.kepala.kode_golongan.keterangan)
 
 			document.save(os.path.join(settings.BASE_DIR,str(id) + '.docx'))
 
