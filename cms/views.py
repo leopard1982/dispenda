@@ -859,51 +859,79 @@ def detailSuratTugas(request,id):
 		return HttpResponseRedirect('/surat/dis/')
 	
 def detailSuratTugas_add_surat(request):
-	if request.method=="POST":
-		id_surat = request.GET['id']
-		dasar_tugas = request.POST['dasar_tugas']
-		print(id_surat)
-		print(dasar_tugas)
-		surat = ST_DasarTugas.objects.create(
-			id_surat = TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat,
-			dasar_tugas = MasterDasarST.objects.get(kode_dasar=dasar_tugas),
-			updatedBy=request.user.username
-		)
-		
-	return HttpResponseRedirect('/surat/add/' + id_surat)
-
+	try:
+		if request.method=="POST":
+			id_surat = request.GET['id']
+			dasar_tugas = request.POST['dasar_tugas']
+			
+			surat = ST_DasarTugas.objects.create(
+				id_surat = TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat,
+				dasar_tugas = MasterDasarST.objects.get(kode_dasar=dasar_tugas),
+				updatedBy=request.user.username
+			)
+			# print(surat.pk)
+			if surat.pk is not None:
+				addLogging(request.user.username,"detail surat tugas",f"berhasil - tambah id_surat: {id_surat} - dasar surat: {dasar_tugas}" )
+			else:
+				addLogging(request.user.username,"detail surat tugas",f"gagal - tambah id_surat: {id_surat} - dasar surat: {dasar_tugas}" )
+		return HttpResponseRedirect('/surat/add/' + id_surat)
+	except:
+		return HttpResponseRedirect('/surat/dis/')
+	
 def detailSuratTugas_add_pegawai(request):
-	if request.method=="POST":
-		id_surat = request.GET['id']
-		peserta = request.POST['peserta']
-		print(MasterPegawai.objects.get(nik=peserta))
-		pesertanya = ST_Peserta.objects.create(
-			id_surat = TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat,
-			peserta = MasterPegawai.objects.get(nik=peserta),
-			updatedBy=request.user.username
-		)
-		
-	return HttpResponseRedirect('/surat/add/' + id_surat)
+	try:
+		if request.method=="POST":
+			id_surat = request.GET['id']
+			peserta = request.POST['peserta']
+			print(MasterPegawai.objects.get(nik=peserta))
+			pesertanya = ST_Peserta.objects.create(
+				id_surat = TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat,
+				peserta = MasterPegawai.objects.get(nik=peserta),
+				updatedBy=request.user.username
+			)
+
+			if pesertanya.pk is not None:
+				addLogging(request.user.username,"detail surat tugas",f"berhasil - tambah id_surat: {id_surat} - peserta: {peserta}" )
+			else:
+				addLogging(request.user.username,"detail surat tugas",f"gagal - tambah id_surat: {id_surat} - peserta: {peserta}" )
+			
+		return HttpResponseRedirect('/surat/add/' + id_surat)
+	except:
+		return HttpResponseRedirect('/surat/dis/')
 
 def detailSuratTugas_del_surat(request):
-	id_surat = request.GET['id']
-	dasar_tugas = request.GET['dasar_tugas']
-	cek_submit = TrxSuratTugas.objects.get(id_surat=id_surat)
-	if(cek_submit.submit!=True):
-		ST_DasarTugas.objects.all().filter(Q(id_surat=TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat) & Q(dasar_tugas = MasterDasarST.objects.get(kode_dasar=dasar_tugas))).delete()
-		
-	return HttpResponseRedirect('/surat/add/' + id_surat)
+	try:
+		id_surat = request.GET['id']
+		dasar_tugas = request.GET['dasar_tugas']
+		cek_submit = TrxSuratTugas.objects.get(id_surat=id_surat)
+		if(cek_submit.submit!=True):
+			ST_DasarTugas.objects.all().filter(Q(id_surat=TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat) & Q(dasar_tugas = MasterDasarST.objects.get(kode_dasar=dasar_tugas))).delete()
+			addLogging(request.user.username,"detail surat tugas",f"berhasil - hapus id_surat: {id_surat} - dasar surat: {dasar_tugas}" )
+		else:
+			addLogging(request.user.username,"detail surat tugas",f"gagal - hapus id_surat: {id_surat} - dasar surat: {dasar_tugas}" )
+		return HttpResponseRedirect('/surat/add/' + id_surat)
+	except:
+		return HttpResponseRedirect('/surat/dis/')
 
 def detailSuratTugas_del_pegawai(request):
-	id_surat = request.GET['id']
-	peserta = request.GET['peserta']
-	cek_submit = TrxSuratTugas.objects.get(id_surat=id_surat)
-	if(cek_submit.submit!=True):
-		ST_Peserta.objects.filter(Q(id_surat = TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat) & Q(peserta = MasterPegawai.objects.get(nik=peserta))).delete()
-		
-	return HttpResponseRedirect('/surat/add/' + id_surat)
+	try:
+		id_surat = request.GET['id']
+		peserta = request.GET['peserta']
+		cek_submit = TrxSuratTugas.objects.get(id_surat=id_surat)
+		if(cek_submit.submit!=True):
+			ST_Peserta.objects.filter(Q(id_surat = TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat) & Q(peserta = MasterPegawai.objects.get(nik=peserta))).delete()
+			addLogging(request.user.username,"detail surat tugas",f"berhasil - hapus id_surat: {id_surat} - dasar surat: {peserta}" )
+		else:
+			addLogging(request.user.username,"detail surat tugas",f"gagal - hapus id_surat: {id_surat} - dasar surat: {peserta}" )
+		return HttpResponseRedirect('/surat/add/' + id_surat)
+	except:
+		return HttpResponseRedirect('/surat/dis/')
 
 def detailSuratTugas_submit(request):
-	id_surat = request.GET['id']
-	TrxSuratTugas.objects.filter(id_surat=id_surat).update(submit=True)		
+	try:
+		id_surat = request.GET['id']
+		TrxSuratTugas.objects.filter(id_surat=id_surat).update(submit=True)		
+		addLogging(request.user.username,"detail surat tugas",f"sukses submit id_surat: {id_surat}" )
+	except:
+		pass	
 	return HttpResponseRedirect('/surat/dis/')

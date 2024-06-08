@@ -163,12 +163,12 @@ class ST_DasarTugas(models.Model):
             isSubmitted=TrxSuratTugas.objects.get(nomor_surat=self.id_surat)
             
             if isSubmitted.submit!=True :
-                super(ST_DasarTugas,self).save(*args,**kwargs)
+                x=super(ST_DasarTugas,self).save(*args,**kwargs)
+                return True
             else:
-                return
+                return False
         except Exception as ex:
-            print(ex)
-            return
+            return False
 
     def delete(self,*args,**kwargs):
         print('delete')
@@ -178,6 +178,7 @@ class ST_DasarTugas(models.Model):
             super(ST_DasarTugas,self).delete(*args,**kwargs)
         else:
             return
+
 
 
 class MasterPermission(models.Model):
