@@ -38,7 +38,7 @@
         <td>{% if list.submit is False %}<span class="text-danger">pending</span>{%else%}<span class="text-success">kirim</span>{%endif%}</td>
         <td>
             <button  class="btn" onclick="window.location.href='/surat/add/{{list.id_surat}}'"><i class="fa fa-user-edit"></i></button>
-            <a class="btn" data-toggle="modal"  onclick="deleteGolongan('{{list.kode_golongan}}','{{list.keterangan}}')"><i class="fa fa-trash"></i></a>
+            <button class="btn" onclick="window.location.href='/surat/del/{{list.id_surat}}/'"><i class="fa fa-trash"></i></button>
             <button  class="btn" {% if list.submit%}{%else%}disabled{%endif%}><i class="fa fa-download"></i></button>
         </td>
     </tr>

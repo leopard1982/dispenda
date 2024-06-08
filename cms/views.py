@@ -643,6 +643,25 @@ def addNomorSurat(request):
 	request.session['status']=""
 	return render(request,'master/create_surat_tugas.html',context)
 
+
+def delNomorSurat(request,id):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	try:
+		id_surat=id
+		data=TrxSuratTugas.objects.all().filter(Q(id_surat=id_surat)&Q(submit=False))
+		if data.count()>0:
+			nomorSurat=data[0].nomor_surat
+			data.delete()
+			ST_DasarTugas.objects.all().filter(id_surat=nomorSurat).delete()
+			ST_Peserta.objects.all().filter(id_surat=nomorSurat).delete()
+			addLogging(request.user.username,"header surat tugas",f"berhasil - delete surat tugas nomor: {nomorSurat}" )
+		else:
+			addLogging(request.user.username,"header surat tugas",f"gagal - delete surat tugas nomor: {nomorSurat}" )	
+	except:
+		addLogging(request.user.username,"header surat tugas",f"gagal - delete surat tugas karena sudah disubmit" )
+	return HttpResponseRedirect('/surat/dis/')
+
 def displaySuratTugas(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
@@ -704,6 +723,7 @@ def addDasarSurat(request):
 		'pathway':'Master Surat Tugas - Menambah Surat Tugas',
 		'username':request.user.username
 	}
+	request.session['status']=""
 	return render(request,'master/create_dasarst.html',context)
 
 def displayMasterDasarSurat(request):
@@ -773,6 +793,7 @@ def displayMasterDasarSuratID(request,id):
 		'mywebsite': '/master/sur/dis/'
 
 	}
+	request.session['status']=""
 	return render(request,'master/display_dasarst.html',context)
 
 def delMasterDasarSuratTugas(request,id):
@@ -829,10 +850,13 @@ def updateConfig(request):
 		'username':request.user.username,
 		'kepala':kepala
 	}
+	request.session['status']=""
 	return render(request,'master/display_config.html',context)
 
 
 def detailSuratTugas(request,id):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
 	try:
 		data = TrxSuratTugas.objects.get(id_surat=id)
 
@@ -853,12 +877,15 @@ def detailSuratTugas(request,id):
 			'id_surat':id,
 			'data':data
 		}
+		request.session['status']=""
 		return render(request,'master/create_surat_tugas_detail.html',context)
 	except Exception as ex:
 		print(ex)
 		return HttpResponseRedirect('/surat/dis/')
 	
 def detailSuratTugas_add_surat(request):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
 	try:
 		if request.method=="POST":
 			id_surat = request.GET['id']
@@ -871,14 +898,18 @@ def detailSuratTugas_add_surat(request):
 			)
 			# print(surat.pk)
 			if surat.pk is not None:
+				request.session['status']="Detail Dasar Surat Tugas Berhasil Ditambahkan!"
 				addLogging(request.user.username,"detail surat tugas",f"berhasil - tambah id_surat: {id_surat} - dasar surat: {dasar_tugas}" )
 			else:
+				request.session['status']="Detail Dasar Surat Tugas Gagal Ditambahkan!"				
 				addLogging(request.user.username,"detail surat tugas",f"gagal - tambah id_surat: {id_surat} - dasar surat: {dasar_tugas}" )
 		return HttpResponseRedirect('/surat/add/' + id_surat)
 	except:
 		return HttpResponseRedirect('/surat/dis/')
 	
 def detailSuratTugas_add_pegawai(request):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
 	try:
 		if request.method=="POST":
 			id_surat = request.GET['id']
@@ -891,8 +922,10 @@ def detailSuratTugas_add_pegawai(request):
 			)
 
 			if pesertanya.pk is not None:
+				request.session['status']="Detail Pegawai Berhasil Ditambahkan!"
 				addLogging(request.user.username,"detail surat tugas",f"berhasil - tambah id_surat: {id_surat} - peserta: {peserta}" )
 			else:
+				request.session['status']="Detail Pegawai Gagal Ditambahkan!"				
 				addLogging(request.user.username,"detail surat tugas",f"gagal - tambah id_surat: {id_surat} - peserta: {peserta}" )
 			
 		return HttpResponseRedirect('/surat/add/' + id_surat)
@@ -900,6 +933,8 @@ def detailSuratTugas_add_pegawai(request):
 		return HttpResponseRedirect('/surat/dis/')
 
 def detailSuratTugas_del_surat(request):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
 	try:
 		id_surat = request.GET['id']
 		dasar_tugas = request.GET['dasar_tugas']
@@ -907,13 +942,17 @@ def detailSuratTugas_del_surat(request):
 		if(cek_submit.submit!=True):
 			ST_DasarTugas.objects.all().filter(Q(id_surat=TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat) & Q(dasar_tugas = MasterDasarST.objects.get(kode_dasar=dasar_tugas))).delete()
 			addLogging(request.user.username,"detail surat tugas",f"berhasil - hapus id_surat: {id_surat} - dasar surat: {dasar_tugas}" )
+			request.session['status']="Detail Dasar Surat Tugas Berhasil Dihapus!"
 		else:
+			request.session['status']="Detail Dasar Surat Tugas Gagal Dihapus!"
 			addLogging(request.user.username,"detail surat tugas",f"gagal - hapus id_surat: {id_surat} - dasar surat: {dasar_tugas}" )
 		return HttpResponseRedirect('/surat/add/' + id_surat)
 	except:
 		return HttpResponseRedirect('/surat/dis/')
 
 def detailSuratTugas_del_pegawai(request):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
 	try:
 		id_surat = request.GET['id']
 		peserta = request.GET['peserta']
@@ -921,17 +960,22 @@ def detailSuratTugas_del_pegawai(request):
 		if(cek_submit.submit!=True):
 			ST_Peserta.objects.filter(Q(id_surat = TrxSuratTugas.objects.get(id_surat=id_surat).nomor_surat) & Q(peserta = MasterPegawai.objects.get(nik=peserta))).delete()
 			addLogging(request.user.username,"detail surat tugas",f"berhasil - hapus id_surat: {id_surat} - dasar surat: {peserta}" )
+			request.session['status']="Detail Peserta Tugas Berhasil Dihapus!"
 		else:
 			addLogging(request.user.username,"detail surat tugas",f"gagal - hapus id_surat: {id_surat} - dasar surat: {peserta}" )
+			request.session['status']="Detail Peserta Tugas Gagal Dihapus!"
 		return HttpResponseRedirect('/surat/add/' + id_surat)
 	except:
 		return HttpResponseRedirect('/surat/dis/')
 
 def detailSuratTugas_submit(request):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
 	try:
 		id_surat = request.GET['id']
 		TrxSuratTugas.objects.filter(id_surat=id_surat).update(submit=True)		
 		addLogging(request.user.username,"detail surat tugas",f"sukses submit id_surat: {id_surat}" )
+		request.session['status']="Surat Tugas Berhasil Dikirim!"
 	except:
-		pass	
+		request.session['status']="Detail Surat Tugas Gagal dikirim!"	
 	return HttpResponseRedirect('/surat/dis/')

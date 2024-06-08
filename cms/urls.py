@@ -7,6 +7,7 @@ from cms.views import addNomorSurat, displaySuratTugas, updateConfig
 from cms.views import addDasarSurat, displayMasterDasarSurat,displayMasterDasarSuratID, delMasterDasarSuratTugas
 from cms.views import detailSuratTugas, detailSuratTugas_add_pegawai,detailSuratTugas_add_surat
 from cms.views import detailSuratTugas_del_pegawai, detailSuratTugas_del_surat, detailSuratTugas_submit
+from cms.views import delNomorSurat
 
 urlpatterns = [
     path('', dashboard, name='dashboard'),
@@ -31,10 +32,11 @@ urlpatterns = [
     path('logs/',displayLog,name="displayLog"),
     path('logs/<str:id>',displayLogID,name="displayLogID"),
     path('surat/add/',addNomorSurat,name='addNomorSurat'),
+    path('surat/del/<str:id>/',delNomorSurat,name='delNomorSurat'),
     path('surat/dis/',displaySuratTugas,name='displaySuratTugas'),
     path('master/sur/add/',addDasarSurat,name='addDasarSurat'),
     path('master/sur/dis/',displayMasterDasarSurat,name='displayMasterDasarSurat'),
-    path('master/sur/dis/<str:id>',displayMasterDasarSuratID,name='displayMasterDasarSuratID'),
+    path('master/sur/dis/<str:id>/',displayMasterDasarSuratID,name='displayMasterDasarSuratID'),
     path('master/sur/del/<str:id>/',delMasterDasarSuratTugas,name="delMasterDasarSuratTugas"),
     path('conf/',updateConfig,name="updateConfig"),
     path('surat/add/<str:id>',detailSuratTugas,name='detailSuratTugas'),
