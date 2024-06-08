@@ -1107,9 +1107,9 @@ def Exportkan(request,id):
 			runner.underline=True
 			runner = paragraph.add_run("\n\t\t\t\t\t\t"+Config.kepala.kode_golongan.keterangan)
 
-			document.save(os.path.join(settings.BASE_DIR,str(id) + '.docx'))
+			document.save(os.path.join(settings.BASE_DIR,r"export\\" + str(id) + '.docx'))
 
-			document = open(os.path.join(settings.BASE_DIR,str(id) + '.docx'),'rb')
+			document = open(os.path.join(settings.BASE_DIR,r"export\\" + str(id) + '.docx'),'rb')
 	
 			resp = HttpResponse(document,content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
 			filename = str(id) + '.docx'
@@ -1117,7 +1117,8 @@ def Exportkan(request,id):
 			# request.session['status']="Surat Tugas Berhasil Di Download (Unduh)!"
 			return resp
 			# return HttpResponseRedirect('/surat/dis/')	
-	except:
+	except Exception as ex:
+		print(ex)
 		# request.session['status']="Surat Tugas Gagal Di Download (Unduh)!"
 		return HttpResponseRedirect('/surat/dis/')		
 	else:
