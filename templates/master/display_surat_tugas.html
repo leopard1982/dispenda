@@ -37,7 +37,7 @@
         <td>{% if list.submit is False %}<p class="fw-bold btn btn-danger disabled">PENDING</p>{%else%}<p class="disabled btn btn-success fw-bold">TERKIRIM</p>{%endif%}</td>
         <td>
             <button  class="btn btn-primary" onclick="window.location.href='/surat/add/{{list.id_surat}}'"><i class="fa fa-user-edit"></i></button>
-            <button class="btn btn-danger" onclick="window.location.href='/surat/del/{{list.id_surat}}/'"><i class="fa fa-trash"></i></button>
+            <button class="btn btn-danger" onclick="window.location.href='/surat/del/{{list.id_surat}}/'" {% if list.submit is False %}{%else%}disabled{%endif%}><i class="fa fa-trash"></i></button>
             <button  class="btn btn-info" {% if list.submit%}{%else%}disabled{%endif%} onclick="window.location.href='/surat/export/{{list.id_surat}}'"><i class="fa fa-download"></i></button>
         </td>
     </tr>
