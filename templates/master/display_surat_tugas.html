@@ -3,9 +3,8 @@
 
 {% block contents%}
 <div style="text-wrap: wrap; overflow-x: scroll;">
-<table class="table">
-    
-    <thead>
+<table class="table  table-hover">
+    <thead >
         <th style="min-width:50px">No.</th>
         <th style="min-width:250px">No.Surat</th>
         <th style="min-width:100px">Lokasi Dibuat</th>
@@ -22,7 +21,7 @@
         <th  style="min-width:200px"></th>
     </thead>
     {% for list in lists%}
-    <tr>
+    <tr class="">
         <td>{{forloop.counter}}</td>
         <td>{{list.nomor_surat}}</td>
         <td>{{list.lokasi_surat}}</td>
