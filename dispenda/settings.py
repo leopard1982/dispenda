@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'cms',
     "bootstrap_datepicker_plus",
+    "lhe",
+    'resume'
 ]
 
 MIDDLEWARE = [
