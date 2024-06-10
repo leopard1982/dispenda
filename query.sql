@@ -1,1 +1,1 @@
-SELECT * FROM surat_tugas_trxsurattugas
+SELECT * FROM surat_tugas_logging
