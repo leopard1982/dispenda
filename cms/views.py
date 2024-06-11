@@ -20,6 +20,9 @@ def addLogging(username,grouping,message):
 	)
 	return loggingnya
 
+def getPendingSurat():
+	return TrxSuratTugas.objects.all().filter(submit=False)
+
 
 def dashboard(request):
 	if(request.user.is_authenticated != True):
@@ -40,7 +43,8 @@ def dashboard(request):
 		'jml_pending_surattugas': jml_pending_surattugas,
 		'jml_sukses_surattugas': jml_sukses_surattugas,
 		'jml_master_pegawai':jml_master_pegawai,
-		'kepala':configdispenda
+		'kepala':configdispenda,
+		'pending_surat':getPendingSurat()
 	}
 	return render(request,'master/dashboard.html',context)
 
@@ -70,7 +74,8 @@ def addGolongan(request):
 		'menuname':'Menambah Golongan',
 		'pathway':'Master Golongan - Menambah Golongan',
 		'username': request.user.username,
-		'status':request.session['status']
+		'status':request.session['status'],
+		'pending_surat':getPendingSurat()
 	}
 	return render(request,'master/create_golongan.html',context)
 
@@ -97,7 +102,8 @@ def displayGolongan(request):
 		'pathway':'Master Golongan - Daftar Golongan',
 		'username':request.user.username,
 		'mywebsite': '/master/gol/dis/',
-		'status':request.session['status']
+		'status':request.session['status'],
+		'pending_surat':getPendingSurat()
 	}
 	request.session['status']=""
 	return render(request,'master/display_golongan.html',context)
@@ -128,7 +134,8 @@ def addJabatan(request):
 		'forms':inputJabatan,
 		'menuname':'Menambah Jabatan',
 		'pathway':'Master Jabatan - Menambah Jabatan',
-		'username':request.user.username
+		'username':request.user.username,
+		'pending_surat':getPendingSurat()
 	}
 	return render(request,'master/create_jabatan.html',context)
 
@@ -159,7 +166,8 @@ def displayJabatan(request):
 		'pathway':'Master Jabatan - Daftar Jabatan',
 		'username':request.user.username,
 		'mywebsite': '/master/jab/dis/',
-		'status':request.session['status']
+		'status':request.session['status'],
+		'pending_surat':getPendingSurat()
 	}
 
 	request.session['status']=""
@@ -231,7 +239,8 @@ def addPegawai(request):
 		'forms':inputPegawai,
 		'menuname':'Menambah Pegawai',
 		'pathway':'Master Pegawai - Menambah Pegawai',
-		'username':request.user.username
+		'username':request.user.username,
+		'pending_surat':getPendingSurat()
 	}
 	return render(request,'master/create_pegawai.html',context)
 
@@ -262,7 +271,8 @@ def displayPegawai(request):
 		'pathway':'Master Pegawai - Daftar Pegawai',
 		'username':request.user.username,
 		'mywebsite': '/master/peg/dis/',
-		'status':request.session['status']
+		'status':request.session['status'],
+		'pending_surat':getPendingSurat()
 	}
 	request.session['status']=""
 	return render(request,'master/display_pegawai.html',context)
@@ -334,7 +344,8 @@ def addPengguna(request):
 		'forms':inputPengguna,
 		'menuname':'Menambah Pengguna Aplikasi',
 		'pathway':'Master Pengguna - Menambah Pengguna',
-		'username':request.user.username
+		'username':request.user.username,
+		'pending_surat':getPendingSurat()
 	}
 	return render(request,'master/create_pengguna.html',context)
 
@@ -369,7 +380,8 @@ def displayPengguna(request):
 		'pathway':'Master Pengguna - Daftar Pengguna',
 		'username':request.user.username,
 		'mywebsite': '/master/user/dis/',
-		'status':request.session['status']
+		'status':request.session['status'],
+		'pending_surat':getPendingSurat()
 	}
 	request.session['status']=""
 	return render(request,'master/display_pengguna.html',context)
@@ -447,7 +459,8 @@ def displayLog(request):
 		'menuname':'Daftar Log User',
 		'pathway':'log transaksi',
 		'username':request.user.username,
-		'mywebsite': '/logs/'
+		'mywebsite': '/logs/',
+		'pending_surat':getPendingSurat()
 	}
 	return render(request,'master/display_logging.html',context)
 
@@ -473,7 +486,8 @@ def displayGolonganID(request,id):
 		'menuname':'Daftar Golongan  [' + str(id).upper() + "]",
 		'pathway':'Master Golongan - Daftar Golongan',
 		'username':request.user.username,
-		'mywebsite': '/master/gol/dis/'
+		'mywebsite': '/master/gol/dis/',
+		'pending_surat':getPendingSurat()
 	}
 	return render(request,'master/display_golongan.html',context)
 
@@ -499,7 +513,8 @@ def displayJabatanID(request,id):
 		'menuname':'Daftar Jabatan  [' + str(id).upper() + "]",
 		'pathway':'Master Jabatan - Daftar Jabatan',
 		'username':request.user.username,
-		'mywebsite': '/master/jab/dis/'
+		'mywebsite': '/master/jab/dis/',
+		'pending_surat':getPendingSurat()
 	}
 	return render(request,'master/display_jabatan.html',context)
 
@@ -525,7 +540,8 @@ def displayPegawaiID(request,id):
 		'menuname':'Daftar Pegawai  [' + str(id).upper() + "]",
 		'pathway':'Master Pegawai - Daftar Pegawai',
 		'username':request.user.username,
-		'mywebsite': '/master/peg/dis/'
+		'mywebsite': '/master/peg/dis/',
+		'pending_surat':getPendingSurat()
 	}
 	return render(request,'master/display_pegawai.html',context)
 
@@ -555,7 +571,8 @@ def displayPenggunaID(request,id):
 		'menuname':'Daftar Pengguna Aplikasi  [' + str(id).upper() + "]",
 		'pathway':'Master Pengguna - Daftar Pengguna',
 		'username':request.user.username,
-		'mywebsite': '/master/user/dis/'
+		'mywebsite': '/master/user/dis/',
+		'pending_surat':getPendingSurat()
 	}
 	return render(request,'master/display_pengguna.html',context)
 
@@ -591,7 +608,8 @@ def displayLogID(request,id):
 		'menuname':'Daftar Log User ['+str(id).upper()+']',
 		'pathway':'log transaksi',
 		'username':request.user.username,
-		'mywebsite': '/logs/'
+		'mywebsite': '/logs/',
+		'pending_surat':getPendingSurat()
 
 	}
 	return render(request,'master/display_logging.html',context)
@@ -694,7 +712,8 @@ def displaySuratTugas(request):
 		'pathway':'Transaksi Surat Tugas - Daftar Surat Tugas',
 		'username':request.user.username,
 		'mywebsite': '/logs/',
-		'status':request.session['status']
+		'status':request.session['status'],
+		'pending_surat':getPendingSurat()
 	}
 	request.session['status']=''
 	return render(request,'master/display_surat_tugas.html',context)
@@ -757,7 +776,8 @@ def displayMasterDasarSurat(request):
 		'pathway':'Master Dasar Surat Tugas - Daftar Dasar Surat Tugas',
 		'username':request.user.username,
 		'mywebsite': '/master/sur/dis/',
-		'status':request.session['status']
+		'status':request.session['status'],
+		'pending_surat':getPendingSurat()
 	}
 	request.session['status']=""
 	return render(request,'master/display_dasarst.html',context)
@@ -794,7 +814,8 @@ def displayMasterDasarSuratID(request,id):
 		'menuname':'Daftar Dasar Surat Tugas ['+str(id).upper()+']',
 		'pathway':'Master Dasar Surat Tugas - Display Dasar Surat Tugas',
 		'username':request.user.username,
-		'mywebsite': '/master/sur/dis/'
+		'mywebsite': '/master/sur/dis/',
+		'pending_surat':getPendingSurat()
 
 	}
 	request.session['status']=""
@@ -852,7 +873,8 @@ def updateConfig(request):
 		'menuname':'Konfigurasi Aplikasi',
 		'pathway':'Profile - Setting Sistem',
 		'username':request.user.username,
-		'kepala':kepala
+		'kepala':kepala,
+		'pending_surat':getPendingSurat()
 	}
 	request.session['status']=""
 	return render(request,'master/display_config.html',context)
@@ -879,7 +901,8 @@ def detailSuratTugas(request,id):
 			'pathway':'Master Surat Tugas - Menambah Surat Tugas - Detail',
 			'username':request.user.username,
 			'id_surat':id,
-			'data':data
+			'data':data,
+			'pending_surat':getPendingSurat()
 		}
 		request.session['status']=""
 		return render(request,'master/create_surat_tugas_detail.html',context)

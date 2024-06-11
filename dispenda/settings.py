@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'cms',
     "bootstrap_datepicker_plus",
     "lhe",
-    'resume'
+    'resume',
+    'endpoint'
 ]
 
 MIDDLEWARE = [

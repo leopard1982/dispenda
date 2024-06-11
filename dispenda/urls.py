@@ -20,7 +20,9 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('cms.urls')),
-    path('api/',include('surat_tugas.urls')),
+    path('api/',include('endpoint.urls')),
     path('lhe/',include('lhe.urls')),
-    path('resume/',include('resume.urls'))
+    path('resume/',include('resume.urls')),
+
+
 ]

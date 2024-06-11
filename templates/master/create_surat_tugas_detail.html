@@ -6,7 +6,37 @@
 
 <h5>Langkah 2: Mengisi Detail Surat Tugas</h5>
 
-
+<div class="p-2 border rounded border-1 my-3 border-primary d-flex justify-content-center">
+    <table>
+        <tr>
+            <th style="min-width:200px">Nomor Surat Tugas:</th>
+            <td>{{data.nomor_surat}}</td>
+        </tr>
+        <tr>
+            <th>Perintah Tugas:</th>
+            <td>{{data.tujuan|title}}</td>
+        </tr>
+        <tr>
+            <th>Lokasi Tugas:</th>
+            <td>{{data.lokasi|title}}</td>
+        </tr>
+        <tr>
+            <th>Tanggal Tugas:</th>
+            <td>{{data.tgl_awal_tugas}} s.d. {{data.tgl_akhir_tugas}}</td>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+        </tr>
+        <tr>
+            <td><i>Dibuat oleh:</i></td>
+            <td><i>{{data.updatedBy|title}}</i></td>
+        </tr>
+        <tr>
+            <td><i>Dibuat Pada:</i></td>
+            <td><i>{{data.updatedAt}}</i></td>
+        </tr>
+    </table>
+</div>
 <div class="p-2 border border-info rounded my-4">
  <p class="w-100 bg-secondary rounded text-white p-3 text-center h4">Daftar Dasar Surat Tugas</p>
  <div class="overflow-auto">
