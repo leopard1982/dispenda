@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 # from load_dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,11 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
+load_dotenv()
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'it-my-secret-beib-*1=&#3!=j_(a)!mh!@@tgyx2@4+8g&8(9pkae7q0omvf#m5mwk'
+SECRET_KEY = os.getenv('DJ_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ['192.168.1.50','127.0.0.1','localhost','leopard1982.pythonanywhere.com']
 CSRF_TRUSTED_ORIGINS = ['http://192.168.1.50','http://192.168.1.50:8000','http://127.0.0.1:8000','https://leopard1982.pythonanywhere.com']
@@ -84,6 +87,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'dispenda.wsgi.application'
+
+handler404='cms.views.handler404'
 
 
 # Database

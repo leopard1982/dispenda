@@ -12,6 +12,9 @@ from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
 import uuid
 
+def handler404(request):
+	return render(request,'404.html')
+
 def addLogging(username,grouping,message):
 	loggingnya=Logging.objects.create(
 		user=Pengguna.objects.get(username=username),
