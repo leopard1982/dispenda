@@ -1,0 +1,35 @@
+{% extends 'base.html'%}
+
+{% load static %}
+
+{% block contents%}
+
+<h5>Bab 1: Simpulan dan Rekomendasi</h5>
+<hr/>
+<div class="p-2">
+    <p><b>A. Simpulan Hasil Evaluasi dan Pembinaan</b></p>
+    <p>Berdasarkan Surat Perintah Tugas Kepala Badan Pengelola Pendapatan Daerah Provinsi Jawa Tengah Nomor {{nomor_surat_tugas}} tanggal {{tanggal_surat_tugas}}, Tim Evaluasi dan Pembinaan telah melaksanakan tugas evaluasi sebagaimana mestinya pada UPPD {{lokasi_tugas}} dengan hasil:</p>
+    {% for simpulan in simpulan_val_bin%}
+    <p>
+        {{forloop.counter}}. {{simpulan.detail}} <a class="btn btn-danger" href="/lhe/del/b1/{{simpulan.id_lhe.id_lhe}}/{{simpulan.id_simpulan}}"><i class="fa fa-trash"></i></a>
+    </p>
+    {% endfor%}
+    <hr/>
+    <form method="post" action="/lhe/add/b1/{{id_lhe}}/">
+        {%csrf_token%}
+        <table>
+            <tr>
+                <td style="width: 88%;"><input type="text" required class="form-control" maxlength="200" name="detail_simpulan" placeholder="tambahkan detail simpulan"></td>
+                <td><button type="submit" class="btn btn-secondary"><i>+ tambahkan</i></button></td>
+            </tr>
+        </table>
+    </form>
+    <br/>
+    <p><b>B. Rekomendasi</b></p>
+    <p>Terhadap hasil evaluasi dan pembinaan tersebut di atas, Kepala {{lokasi_tugas}} telah sepakat dan bersedia mengambil langkah-langkah perbaikan guna menindaklanjuti atas rekomendasi tim Evaluasi dan Pembinaan sebagaimana diuraikan dalam Bab II laporan ini.</p>
+    <p class="my-4">
+        <button class="btn btn-success"><i>Melanjutkan ke Bab II</i> &rarr;</button>
+    </p>
+</div>
+
+{% endblock%}

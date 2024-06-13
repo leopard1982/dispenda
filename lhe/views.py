@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
-from lhe.models import headerLHE
+from lhe.models import headerLHE, simpulanHasilValBin
 from lhe.forms import inputHeaderLHE
 from surat_tugas.models import TrxSuratTugas
 import datetime
@@ -58,44 +58,67 @@ def addLHE_ok(request):
 		return HttpResponseRedirect('/auth/')
 		
 	if request.method == "POST":
-		nomor_surat = request.POST['nomor_surat']
-		nomor_lhe = request.POST['nomor_lhe']
-		tanggal_lhe = request.POST['tanggal_lhe']
-		print(tanggal_lhe)
-		tahun = int(tanggal_lhe.split('-')[0])
-		bulan = int(tanggal_lhe.split('-')[1])
-		hari = int(tanggal_lhe.split('-')[2])
-		tanggal_lhe=datetime.date(tahun,bulan,hari)
-		headerlhe = headerLHE()
-		headerlhe.suratTugas = TrxSuratTugas.objects.get(nomor_surat=nomor_surat)
-		headerlhe.nomor_lhe = nomor_lhe
-		headerlhe.tanggal_lhe = tanggal_lhe
-		headerlhe.createdBy = request.user.username
-		headerlhe.updatedBy = request.user.username
-		headerlhe.updatedAt = datetime.datetime.now().date()
 		try:
-			headerlhe.save()
-			return HttpResponseRedirect('/lhe/add/')
+			nomor_surat = request.POST['nomor_surat']
+			nomor_lhe = request.POST['nomor_lhe']
+			tanggal_lhe = request.POST['tanggal_lhe']
+			tahun = int(tanggal_lhe.split('-')[0])
+			bulan = int(tanggal_lhe.split('-')[1])
+			hari = int(tanggal_lhe.split('-')[2])
+			tanggal_lhe=datetime.date(tahun,bulan,hari)
+			headerlhe = headerLHE()
+			headerlhe.suratTugas = TrxSuratTugas.objects.get(nomor_surat=nomor_surat)
+			headerlhe.nomor_lhe = nomor_lhe
+			headerlhe.tanggal_lhe = tanggal_lhe
+			headerlhe.createdBy = request.user.username
+			headerlhe.updatedBy = request.user.username
+			headerlhe.updatedAt = datetime.datetime.now().date()
+			try:
+				headerlhe.save()
+				return HttpResponseRedirect(f'/lhe/add/{headerlhe.id_lhe}/')
+			except:
+				return HttpResponseRedirect('/lhe/add/')
 		except:
-			return HttpResponse("error")
-
-	# id_lhe = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()))
-    # suratTugas = models.ForeignKey(TrxSuratTugas,on_delete=models.RESTRICT,verbose_name="Acuan Surat Tugas")
-    # nomor_lhe = models.CharField(max_length=50,blank=False,null=False,unique=True,verbose_name="Nomor Laporan Hasil Evaluasi")
-    # tanggal_lhe = models.DateField(auto_now_add=False,null=True,blank=True, verbose_name="Tanggal Laporan Hasil Evaluasi")
-    # updatedBy = models.CharField(max_length=50)
-    # updatedAt = models.DateField(auto_now_add=False,blank=True,null=True)
-    # createdBy = models.CharField(max_length=50)
-    # createdAt = models.DateField(auto_now_add=True,blank=True,null=True)
-    # submit = models.BooleanField(default=False)		
-
+			pass
 	return HttpResponseRedirect('/lhe/add/')
-	# context={
-	# 	'forms':inputHeaderLHE,
-	# 	'menuname':'Transaksi Laporan Hasil Evaluasi',
-	# 	'pathway':'Laporan Hasil Evaluasi - Menambah Laporan Hasil Evaluasi',
-	# 	'username':request.user.username,
-	# }
-	# request.session['status']=""
-	# return render(request,'lhe/create_lhe.html',context)
+
+def addLHE_b1(request,id):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	
+	headerlhe = headerLHE.objects.get(id_lhe=id)
+
+	if request.method=="POST":
+		detail_simpulan = request.POST['detail_simpulan']
+		simpulan = simpulanHasilValBin()
+		simpulan.updatedAt = datetime.datetime.now().date()
+		simpulan.updatedBy = request.user.username
+		simpulan.id_lhe = headerlhe
+		simpulan.detail = detail_simpulan
+		try:
+			simpulan.save()
+		except Exception as ex:
+			print(ex)	
+	simpulan_val_bin = simpulanHasilValBin.objects.filter(id_lhe=headerlhe)
+
+	context = {
+		'nomor_surat_tugas': headerlhe.suratTugas.nomor_surat,
+		'tanggal_surat_tugas': headerlhe.suratTugas.tgl_surat,
+		'lokasi_tugas':headerlhe.suratTugas.lokasi,
+		'simpulan_val_bin':simpulan_val_bin,
+		'id_lhe':headerlhe.id_lhe,
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
+	}
+
+	return render(request,'lhe/create_lhe_bab1.html',context)
+
+def delLHE_b1(request,id,id_del):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	
+	simpulanHasilValBin.objects.all().filter(id_simpulan=id_del).delete()
+
+	return HttpResponseRedirect(f'/lhe/add/b1/{id}/')
+	
 	

@@ -11,7 +11,7 @@ class inputHeaderLHE(forms.ModelForm):
 		widgets = {
 			'suratTugas': forms.Select(attrs={'class':'form-control'}),
 			'nomor_lhe':forms.TextInput(attrs={'required':'required','class':'form-control'}),
-			'tanggal_lhe':DatePickerInput(attrs={'required':'required','class':'form-control'})
+			'tanggal_lhe':DatePickerInput(attrs={'required':'required','class':'form-control','min':'<script></script'})
 		}
 		
 	def __init__(self,*args,**kwargs):
