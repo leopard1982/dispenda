@@ -79,7 +79,7 @@ class ConfigDispenda(models.Model):
         return self.kepala.nama
 
 class TrxSuratTugas(models.Model):
-    id_surat = models.CharField(max_length=16,unique=True,blank=False,primary_key=True,default="")
+    id_surat = models.CharField(max_length=36,unique=True,blank=False,primary_key=True,default="")
     nomor_surat = models.CharField(max_length=50,unique=True,blank=False,default="")
     tgl_surat = models.DateField(auto_now_add=False,null=True)
     lokasi_surat = models.CharField(max_length=50)
@@ -95,6 +95,8 @@ class TrxSuratTugas(models.Model):
     is_plt = models.BooleanField(default=False)
     submit = models.BooleanField(default=False)
     updatedBy = models.CharField(max_length=20,blank=True,null=True)
+    is_lhe = models.BooleanField(default=False)
+    is_resume = models.BooleanField(default=False)
 
     def save(self,*args,**kwargs):
         if(ConfigDispenda.objects.all().count()>0):

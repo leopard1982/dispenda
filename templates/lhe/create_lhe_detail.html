@@ -1,0 +1,53 @@
+{% extends 'base.html'%}
+
+{% load static %}
+
+{% block contents%}
+
+<h5>Langkah 1: Membuat Header Laporan Hasil Evaluasi</h5>
+<hr/>
+
+<div class="p-2 border border-1 rounded shadow justify-content-center d-flex my-4">
+    <form method="post" action="/lhe/add/1/">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <p class="p-1 h5"><u>Laporan Evaluasi Tugas</u></p>
+                </td>
+            </tr>
+            <tr>
+                <td style="min-width: 250px;">Nomor Surat Tugas:</td>
+                <td style="min-width: 450px;"><input type="text" readonly name="nomor_surat" class="form-control" value="{{database.nomor_surat}}"/></td>
+            </tr>
+            <tr>
+                <td style="min-width: 250px;">Tujuan Tugas:</td>
+                <td><input type="text" readonly name="nomor_lhe" class="form-control" value="{{database.tujuan}}"/></td>
+            </tr>
+            <tr>
+                <td style="min-width: 250px;">Tanggal Pelaksanaan Tugas:</td>
+                <td><input type="text" readonly name="nomor_lhe" class="form-control" value="{{database.tgl_awal_tugas}} s/d {{database.tgl_akhir_tugas}}"/></td>
+            </tr>
+            <tr>
+                <td style="min-width: 250px;">Nomor Evaluasi Tugas:</td>
+                <td><input type="text" readonly name="nomor_lhe" class="form-control" value="{{nomor_lhe}}"/></td>
+            </tr>
+            <tr>
+                <td style="min-width: 250px;">Tanggal Evaluasi Tugas:</td>
+                <td><input type="text" readonly name="tanggal_lhe" class="form-control" value="{{tanggal_lhe}}"/></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="p-4">
+                    <div class="d-flex justify-content-between">
+                        <a class="btn btn-secondary" href='/lhe/add/'>&larr;Kembali Ke Pembuatan Evaluasi Awal</a> 
+                        <button class="btn btn-success" type="submit"><i>Buat Evaluasi Tugas &rarr;</i></button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+
+
+{% endblock%}

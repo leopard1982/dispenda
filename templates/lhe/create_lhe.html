@@ -1,0 +1,37 @@
+{% extends 'base.html'%}
+
+{% load static %}
+
+{% block contents%}
+
+<h5>Langkah 1: Membuat Header Laporan Hasil Evaluasi</h5>
+<hr/>
+
+<form method="post">
+    {{forms.media}}
+
+	{% csrf_token%}
+<table>
+    <tr>
+		<td style="width: 300px">Acuan Surat Tugas:</td>
+		<td style="width: 500px">{{forms.suratTugas}}</td>
+	</tr>
+    <tr>
+		<td style="width: 300px">Nomor Laporan Hasil Evaluasi:</td>
+		<td >{{forms.nomor_lhe}}</td>
+	</tr>
+    <tr>
+		<td style="width: 300px">Tanggal Laporan Hasil Evaluasi:</td>
+		<td >{{forms.tanggal_lhe}}</td>
+	</tr>
+
+    <tr class="p-2">
+        <td colspan="2"><input type="checkbox" class="my-3" id="konfirmasi" required><label for="konfirmasi" class="small fw-bold"><i> saya mengkonfirmasi pembuatan evaluasi tugas</i> </label></td>
+    </tr>
+	<tr class="p-2">
+		<td colspan="2"><button type="submit" class="btn btn-primary"><i>Konfirmasi Evaluasi Tugas</i> &rarr;</button></td>
+	</tr>
+</table>
+</form>
+
+{% endblock%}

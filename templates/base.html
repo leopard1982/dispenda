@@ -197,7 +197,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Manajemen Evaluasi Tugas:</h6>
                         <a class="collapse-item" href="buttons.html">Daftar Evaluasi Tugas</a>
-                        <a class="collapse-item" href="cards.html">Menambah Evaluasi Tugas</a>
+                        <a class="collapse-item" href="/lhe/add/">Menambah Evaluasi Tugas</a>
                     </div>
                 </div>
             </li>
@@ -338,9 +338,9 @@
                             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-envelope fa-fw"></i>
-                                {% if pending_surat.count > 0 %}
+                                {% if pending_lhe.count > 0 %}
                                 <!-- Counter - Messages -->
-                                <span class="badge badge-danger badge-counter">{{pending_surat.count}}</span>
+                                <span class="badge badge-danger badge-counter">{{pending_lhe.count}}</span>
                                 {% endif %}
                             </a>
                             <!-- Dropdown - Messages -->
@@ -349,19 +349,19 @@
                                 <h6 class="dropdown-header">
                                     Pending Evaluasi Tugas
                                 </h6>
-                                {% if pending_surat.count > 0%}
-                                {% for surat in pending_surat %}
-                                    <a class="dropdown-item d-flex align-items-center" href="/surat/add/{{surat.id_surat}}">
+                                {% if pending_lhe.count > 0%}
+                                {% for lhe in pending_lhe %}
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
                                         <div class="dropdown-list-image mr-3">
                                             <img class="rounded-circle" src="{% static 'img/undraw_profile_1.svg' %}"
                                                 alt="...">
                                             <div class="status-indicator bg-danger"></div>
                                         </div>
                                         <div class="font-weight-bold">
-                                            <div class="text-truncate">Nomor: {{surat.nomor_surat}}</div>
-                                            <div class="small text-gray-500">{{surat.tujuan}}</div>
-                                            <div class="small text-gray-500">Tanggal Dibuat: {{surat.updatedAt}}</div>
-                                            <div class="small text-gray-500">Pembuat Surat: {{surat.updatedBy}}</div>
+                                            <div class="text-truncate">{{lhe.nomor_lhe|title}}</div>
+                                            <div class="small text-gray-500">Nomor Surat Tugas: {{lhe.suratTugas}}</div>
+                                            <div class="small text-gray-500">Tanggal LHE: {{lhe.updatedAt}}</div>
+                                            <div class="small text-gray-500">Pembuat LHE: {{lhe.updatedBy}}</div>
                                         </div>
                                     </a>
                                 {% endfor%}

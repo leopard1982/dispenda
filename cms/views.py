@@ -7,6 +7,7 @@ from cms.forms import inputGolongan, inputJabatan, inputPegawai, inputPengguna, 
 from cms.forms import inputMasterDasarST, inputConfig, inputPesertaTugas, inputDasarSuratTugas
 from surat_tugas.models import MasterGolongan,MasterJabatan,MasterPegawai, Pengguna, Logging
 from surat_tugas.models import TrxSuratTugas, ConfigDispenda, MasterDasarST, ST_DasarTugas, ST_Peserta
+from lhe.models import headerLHE
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
@@ -25,6 +26,9 @@ def addLogging(username,grouping,message):
 
 def getPendingSurat():
 	return TrxSuratTugas.objects.all().filter(submit=False)
+
+def getPendingLHE():
+	return headerLHE.objects.all().filter(submit=False)
 
 
 def dashboard(request):
@@ -47,7 +51,8 @@ def dashboard(request):
 		'jml_sukses_surattugas': jml_sukses_surattugas,
 		'jml_master_pegawai':jml_master_pegawai,
 		'kepala':configdispenda,
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	return render(request,'master/dashboard.html',context)
 
@@ -78,7 +83,8 @@ def addGolongan(request):
 		'pathway':'Master Golongan - Menambah Golongan',
 		'username': request.user.username,
 		'status':request.session['status'],
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	return render(request,'master/create_golongan.html',context)
 
@@ -106,7 +112,8 @@ def displayGolongan(request):
 		'username':request.user.username,
 		'mywebsite': '/master/gol/dis/',
 		'status':request.session['status'],
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	request.session['status']=""
 	return render(request,'master/display_golongan.html',context)
@@ -138,7 +145,8 @@ def addJabatan(request):
 		'menuname':'Menambah Jabatan',
 		'pathway':'Master Jabatan - Menambah Jabatan',
 		'username':request.user.username,
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	return render(request,'master/create_jabatan.html',context)
 
@@ -170,7 +178,8 @@ def displayJabatan(request):
 		'username':request.user.username,
 		'mywebsite': '/master/jab/dis/',
 		'status':request.session['status'],
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 
 	request.session['status']=""
@@ -243,7 +252,8 @@ def addPegawai(request):
 		'menuname':'Menambah Pegawai',
 		'pathway':'Master Pegawai - Menambah Pegawai',
 		'username':request.user.username,
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	return render(request,'master/create_pegawai.html',context)
 
@@ -275,7 +285,8 @@ def displayPegawai(request):
 		'username':request.user.username,
 		'mywebsite': '/master/peg/dis/',
 		'status':request.session['status'],
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	request.session['status']=""
 	return render(request,'master/display_pegawai.html',context)
@@ -348,7 +359,8 @@ def addPengguna(request):
 		'menuname':'Menambah Pengguna Aplikasi',
 		'pathway':'Master Pengguna - Menambah Pengguna',
 		'username':request.user.username,
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	return render(request,'master/create_pengguna.html',context)
 
@@ -384,7 +396,8 @@ def displayPengguna(request):
 		'username':request.user.username,
 		'mywebsite': '/master/user/dis/',
 		'status':request.session['status'],
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	request.session['status']=""
 	return render(request,'master/display_pengguna.html',context)
@@ -463,7 +476,8 @@ def displayLog(request):
 		'pathway':'log transaksi',
 		'username':request.user.username,
 		'mywebsite': '/logs/',
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	return render(request,'master/display_logging.html',context)
 
@@ -490,7 +504,8 @@ def displayGolonganID(request,id):
 		'pathway':'Master Golongan - Daftar Golongan',
 		'username':request.user.username,
 		'mywebsite': '/master/gol/dis/',
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	return render(request,'master/display_golongan.html',context)
 
@@ -517,7 +532,8 @@ def displayJabatanID(request,id):
 		'pathway':'Master Jabatan - Daftar Jabatan',
 		'username':request.user.username,
 		'mywebsite': '/master/jab/dis/',
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	return render(request,'master/display_jabatan.html',context)
 
@@ -544,7 +560,8 @@ def displayPegawaiID(request,id):
 		'pathway':'Master Pegawai - Daftar Pegawai',
 		'username':request.user.username,
 		'mywebsite': '/master/peg/dis/',
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	return render(request,'master/display_pegawai.html',context)
 
@@ -575,7 +592,8 @@ def displayPenggunaID(request,id):
 		'pathway':'Master Pengguna - Daftar Pengguna',
 		'username':request.user.username,
 		'mywebsite': '/master/user/dis/',
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	return render(request,'master/display_pengguna.html',context)
 
@@ -612,7 +630,8 @@ def displayLogID(request,id):
 		'pathway':'log transaksi',
 		'username':request.user.username,
 		'mywebsite': '/logs/',
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 
 	}
 	return render(request,'master/display_logging.html',context)
@@ -663,7 +682,9 @@ def addNomorSurat(request):
 		'menuname':'Menambah Surat Tugas',
 		'pathway':'Transaksi Surat Tugas - Menambah Surat Tugas',
 		'username':request.user.username,
-		'status':request.session['status']
+		'status':request.session['status'],
+		'pending_lhe':getPendingLHE(),
+		'pending_surat':getPendingSurat(),
 	}
 	request.session['status']=""
 	return render(request,'master/create_surat_tugas.html',context)
@@ -716,7 +737,8 @@ def displaySuratTugas(request):
 		'username':request.user.username,
 		'mywebsite': '/logs/',
 		'status':request.session['status'],
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE(),
 	}
 	request.session['status']=''
 	return render(request,'master/display_surat_tugas.html',context)
@@ -747,7 +769,9 @@ def addDasarSurat(request):
 		'forms':inputMasterDasarST,
 		'menuname':'Transaksi Surat Tugas',
 		'pathway':'Master Surat Tugas - Menambah Surat Tugas',
-		'username':request.user.username
+		'username':request.user.username,
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE(),
 	}
 	request.session['status']=""
 	return render(request,'master/create_dasarst.html',context)
@@ -780,7 +804,8 @@ def displayMasterDasarSurat(request):
 		'username':request.user.username,
 		'mywebsite': '/master/sur/dis/',
 		'status':request.session['status'],
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE(),
 	}
 	request.session['status']=""
 	return render(request,'master/display_dasarst.html',context)
@@ -818,7 +843,8 @@ def displayMasterDasarSuratID(request,id):
 		'pathway':'Master Dasar Surat Tugas - Display Dasar Surat Tugas',
 		'username':request.user.username,
 		'mywebsite': '/master/sur/dis/',
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE(),
 
 	}
 	request.session['status']=""
@@ -877,7 +903,8 @@ def updateConfig(request):
 		'pathway':'Profile - Setting Sistem',
 		'username':request.user.username,
 		'kepala':kepala,
-		'pending_surat':getPendingSurat()
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE(),
 	}
 	request.session['status']=""
 	return render(request,'master/display_config.html',context)
@@ -905,7 +932,8 @@ def detailSuratTugas(request,id):
 			'username':request.user.username,
 			'id_surat':id,
 			'data':data,
-			'pending_surat':getPendingSurat()
+			'pending_surat':getPendingSurat(),
+			'pending_lhe':getPendingLHE(),
 		}
 		request.session['status']=""
 		return render(request,'master/create_surat_tugas_detail.html',context)
