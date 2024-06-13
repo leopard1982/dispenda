@@ -75,7 +75,7 @@ def addLHE_ok(request):
 			headerlhe.updatedAt = datetime.datetime.now().date()
 			try:
 				headerlhe.save()
-				return HttpResponseRedirect(f'/lhe/add/{headerlhe.id_lhe}/')
+				return HttpResponseRedirect(f'/lhe/add/b1/{headerlhe.id_lhe}/')
 			except:
 				return HttpResponseRedirect('/lhe/add/')
 		except:
