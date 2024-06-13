@@ -4,6 +4,12 @@ from lhe.forms import inputHeaderLHE
 from surat_tugas.models import TrxSuratTugas
 import datetime
 
+def getPendingSurat():
+	return TrxSuratTugas.objects.all().filter(submit=False)
+
+def getPendingLHE():
+	return headerLHE.objects.all().filter(submit=False)
+
 def addLHE(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
@@ -28,7 +34,9 @@ def addLHE(request):
 			'id_surattugas':id_surattugas,
 			'nomor_lhe':nomor_lhe,
 			'tanggal_lhe':tanggal_lhe,
-			'database':database
+			'database':database,
+			'pending_surat':getPendingSurat(),
+			'pending_lhe':getPendingLHE()
 			}
 		
 		request.session['status']=""
@@ -39,6 +47,8 @@ def addLHE(request):
 		'menuname':'Transaksi Laporan Hasil Evaluasi',
 		'pathway':'Laporan Hasil Evaluasi - Menambah Laporan Hasil Evaluasi',
 		'username':request.user.username,
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
 	}
 	request.session['status']=""
 	return render(request,'lhe/create_lhe.html',context)
@@ -65,7 +75,7 @@ def addLHE_ok(request):
 		headerlhe.updatedAt = datetime.datetime.now().date()
 		try:
 			headerlhe.save()
-			return HttpResponse(headerlhe)
+			return HttpResponseRedirect('/lhe/add/')
 		except:
 			return HttpResponse("error")
 
