@@ -98,7 +98,6 @@ def addLHE_b1(request,id):
 		simpulan.detail = detail_simpulan
 		try:
 			simpulan.save()
-			return HttpResponseRedirect(f'/lhe/b2/a/{id}')
 		except Exception as ex:
 			print(ex)	
 	simpulan_val_bin = simpulanHasilValBin.objects.filter(id_lhe=headerlhe)
