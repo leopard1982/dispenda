@@ -36,6 +36,27 @@ class simpulanHasilValBin(models.Model):
         self.id_simpulan=uuid.uuid4()
         super(simpulanHasilValBin,self).save(*args,**kwargs)
 
+class bab2_tujuan_evaluasi_pembinaan(models.Model):
+    id_lhe = models.ForeignKey(headerLHE,on_delete=models.RESTRICT,blank=False,null=False)
+    id_tujuan = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()))
+    detail = models.CharField(max_length=200,blank=False,null=False)
+    createdBy = models.CharField(max_length=50)
+    createdAt = models.DateField(auto_now_add=True,blank=True,null=True)
+
+    def save(self,*args,**kwargs):
+        self.id_tujuan = uuid.uuid4()
+        super(bab2_tujuan_evaluasi_pembinaan,self).save(*args,**kwargs)
+
+class bab2_sasaran_evaluasi_pembinaan(models.Model):
+    id_lhe = models.ForeignKey(headerLHE,on_delete=models.RESTRICT,blank=False,null=False)
+    id_sasaran = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()))
+    detail = models.CharField(max_length=200,blank=False,null=False)
+    createdBy = models.CharField(max_length=50)
+    createdAt = models.DateField(auto_now_add=True,blank=True,null=True)
+
+    def save(self,*args,**kwargs):
+        self.id_sasaran = uuid.uuid4()
+        super(bab2_sasaran_evaluasi_pembinaan,self).save(*args,**kwargs)
 
 class kepegawaianLHE(models.Model):
     id_kepegawaian = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4))

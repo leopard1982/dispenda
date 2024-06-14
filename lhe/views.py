@@ -1,7 +1,8 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from lhe.models import headerLHE, simpulanHasilValBin
 from lhe.forms import inputHeaderLHE
-from surat_tugas.models import TrxSuratTugas
+from surat_tugas.models import TrxSuratTugas, ST_Peserta
+from lhe.models import bab2_sasaran_evaluasi_pembinaan, bab2_tujuan_evaluasi_pembinaan
 import datetime
 
 def getPendingSurat():
@@ -97,6 +98,7 @@ def addLHE_b1(request,id):
 		simpulan.detail = detail_simpulan
 		try:
 			simpulan.save()
+			return HttpResponseRedirect(f'/lhe/b2/a/{id}')
 		except Exception as ex:
 			print(ex)	
 	simpulan_val_bin = simpulanHasilValBin.objects.filter(id_lhe=headerlhe)
@@ -120,5 +122,69 @@ def delLHE_b1(request,id,id_del):
 	simpulanHasilValBin.objects.all().filter(id_simpulan=id_del).delete()
 
 	return HttpResponseRedirect(f'/lhe/add/b1/{id}/')
+
+#bab2 bagian a --> 
+def addLHE_b2_a(request,id):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	#mendapatkan headerLHE
+	headerlhe = headerLHE.objects.get(id_lhe=id)
+
+	if request.method=="POST":
+		if('tujuan' in request.POST):
+			# request.POST['tujuan']
+			#menambah tujuan
+			tujuan=bab2_tujuan_evaluasi_pembinaan()
+			tujuan.createdAt=datetime.datetime.now().date()
+			tujuan.createdBy=request.user.username
+			tujuan.detail=request.POST['tujuan']
+			tujuan.id_lhe=headerlhe
+			tujuan.save()
+		if('sasaran' in request.POST):
+			# sasaran=request.POST['sasaran']
+			sasaran=bab2_sasaran_evaluasi_pembinaan()
+			sasaran.createdAt=datetime.datetime.now().date()
+			sasaran.createdBy=request.user.username
+			sasaran.detail=request.POST['sasaran']
+			sasaran.id_lhe=headerlhe
+			sasaran.save()
+		if('awal_periode' in request.POST):
+			awal=request.POST['awal_periode']
+			akhir=request.POST['akhir_periode']
+		
+	tujuan_evaluasi = bab2_tujuan_evaluasi_pembinaan.objects.all().filter(id_lhe=headerlhe)
+	sasaran_evaluasi = bab2_sasaran_evaluasi_pembinaan.objects.all().filter(id_lhe=headerlhe)
+	#filtering surat tugas
+	trxsurattugas = TrxSuratTugas.objects.get(nomor_surat=headerlhe.suratTugas)
+	peserta = ST_Peserta.objects.all().filter(id_surat=trxsurattugas)
 	
+	context = {
+		'nomor_surat_tugas': headerlhe.suratTugas.nomor_surat,
+		'tanggal_surat_tugas': headerlhe.suratTugas.tgl_surat,
+		'lokasi_tugas':headerlhe.suratTugas.lokasi,
+		'id_lhe':headerlhe.id_lhe,
+		'tujuan_evaluasi':tujuan_evaluasi,
+		'sasaran_evaluasi':sasaran_evaluasi,
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE(),
+		'trxsurattugas':trxsurattugas,
+		'peserta':peserta
+	}
+	return render(request,'lhe/create_lhe_bab2_a.html',context)
 	
+def delLHE_b2_tujuan(request,id,id_del):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	print(id)
+	print(id_del)
+	bab2_tujuan_evaluasi_pembinaan.objects.all().filter(id_tujuan=id_del).delete()
+
+	return HttpResponseRedirect(f'/lhe/add/b2/a/{id}/')
+
+def delLHE_b2_sasaran(request,id,id_del):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	
+	bab2_sasaran_evaluasi_pembinaan.objects.all().filter(id_sasaran=id_del).delete()
+
+	return HttpResponseRedirect(f'/lhe/add/b2/a/{id}/')
