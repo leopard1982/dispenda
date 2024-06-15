@@ -37,7 +37,8 @@ def dashboard(request):
 	
 	jml_pending_surattugas = TrxSuratTugas.objects.all().filter(submit=False).count()
 	jml_sukses_surattugas = TrxSuratTugas.objects.all().filter(submit=True).count()
-	jml_master_pegawai = MasterPegawai.objects.all()
+	jml_pending_lhe = headerLHE.objects.all().filter(submit=False).count()
+	jml_sukses_lhe = headerLHE.objects.all().filter(submit=True).count()
 	configdispenda = ConfigDispenda.objects.all()
 	if configdispenda.count()==0:
 		configdispenda=None
@@ -49,7 +50,8 @@ def dashboard(request):
 		'username': request.user.username,
 		'jml_pending_surattugas': jml_pending_surattugas,
 		'jml_sukses_surattugas': jml_sukses_surattugas,
-		'jml_master_pegawai':jml_master_pegawai,
+		'jml_sukses_lhe':jml_sukses_lhe,
+		'jml_pending_lhe':jml_pending_lhe,
 		'kepala':configdispenda,
 		'pending_surat':getPendingSurat(),
 		'pending_lhe':getPendingLHE()
