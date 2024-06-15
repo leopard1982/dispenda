@@ -24,7 +24,7 @@
         <td class="text-center">{{list.updatedAt}}</td>
         <td class="text-center">{% if list.submit is True %}<i class="fa fa-check"></i>{%else%}<i class="fa fa-times"></i>{%endif%}</td>
         <td>
-            <button  class="btn btn-primary" onclick="window.location.href='/lhe/add/b2/a/{{list.id_lhe}}'"><i class="fa fa-user-edit"></i></button>
+            <button  class="btn btn-primary" onclick="window.location.href='/lhe/add/b1/{{list.id_lhe}}'"><i class="fa fa-user-edit"></i></button>
             <button class="btn btn-danger" onclick="window.location.href='/surat/del/{{list.id_lhe}}/'" {% if list.submit is False %}{%else%}disabled{%endif%}><i class="fa fa-trash"></i></button>
             <button  class="btn btn-info" {% if list.submit%}{%else%}disabled{%endif%} onclick="window.location.href='/surat/export/{{list.id_surat}}'"><i class="fa fa-download"></i></button>
         </td>
