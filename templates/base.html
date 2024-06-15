@@ -54,7 +54,7 @@
             <li class="nav-item ">
                 <a class="bg-gradient-primary fw-bold  p-1 nav-link collapsed text-white" href="#" data-toggle="collapse" data-target="#profile"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fa fa-user-circle"></i>
                     <span class="text-black">Welcome, {{user.username|title}}!</span>
                 </a>
                 <div id="profile" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -86,7 +86,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#golongan"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fa fa-circle"></i>
                     <span>Master Golongan</span>
                 </a>
                 <div id="golongan" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -102,7 +102,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#jabatan"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fa fa-dot-circle"></i>
                     <span>Master Jabatan</span>
                 </a>
                 <div id="jabatan" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -118,7 +118,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pegawai"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fa fa-user-plus"></i>
                     <span>Master Pegawai</span>
                 </a>
                 <div id="pegawai" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -131,11 +131,29 @@
             </li>
 
             <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#dasarsurat"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fa fa-newspaper"></i>
+                    <span>Master Dasar Surat</span>
+                </a>
+                <div id="dasarsurat" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Manajemen Dasar Surat:</h6>
+                        <a class="collapse-item" href="/master/sur/dis/">Daftar Dasar Surat</a>
+                        <a class="collapse-item" href="/master/sur/add/">Menambah Dasar Surat</a>
+                    </div>
+                </div>
+            </li>
+            
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+            <!-- Nav Item - Pages Collapse Menu -->
             {% if user.is_superuser%}
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#pengguna"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fa fa-users"></i>
                     <span>Master Pengguna</span>
                 </a>
                 <div id="pengguna" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -148,21 +166,7 @@
             </li>
             {%endif%}
 
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#dasarsurat"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Master Dasar Surat</span>
-                </a>
-                <div id="dasarsurat" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Manajemen Dasar Surat:</h6>
-                        <a class="collapse-item" href="/master/sur/dis/">Daftar Dasar Surat</a>
-                        <a class="collapse-item" href="/master/sur/add/">Menambah Dasar Surat</a>
-                    </div>
-                </div>
-            </li>
+            
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -176,7 +180,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#suratTugas"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fa fa-envelope"></i>
                     <span>Surat Tugas</span>
                 </a>
                 <div id="suratTugas" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -190,13 +194,13 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#evaluasiTugas"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fa fa-file"></i>
                     <span>Evaluasi Tugas</span>
                 </a>
                 <div id="evaluasiTugas" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Manajemen Evaluasi Tugas:</h6>
-                        <a class="collapse-item" href="buttons.html">Daftar Evaluasi Tugas</a>
+                        <a class="collapse-item" href="/lhe/dis/">Daftar Evaluasi Tugas</a>
                         <a class="collapse-item" href="/lhe/add/">Menambah Evaluasi Tugas</a>
                     </div>
                 </div>
@@ -204,7 +208,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#laporanTugas"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fa fa-file-archive"></i>
                     <span>Laporan Tugas</span>
                 </a>
                 <div id="laporanTugas" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -337,7 +341,7 @@
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-envelope fa-fw"></i>
+                                <i class="fas fa-file fa-fw"></i>
                                 {% if pending_lhe.count > 0 %}
                                 <!-- Counter - Messages -->
                                 <span class="badge badge-danger badge-counter">{{pending_lhe.count}}</span>
@@ -351,7 +355,7 @@
                                 </h6>
                                 {% if pending_lhe.count > 0%}
                                 {% for lhe in pending_lhe %}
-                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <a class="dropdown-item d-flex align-items-center" href="/lhe/add/b2/a/{{lhe.id_lhe}}/">
                                         <div class="dropdown-list-image mr-3">
                                             <img class="rounded-circle" src="{% static 'img/undraw_profile_2.svg' %}"
                                                 alt="...">
@@ -378,7 +382,7 @@
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-envelope fa-fw"></i>
+                                <i class="fas fa-file-archive fa-fw"></i>
                                 {% if pending_resume.count > 0 %}
                                 <!-- Counter - Messages -->
                                 <span class="badge badge-danger badge-counter">{{pending_resume.count}}</span>

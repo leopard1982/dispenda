@@ -4,6 +4,7 @@ from lhe.forms import inputHeaderLHE
 from surat_tugas.models import TrxSuratTugas, ST_Peserta
 from lhe.models import bab2_sasaran_evaluasi_pembinaan, bab2_tujuan_evaluasi_pembinaan
 import datetime
+from django.core.paginator import Paginator
 
 def getPendingSurat():
 	return TrxSuratTugas.objects.all().filter(submit=False)
@@ -54,6 +55,42 @@ def addLHE(request):
 	request.session['status']=""
 	return render(request,'lhe/create_lhe.html',context)
 
+def displayLHE(request):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	try:
+		page=request.GET['page']
+	except:
+		page=1
+	if page==None:
+		page=1
+
+	listlhe = headerLHE.objects.all().order_by('-updatedAt')
+	
+	p=Paginator(listlhe,5)
+	
+	
+	try:
+		halaman = p.page(page)
+	except:
+		halaman = p.page(1)
+	
+	context={
+		'lists':halaman,
+		'paginator':p,
+		'menuname':'Daftar Laporan Hasil Evaluasi',
+		'pathway':'Transaksi Hasil Evaluasi - Daftar Hasil Evaluasi',
+		'username':request.user.username,
+		'mywebsite': '/lhe/dis/',
+		'status':request.session['status'],
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE()
+	}
+
+	request.session['status']=""
+	return render(request,'lhe/display_lhe.html',context)
+
+
 def addLHE_ok(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
@@ -103,6 +140,7 @@ def addLHE_b1(request,id):
 	simpulan_val_bin = simpulanHasilValBin.objects.filter(id_lhe=headerlhe)
 
 	context = {
+		'nomor_lhe':headerlhe.nomor_lhe,
 		'nomor_surat_tugas': headerlhe.suratTugas.nomor_surat,
 		'tanggal_surat_tugas': headerlhe.suratTugas.tgl_surat,
 		'lokasi_tugas':headerlhe.suratTugas.lokasi,
@@ -158,6 +196,7 @@ def addLHE_b2_a(request,id):
 	peserta = ST_Peserta.objects.all().filter(id_surat=trxsurattugas)
 	
 	context = {
+		'nomor_lhe':headerlhe.nomor_lhe,
 		'nomor_surat_tugas': headerlhe.suratTugas.nomor_surat,
 		'tanggal_surat_tugas': headerlhe.suratTugas.tgl_surat,
 		'lokasi_tugas':headerlhe.suratTugas.lokasi,

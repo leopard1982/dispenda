@@ -6,42 +6,26 @@
 <table class="table  table-hover">
     <thead class="table-secondary">
         <th style="min-width:50px">No.</th>
-        <th style="min-width:250px">No.Surat</th>
-        <th style="min-width:100px">Lokasi Dibuat</th>
-        <th style="min-width:250px">Tujuan Tugas</th>
-        <th style="min-width:100px">Lokasi Tugas</th>
-        <th style="min-width:150px">Tgl Awal Tugas</th>
-        <th style="min-width:150px">Tgl Akhir Tugas</th>
-        <th style="min-width:250px">Nama Kepala</th>
-        <th  style="min-width:250px">N.I.P</th>
-        <th  style="min-width:250px">Jabatan</th>
+        <th style="min-width:250px">No. Laporan Hasil Evaluasi</th>
+        <th style="min-width:250px">No. Surat Tugas</th>
+        <th style="min-width:100px">Tanggal Laporan Dibuat</th>
         <th  class="text-center"style="min-width:100px">Updated By</th>
         <th  class="text-center"style="min-width:150px">Updated At</th>
         <th  class="text-center"  style="min-width:100px">Submit</th>
-        <th  class="text-center"style="min-width:100px">Lap. Evaluasi</th>
-        <th  class="text-center"style="min-width:100px">Resume</th>
         <th  style="min-width:200px"></th>
     </thead>
     {% for list in lists%}
     <tr class="">
         <td>{{forloop.counter}}</td>
-        <td>{{list.nomor_surat}}</td>
-        <td>{{list.lokasi_surat}}</td>
-        <td>{{list.tujuan}}</td>
-        <td>{{list.lokasi}}</td>
-        <td>{{list.tgl_awal_tugas}}</td>
-        <td>{{list.tgl_akhir_tugas}}</td>
-        <td>{{list.kepala_nama}}</td>
-        <td>{{list.kepala_nik}}</td>
-        <td>{{list.kepala_jabatan}}</td>
+        <td>{{list.nomor_lhe}}</td>
+        <td>{{list.suratTugas}}</td>
+        <td>{{list.tanggal_lhe}}</td>
         <td class="text-center">{{list.updatedBy}}</td>
         <td class="text-center">{{list.updatedAt}}</td>
         <td class="text-center">{% if list.submit is True %}<i class="fa fa-check"></i>{%else%}<i class="fa fa-times"></i>{%endif%}</td>
-        <td class="text-center">{% if list.is_lhe is True %}<i class="fa fa-check"></i>{%else%}<i class="fa fa-times"></i>{%endif%}</td>
-        <td class="text-center">{% if list.is_resume is True%}<i class="fa fa-check"></i>{%else%}<i class="fa fa-times"></i>{%endif%}</td>
         <td>
-            <button  class="btn btn-primary" onclick="window.location.href='/surat/add/{{list.id_surat}}'"><i class="fa fa-user-edit"></i></button>
-            <button class="btn btn-danger" onclick="window.location.href='/surat/del/{{list.id_surat}}/'" {% if list.submit is False %}{%else%}disabled{%endif%}><i class="fa fa-trash"></i></button>
+            <button  class="btn btn-primary" onclick="window.location.href='/lhe/add/b2/a/{{list.id_lhe}}'"><i class="fa fa-user-edit"></i></button>
+            <button class="btn btn-danger" onclick="window.location.href='/surat/del/{{list.id_lhe}}/'" {% if list.submit is False %}{%else%}disabled{%endif%}><i class="fa fa-trash"></i></button>
             <button  class="btn btn-info" {% if list.submit%}{%else%}disabled{%endif%} onclick="window.location.href='/surat/export/{{list.id_surat}}'"><i class="fa fa-download"></i></button>
         </td>
     </tr>
@@ -51,7 +35,7 @@
 <div>
     halaman: 
     {% for hal in paginator.page_range%}
-        <a class="button" href="{% url 'displayGolongan'%}?page={{hal}}">{{hal}}</a> 
+        <a class="button" href="{% url 'displayLHE'%}?page={{hal}}">{{hal}}</a> 
     {% endfor %}
 </div>
 
