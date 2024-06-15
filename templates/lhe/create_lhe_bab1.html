@@ -11,7 +11,7 @@
     <p>Berdasarkan Surat Perintah Tugas Kepala Badan Pengelola Pendapatan Daerah Provinsi Jawa Tengah Nomor {{nomor_surat_tugas}} tanggal {{tanggal_surat_tugas}}, Tim Evaluasi dan Pembinaan telah melaksanakan tugas evaluasi sebagaimana mestinya pada UPPD {{lokasi_tugas}} dengan hasil:</p>
     {% for simpulan in simpulan_val_bin%}
     <p>
-        {{forloop.counter}}. {{simpulan.detail}} <a class="btn  text-danger small" href="/lhe/del/b1/{{simpulan.id_lhe.id_lhe}}/{{simpulan.id_simpulan}}">x</a>
+        {{forloop.counter}}. {{simpulan.detail}} <a class="badge badge-danger small" href="/lhe/del/b1/{{simpulan.id_lhe.id_lhe}}/{{simpulan.id_simpulan}}">X</a>
     </p>
     {% endfor%}
     <hr/>
