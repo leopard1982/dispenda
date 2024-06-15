@@ -188,13 +188,25 @@ def addLHE_b2_a(request,id):
 		if('awal_periode' in request.POST):
 			awal=request.POST['awal_periode']
 			akhir=request.POST['akhir_periode']
-		
+			headerLHE.objects.all().filter(id_lhe=id).update(periode_awal=datetime.date(year=int(awal.split('-')[0]),month=int(awal.split('-')[1]),day=int(awal.split('-')[2])))
+			headerLHE.objects.all().filter(id_lhe=id).update(periode_akhir=datetime.date(year=int(akhir.split('-')[0]),month=int(akhir.split('-')[1]),day=int(akhir.split('-')[2])))
+			headerlhe = headerLHE.objects.get(id_lhe=id)
+
 	tujuan_evaluasi = bab2_tujuan_evaluasi_pembinaan.objects.all().filter(id_lhe=headerlhe)
 	sasaran_evaluasi = bab2_sasaran_evaluasi_pembinaan.objects.all().filter(id_lhe=headerlhe)
 	#filtering surat tugas
 	trxsurattugas = TrxSuratTugas.objects.get(nomor_surat=headerlhe.suratTugas)
 	peserta = ST_Peserta.objects.all().filter(id_surat=trxsurattugas)
 	
+	try:
+		periode_awal=f"{str(headerlhe.periode_awal).split('-')[0]}-{str(headerlhe.periode_awal).split('-')[1]}-{str(headerlhe.periode_awal).split('-')[2]}"
+	except:
+		periode_awal=None
+	try:
+		periode_akhir=f"{str(headerlhe.periode_akhir).split('-')[0]}-{str(headerlhe.periode_akhir).split('-')[1]}-{str(headerlhe.periode_akhir).split('-')[2]}"
+	except:
+		periode_akhir=None
+
 	context = {
 		'nomor_lhe':headerlhe.nomor_lhe,
 		'nomor_surat_tugas': headerlhe.suratTugas.nomor_surat,
@@ -206,7 +218,9 @@ def addLHE_b2_a(request,id):
 		'pending_surat':getPendingSurat(),
 		'pending_lhe':getPendingLHE(),
 		'trxsurattugas':trxsurattugas,
-		'peserta':peserta
+		'peserta':peserta,
+		'periode_awal':periode_awal,
+		'periode_akhir':periode_akhir
 	}
 	return render(request,'lhe/create_lhe_bab2_a.html',context)
 	

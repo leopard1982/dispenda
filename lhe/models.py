@@ -14,6 +14,8 @@ class headerLHE(models.Model):
     createdBy = models.CharField(max_length=50)
     createdAt = models.DateField(auto_now_add=True,blank=True,null=True)
     submit = models.BooleanField(default=False)
+    periode_awal = models.DateField(auto_now_add=False,blank=True,null=True)
+    periode_akhir = models.DateField(auto_now_add=False,blank=True,null=True)
 
     class Meta:
         unique_together = ['nomor_lhe','suratTugas']
