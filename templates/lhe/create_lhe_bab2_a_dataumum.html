@@ -1,0 +1,25 @@
+{% extends 'base.html'%}
+
+{% load static %}
+
+{% block contents%}
+<h4>Nomor Laporan Hasil Evaluasi: <b>{{nomor_lhe}}</b></h4>
+<h5>Bab 2: Uraian Hasil Evaluasi dan Pembinaan</h5>
+<hr/>
+<div class="p-2">
+    <p><b>B. Data Umum</b></p>
+    {% for data in data_umum %}
+    <p style="margin-left: 20px;">{{forloop.counter}}. {{data.detail|title}} <a href="/lhe/del/b2/umum/{{data.id_lhe.id_lhe}}/{{data.id_data_umum}}" class="badge badge-danger small">X</a></p>
+    {% endfor %}
+
+    <form method="post" class="my-3">
+        {% csrf_token%}
+        <div class="d-flex justify-content-start">
+            <input type="text" name="data_umum" class="form-control w-75" required/>
+            <button type="submit" class="btn btn-info">+ Tambah</button>
+        </div>
+    </form>    
+    <a class="btn btn-primary my-3">Lanjutkan Point C &rarr; Ketatausahaan...</a>
+</div>
+
+{% endblock%}

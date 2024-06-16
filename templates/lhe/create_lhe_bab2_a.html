@@ -14,27 +14,27 @@
     <p>Evaluasi dan Pembinaan Reguler</p>
     <p><i>3. Tujuan Evaluasi dan Pembinaan:</i></p>
     {% for tujuan in tujuan_evaluasi %}
-    <p style="margin-left: 100px;">{{forloop.counter}}. {{tujuan.detail|title}} <a href="/lhe/del/b2/a/t/{{tujuan.id_lhe.id_lhe}}/{{tujuan.id_tujuan}}" class="badge badge-danger small">X</a></p>
+    <p style="margin-left: 20px;">{{forloop.counter}}. {{tujuan.detail|title}} <a href="/lhe/del/b2/a/t/{{tujuan.id_lhe.id_lhe}}/{{tujuan.id_tujuan}}" class="badge badge-danger small">X</a></p>
     {% endfor %}
 
     <form method="post" class="my-3">
         {% csrf_token%}
         <div class="d-flex justify-content-start">
             <input type="text" name="tujuan" class="form-control w-75" required/>
-            <button type="submit" class="btn btn-info">+ Tambah Tujuan Evaluasi</button>
+            <button type="submit" class="btn btn-info">+ Tambah</button>
         </div>
     </form>
     
     <p><i>4. Sasaran Evaluasi dan Pembinaan:</i></p>
     {% for sasaran in sasaran_evaluasi %}
-    <p style="margin-left: 100px;">{{forloop.counter}}. {{sasaran.detail|title}} <a href="/lhe/del/b2/a/s/{{sasaran.id_lhe.id_lhe}}/{{sasaran.id_sasaran}}" class="badge badge-danger small">X</a></p>
+    <p style="margin-left: 20px;">{{forloop.counter}}. {{sasaran.detail|title}} <a href="/lhe/del/b2/a/s/{{sasaran.id_lhe.id_lhe}}/{{sasaran.id_sasaran}}" class="badge badge-danger small">X</a></p>
     {% endfor %}
     
     <form method="post" class="my-3">
         {% csrf_token%}
         <div class="d-flex justify-content-start">
             <input type="text" name="sasaran" class="form-control w-75" required/>
-            <button type="submit"  class="btn btn-info">+ Tambah Sasaran Evaluasi</button>
+            <button type="submit"  class="btn btn-info">+ Tambah</button>
         </div>
     </form>
         

@@ -3,6 +3,7 @@ from lhe.models import headerLHE, simpulanHasilValBin
 from lhe.forms import inputHeaderLHE
 from surat_tugas.models import TrxSuratTugas, ST_Peserta
 from lhe.models import bab2_sasaran_evaluasi_pembinaan, bab2_tujuan_evaluasi_pembinaan
+from lhe.models import bab2_data_umum
 import datetime
 from django.core.paginator import Paginator
 
@@ -176,7 +177,10 @@ def addLHE_b2_a(request,id):
 			tujuan.createdBy=request.user.username
 			tujuan.detail=request.POST['tujuan']
 			tujuan.id_lhe=headerlhe
-			tujuan.save()
+			try:
+				tujuan.save()
+			except:
+				pass
 		if('sasaran' in request.POST):
 			# sasaran=request.POST['sasaran']
 			sasaran=bab2_sasaran_evaluasi_pembinaan()
@@ -184,13 +188,17 @@ def addLHE_b2_a(request,id):
 			sasaran.createdBy=request.user.username
 			sasaran.detail=request.POST['sasaran']
 			sasaran.id_lhe=headerlhe
-			sasaran.save()
+			try:
+				sasaran.save()
+			except:
+				pass
 		if('awal_periode' in request.POST):
 			awal=request.POST['awal_periode']
 			akhir=request.POST['akhir_periode']
 			headerLHE.objects.all().filter(id_lhe=id).update(periode_awal=datetime.date(year=int(awal.split('-')[0]),month=int(awal.split('-')[1]),day=int(awal.split('-')[2])))
 			headerLHE.objects.all().filter(id_lhe=id).update(periode_akhir=datetime.date(year=int(akhir.split('-')[0]),month=int(akhir.split('-')[1]),day=int(akhir.split('-')[2])))
 			headerlhe = headerLHE.objects.get(id_lhe=id)
+			return HttpResponseRedirect(f'/lhe/add/b2/umum/{id}')
 
 	tujuan_evaluasi = bab2_tujuan_evaluasi_pembinaan.objects.all().filter(id_lhe=headerlhe)
 	sasaran_evaluasi = bab2_sasaran_evaluasi_pembinaan.objects.all().filter(id_lhe=headerlhe)
@@ -240,3 +248,41 @@ def delLHE_b2_sasaran(request,id,id_del):
 	bab2_sasaran_evaluasi_pembinaan.objects.all().filter(id_sasaran=id_del).delete()
 
 	return HttpResponseRedirect(f'/lhe/add/b2/a/{id}/')
+
+def addLHE_b2_umum(request,id):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	#mendapatkan headerLHE
+	headerlhe = headerLHE.objects.get(id_lhe=id)
+
+	if request.method=="POST":
+		if('data_umum' in request.POST):
+			# request.POST['tujuan']
+			#menambah tujuan
+			tujuan=bab2_data_umum()
+			tujuan.createdAt=datetime.datetime.now().date()
+			tujuan.createdBy=request.user.username
+			tujuan.detail=request.POST['data_umum']
+			tujuan.id_lhe=headerlhe
+			try:
+				tujuan.save()
+			except:
+				pass
+	data_umum = bab2_data_umum.objects.all().filter(id_lhe=headerlhe)
+
+	context = {
+		'nomor_lhe':headerlhe.nomor_lhe,
+		'id_lhe':headerlhe.id_lhe,
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE(),		
+		'data_umum':data_umum
+	}
+	return render(request,'lhe/create_lhe_bab2_a_dataumum.html',context)
+
+def delLHE_b2_umum(request,id,id_del):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	
+	bab2_data_umum.objects.all().filter(id_data_umum=id_del).delete()
+
+	return HttpResponseRedirect(f'/lhe/add/b2/umum/{id}/')

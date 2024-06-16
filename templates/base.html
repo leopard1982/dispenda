@@ -487,7 +487,8 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Bapenda Semarang 2024</span>
+                        {% now "Y" as current_year %}
+                        <span><i>Copyright &copy; Bapenda Semarang {% if current_year != '2024' %}2024-{%now "Y"%} {% else %}2024 {%endif%}</i></span>
                     </div>
                 </div>
             </footer>
