@@ -1,7 +1,7 @@
 from django.urls import path
 from lhe.views import addLHE, addLHE_ok, addLHE_b1, delLHE_b1, addLHE_b2_a
 from lhe.views import delLHE_b2_sasaran, delLHE_b2_tujuan, displayLHE, addLHE_b2_umum, delLHE_b2_umum
-
+from lhe.views import addLHE_b2_ketatausahaan
 urlpatterns = [
     path("add/",addLHE,name="addLHE"),
     path('add/1/',addLHE_ok,name="addLHE_ok"),
@@ -13,4 +13,5 @@ urlpatterns = [
     path('dis/',displayLHE,name="displayLHE"),
     path('add/b2/umum/<str:id>/',addLHE_b2_umum,name='addLHE_b2_umum'),
     path('del/b2/umum/<str:id>/<str:id_del>',delLHE_b2_umum,name='delLHE_b2_umum'),
+    path('add/b2/tu/<str:id>/',addLHE_b2_ketatausahaan,name="addLHE_b2_ketatausahaan")
 ]

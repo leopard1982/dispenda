@@ -1,9 +1,9 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from lhe.models import headerLHE, simpulanHasilValBin
-from lhe.forms import inputHeaderLHE
-from surat_tugas.models import TrxSuratTugas, ST_Peserta
-from lhe.models import bab2_sasaran_evaluasi_pembinaan, bab2_tujuan_evaluasi_pembinaan
-from lhe.models import bab2_data_umum
+from lhe.forms import inputHeaderLHE, inputNormatifLHE
+from surat_tugas.models import TrxSuratTugas, ST_Peserta, MasterJabatan
+from lhe.models import bab2_sasaran_evaluasi_pembinaan, bab2_tujuan_evaluasi_pembinaan, bab2_data_umum
+from lhe.models import bab2_tatausaha_kepegawaian, bab2_tatausaha_kepegawaian_detail, bab2_tatausaha_kepegawaian_normatif
 import datetime
 from django.core.paginator import Paginator
 
@@ -286,3 +286,73 @@ def delLHE_b2_umum(request,id,id_del):
 	bab2_data_umum.objects.all().filter(id_data_umum=id_del).delete()
 
 	return HttpResponseRedirect(f'/lhe/add/b2/umum/{id}/')
+
+def addLHE_b2_ketatausahaan(request,id):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	#mendapatkan headerLHE
+	headerlhe = headerLHE.objects.get(id_lhe=id)
+
+	if request.method=="POST":
+		if 'periode' in request.POST:
+			pegawai=bab2_tatausaha_kepegawaian.objects.filter(id_lhe=id)
+			if(pegawai.count()>0):
+				pegawai.update(
+					periode=request.POST['periode'],
+					createdAt=datetime.datetime.now().date(),
+					createdBy=request.user.username
+				)
+			else:
+				bab2_tatausaha_kepegawaian.objects.create(
+					id_lhe=headerlhe,
+					periode=request.POST['periode'],
+					createdAt=datetime.datetime.now().date(),
+					createdBy=request.user.username
+				) 
+		if 'golongan' in request.POST:
+			try:
+				id_tu_kepegawaian = bab2_tatausaha_kepegawaian.objects.get(id_lhe=id).id_tu_kepegawaian
+				detail = bab2_tatausaha_kepegawaian_detail()
+				detail.id_tu_kepegawaian = bab2_tatausaha_kepegawaian.objects.get(id_tu_kepegawaian=id_tu_kepegawaian)
+				detail.golongan = request.POST['golongan']
+				detail.jumlah=int(request.POST['jumlah'])
+				detail.createdAt=datetime.datetime.now().date()
+				detail.createdBy=request.user.username
+				detail.save()
+			except:
+				pass
+			
+		if 'nip' in request.POST:
+			try:
+				id_tu_kepegawaian = bab2_tatausaha_kepegawaian.objects.get(id_lhe=id).id_tu_kepegawaian
+				normatif = bab2_tatausaha_kepegawaian_normatif()
+				normatif.id_tu_kepegawaian = bab2_tatausaha_kepegawaian.objects.get(id_tu_kepegawaian=id_tu_kepegawaian)
+				normatif.jabatan = MasterJabatan.objects.get(kode_jabatan=request.POST['jabatan'])
+				normatif.nip = request.POST['nip']
+				normatif.nama = request.POST['nama']
+				normatif.createdAt=datetime.datetime.now().date()
+				normatif.createdBy=request.user.username
+				normatif.save()
+			except:
+				pass
+	try:
+		tu_header = bab2_tatausaha_kepegawaian.objects.get(id_lhe=headerlhe)
+	except:
+		tu_header = None
+	
+	lokasi = headerlhe.suratTugas.lokasi
+	tu_detail = bab2_tatausaha_kepegawaian_detail.objects.all().filter(id_tu_kepegawaian=tu_header)
+	tu_normatif = bab2_tatausaha_kepegawaian_normatif.objects.all().filter(id_tu_kepegawaian=tu_header)
+	forms = inputNormatifLHE()
+	context = {
+		'nomor_lhe':headerlhe.nomor_lhe,
+		'id_lhe':headerlhe.id_lhe,
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE(),		
+		'tu_header':tu_header,
+		'tu_detail':tu_detail,
+		'tu_normatif':tu_normatif,
+		'forms':forms,
+		'lokasi':lokasi
+	}
+	return render(request,'lhe/create_lhe_bab2_c_ketatausahaan.html',context)

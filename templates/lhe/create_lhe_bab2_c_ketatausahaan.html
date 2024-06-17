@@ -1,0 +1,136 @@
+{% extends 'base.html'%}
+
+{% load static %}
+
+{% block contents%}
+<h4>Nomor Laporan Hasil Evaluasi: <b>{{nomor_lhe}}</b></h4>
+<h5>Bab 2: Uraian Hasil Evaluasi dan Pembinaan</h5>
+<hr/>
+<div class="p-2">
+    <p><b>C. Ketatausahaan</b></p>
+    <p style="margin-left:20px">
+        <b>1. Kepegawaian</b>
+    </p>
+    <div style="margin-left: 40px;">
+        <p>a. Sumber Daya Manusia per {{tu_header.periode}} di UPPD {{lokasi|title}} berdasarkan status kepegawaian:</p>
+        
+        {% for detail in tu_detail %}
+        <p style="margin-left: 50px">{{forloop.counter}}. {{detail.golongan}} = {{detail.jumlah}} orang <a href="#" class="badge badge-danger small">X</a></p>
+        {% endfor%}
+        <div class="small">
+            <table class="table">
+                <thead>
+                    <th colspan="4" class="py-2 text-center small">
+                        <b>Tabel II.1<br/>
+                        Data Norminatif Pegawai<br/>
+                        Per <span id="tu_periode">{{tu_header.periode}}</span>
+                    </b>
+                    </th>
+                </thead>
+                <thead>
+                    <th>No.</th>
+                    <th>NIP</th>
+                    <th>Nama Pegawai</th>
+                    <th>Jabatan</th>
+                </thead>
+                {% for normatif in tu_normatif %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{normatif.nip}}</td>
+                    <td>{{normatif.nama|title}}</td>
+                    <td>{{normatif.jabatan.keterangan|title}} <a href="#" class="badge badge-danger small">X</a></td>
+                </tr>
+                {% endfor%}
+            </table>
+            
+        </div>
+        <p>b.	Pengelolaan administrasi kepegawaian sudah dilaksanakan dengan <b>baik</b> dan <b>tertib</b></p>
+        <hr>
+        <div style="margin-top:50px" class="small"><b>Penyesuaian Data:</b></div>
+        <p>
+            <form method="post" class="my-2  p-2 border border-1 rounded">
+                {% csrf_token %}
+                <table>
+                    <tr>
+                        <td colspan="3" class="small"><u>Melakukan Update Periode</u></td>
+                    </tr>
+                    <tr>
+                        <td style="width:200px">Periode Update Menjadi: </td>
+                        <td><input class="form-control" type="text" name="periode" required></td>
+                        <td><button type="submit" class="btn btn-success">+ Update</button></td>
+                    </tr>
+                </table>
+            </form>
+        </p>
+        <p>
+            <form method="post" class="my-2  p-2 border border-1 rounded">
+                {% csrf_token %}
+                <table>
+                    <tr>
+                        <td colspan="3" class="small"><u>Menambah Status Kepegawaian</u></td>
+                    </tr>
+                    <tr>
+                        <td style="width:200px">Status Kepegawaian: </td>
+                        <td><input class="form-control" type="text" name="golongan" required></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Jumlah: </td>
+                        <td><input class="form-control" type="number" min="1" name="jumlah" required></td>
+                        <td><button type="submit" class="btn btn-success">+ Tambahkan</button></td>
+                    </tr>
+                </table>
+
+            </form>
+        </p>
+        <p>
+            <form method="post" class="my-2 p-2 border border-1 rounded">
+                {% csrf_token %}
+                <table>
+                    <tr>
+                        <td colspan="3" class="small"><u>Menambah Data Norminatif</u></td>
+                    </tr>
+                    <tr>
+                        <td style="width:200px">N.I.P Pegawai: </td>
+                        <td>{{forms.nip}}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Nama Pegawai: </td>
+                        <td>{{forms.nama}}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Jabatan Pegawai: </td>
+                        <td>{{forms.jabatan}}</td>
+                        <td><button type="submit" class="btn btn-success">+ Tambahkan</button></td>
+                    </tr>
+                </table>
+                
+            </form>
+        </p>
+    <hr/>
+        
+        
+        
+        <!-- <p>
+            <form method="post" class="my-2">
+                <table>
+                    <tr>
+                        <td>Status Kepegawaian: </td>
+                        <input type="text" name="golongan" required>
+                    </tr>
+                    <tr>
+                        <td>Jumlah: </td>
+                        <input type="number" min="1" name="jumlah" required>
+                    </tr>
+                </table>
+                <button type="submit" class="btn btn-secondary">+ Tambahkan</button>
+            </form>
+        </p> -->
+    </div>
+    <a href="/lhe/add/b2/umum/{{id_lhe}}" class="btn btn-secondary mx-2"><i>&larr; Kembali ke Bab II.B Data Umum</i></a>
+    <a class="btn btn-primary my-3" href="/lhe/add/b2/tu/{{id_lhe}}/"><i>Lanjutkan Bab II.D Pendapatan Asli Daerah &rarr;</i></a>
+</div>
+
+{% endblock%}
