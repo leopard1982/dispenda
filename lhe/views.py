@@ -4,6 +4,7 @@ from lhe.forms import inputHeaderLHE, inputNormatifLHE
 from surat_tugas.models import TrxSuratTugas, ST_Peserta, MasterJabatan
 from lhe.models import bab2_sasaran_evaluasi_pembinaan, bab2_tujuan_evaluasi_pembinaan, bab2_data_umum
 from lhe.models import bab2_tatausaha_kepegawaian, bab2_tatausaha_kepegawaian_detail, bab2_tatausaha_kepegawaian_normatif
+from lhe.models import bab2_tatausaha_keuangan
 import datetime
 from django.core.paginator import Paginator
 
@@ -333,8 +334,19 @@ def addLHE_b2_ketatausahaan(request,id):
 				normatif.createdAt=datetime.datetime.now().date()
 				normatif.createdBy=request.user.username
 				normatif.save()
-			except:
-				pass
+			except Exception as ex:
+				print(ex)
+
+		if 'keuangan' in request.POST:
+			try:
+				keuangan = bab2_tatausaha_keuangan()
+				keuangan.id_lhe=headerlhe
+				keuangan.detail=request.POST['keuangan']
+				keuangan.createdAt=datetime.datetime.now().date()
+				keuangan.createdBy=request.user.username
+				keuangan.save()
+			except Exception as ex:
+				print(ex)
 	try:
 		tu_header = bab2_tatausaha_kepegawaian.objects.get(id_lhe=headerlhe)
 	except:
@@ -343,6 +355,7 @@ def addLHE_b2_ketatausahaan(request,id):
 	lokasi = headerlhe.suratTugas.lokasi
 	tu_detail = bab2_tatausaha_kepegawaian_detail.objects.all().filter(id_tu_kepegawaian=tu_header)
 	tu_normatif = bab2_tatausaha_kepegawaian_normatif.objects.all().filter(id_tu_kepegawaian=tu_header)
+	tu_keuangan = bab2_tatausaha_keuangan.objects.all().filter(id_lhe=headerlhe)
 	forms = inputNormatifLHE()
 	context = {
 		'nomor_lhe':headerlhe.nomor_lhe,
@@ -353,6 +366,7 @@ def addLHE_b2_ketatausahaan(request,id):
 		'tu_detail':tu_detail,
 		'tu_normatif':tu_normatif,
 		'forms':forms,
-		'lokasi':lokasi
+		'lokasi':lokasi,
+		'tu_keuangan':tu_keuangan
 	}
 	return render(request,'lhe/create_lhe_bab2_c_ketatausahaan.html',context)

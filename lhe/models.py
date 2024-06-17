@@ -131,3 +131,17 @@ class bab2_tatausaha_kepegawaian_normatif(models.Model):
     
     class Meta:
         unique_together=['id_tu_kepegawaian','nama','nip']
+
+class bab2_tatausaha_keuangan(models.Model):
+    id_lhe = models.ForeignKey(headerLHE,on_delete=models.RESTRICT)
+    id_tu_keuangan = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()))
+    detail = models.CharField(max_length=200,blank=False,null=False)
+    createdBy = models.CharField(max_length=50)
+    createdAt = models.DateField(auto_now_add=True,blank=True,null=True)
+
+    def save(self,*args,**kwargs):
+        self.id_tu_keuangan = uuid.uuid4()
+        super(bab2_tatausaha_keuangan,self).save(*args,**kwargs)
+    
+    class Meta:
+        unique_together=['id_lhe','detail']

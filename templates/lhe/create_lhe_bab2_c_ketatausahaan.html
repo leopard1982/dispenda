@@ -9,6 +9,11 @@
 <div class="p-2">
     <p><b>C. Ketatausahaan</b></p>
     <p style="margin-left:20px">
+        {% if tu_header is None%}
+        <div class="w-100 bg-warning text-center p-2 text-black" style="color:black">
+            Silakan Isi Terlebih Dahulu Periode Kepegawaian Untuk Bisa Melanjutkan Pengisian Data Kepegawaian!
+        </div>
+        {% endif%}
         <b>1. Kepegawaian</b>
     </p>
     <div style="margin-left: 40px;">
@@ -59,6 +64,13 @@
                         <td><input class="form-control" type="text" name="periode" required></td>
                         <td><button type="submit" class="btn btn-success">+ Update</button></td>
                     </tr>
+                    {% if tu_header is None%}
+                    <tr>
+                        <td colspan="3">
+                            <div clas="w-100  rounded p-2" style="color:black;background-color: orange;padding:5px;border-radius: 5px;">Silakan Diisi Terlebih Dahulu!</div>
+                        </td>
+                    </tr>
+                    {% endif %}
                 </table>
             </form>
         </p>
@@ -129,8 +141,49 @@
             </form>
         </p> -->
     </div>
+    <p style="margin-left:20px">
+        <b>2. Keuangan</b>
+    </p>
+    <div style="margin-left: 5px;" class="border border-1 p-2 rounded">
+        {% for keuangan in tu_keuangan %}
+        <p style="margin-left: 50px">{{forloop.counter}}. {{keuangan.detail}} <a href="#" class="badge badge-danger small">X</a></p>
+        {% if forloop.last %}
+        <p style="margin-left: 50px">{{forloop.counter|add:1}}. Pengelolaan administrasi keuangan sudah dilaksanakan dengan <b>baik</b> dan <b>tertib</b></p>        
+        {% endif %}
+        {% endfor%}
+        <div class="border border-1 rounded p-2">
+            <p  class="small">Menambah Data Keuangan</p>
+            <p>
+                <form method="post">
+                    {% csrf_token%}
+                    <textarea class="form-control" required rows="2" name="keuangan"></textarea>
+                    <button type="submit" class="btn btn-success small"><i>+ Menambah Data Keuangan</i></button>
+                </form>
+            </p>
+        </div>
+    </div>
+    <hr/>
+    <p style="margin-left:20px;margin-top:20px">
+        <b>3. Barang Milik Daerah</b>
+    </p>
+    <div style="margin-left: 5px;">
+        <div>a. Aset tidak Bergerak</div>
+        <div style="margin-left: 5px;" class="p-2 rounded border border-1 m-3" >
+            1. Rumah
+        </div>
+        <div>b. Aset Bergerak</div>
+        <div style="margin-left: 5px;">
+            <div style="margin-left:5px; margin-top: 5px;">1. Kendaraan Roda 4 (empat) milik {{lokasi}} sebanyak 4 (empat) unit yaitu:</div>
+            <div class="p-2 rounded border border-1 m-3">1. Inova</div>
+            <div style="margin-left:5px; margin-top: 5px;">2. Kendaraan Roda 4 (empat) milik Pemerintah Provinsi Jawa Tengah sebanyak 4 (empat) unit yaitu:</div>
+            <div class="p-2 rounded border border-1 m-3">1. Inova</div>
+            <div style="margin-left:5px; margin-top: 5px;">3. Kendaraan Roda 2 ( dua ) milik Pemerintah Provinsi Jawa Tengah sebanyak 10 (sepuluh) unit, yaitu:</div>
+            <div class="p-2 rounded border border-1 m-3">1. Inova</div>
+        </div>
+        <div>c.	Pengelolaan administrasi pengelolaan BMD sudah dilaksanakan dengan <b>baik</b> dan <b>tertib</b></div>
+    </div>
     <a href="/lhe/add/b2/umum/{{id_lhe}}" class="btn btn-secondary mx-2"><i>&larr; Kembali ke Bab II.B Data Umum</i></a>
-    <a class="btn btn-primary my-3" href="/lhe/add/b2/tu/{{id_lhe}}/"><i>Lanjutkan Bab II.D Pendapatan Asli Daerah &rarr;</i></a>
+    <a class="btn btn-primary my-3" href="#"><i>Lanjutkan Bab II.D Pendapatan Asli Daerah &rarr;</i></a>
 </div>
 
 {% endblock%}

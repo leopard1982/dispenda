@@ -1,1 +1,1 @@
-SELECT * FROM surat_tugas_logging
+SELECT * FROM lhe_bab2_tatausaha_kepegawaian_normatif
