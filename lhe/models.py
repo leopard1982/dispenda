@@ -145,3 +145,77 @@ class bab2_tatausaha_keuangan(models.Model):
     
     class Meta:
         unique_together=['id_lhe','detail']
+
+# #aset tidak bergerak
+# class bab2_tatausaha_keuangan_a_tg(models.Model):
+#     id_tu_keuangan = models.ForeignKey(headerLHE,on_delete=models.RESTRICT)
+#     id_tu_a_tg = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()))
+#     detail = models.CharField(max_length=200,blank=False,null=False)
+#     createdBy = models.CharField(max_length=50)
+#     createdAt = models.DateField(auto_now_add=True,blank=True,null=True)
+
+#     def save(self,*args,**kwargs):
+#         self.id_tu_a_tg = uuid.uuid4()
+#         super(bab2_tatausaha_keuangan_a_tg,self).save(*args,**kwargs)
+    
+#     class Meta:
+#         unique_together=['id_lhe','detail']
+
+
+#aset tidak bergerak
+class bab2_tatausaha_bangun_tanah(models.Model):
+    id_lhe = models.ForeignKey(headerLHE,on_delete=models.RESTRICT)
+    id_tu_bagun_tanah = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()))
+    detail = models.CharField(max_length=200,blank=False,null=False)
+    createdBy = models.CharField(max_length=50)
+    createdAt = models.DateField(auto_now_add=True,blank=True,null=True)
+
+    def save(self,*args,**kwargs):
+        self.id_tu_bagun_tanah= uuid.uuid4()
+        super(bab2_tatausaha_bangun_tanah,self).save(*args,**kwargs)
+    
+    class Meta:
+        unique_together=['id_lhe','detail']
+
+class bab2_tatausaha_mobil_pemkab(models.Model):
+    id_lhe = models.ForeignKey(headerLHE,on_delete=models.RESTRICT)
+    id_tu_mobil_pemkab = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()))
+    detail = models.CharField(max_length=200,blank=False,null=False)
+    createdBy = models.CharField(max_length=50)
+    createdAt = models.DateField(auto_now_add=True,blank=True,null=True)
+
+    def save(self,*args,**kwargs):
+        self.id_tu_mobil_pemkab = uuid.uuid4()
+        super(bab2_tatausaha_mobil_pemkab,self).save(*args,**kwargs)
+    
+    class Meta:
+        unique_together=['id_lhe','detail']
+
+class bab2_tatausaha_mobil_pemprov(models.Model):
+    id_lhe = models.ForeignKey(headerLHE,on_delete=models.RESTRICT)
+    id_tu_mobil_pemprov = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()))
+    detail = models.CharField(max_length=200,blank=False,null=False)
+    createdBy = models.CharField(max_length=50)
+    createdAt = models.DateField(auto_now_add=True,blank=True,null=True)
+
+    def save(self,*args,**kwargs):
+        self.id_tu_mobil_pemprov = uuid.uuid4()
+        super(bab2_tatausaha_mobil_pemprov,self).save(*args,**kwargs)
+    
+    class Meta:
+        unique_together=['id_lhe','detail']
+
+class bab2_tatausaha_motor_pemprov(models.Model):
+    id_lhe = models.ForeignKey(headerLHE,on_delete=models.RESTRICT)
+    id_tu_motor_pemprov = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()))
+    detail = models.CharField(max_length=200,blank=False,null=False)
+    createdBy = models.CharField(max_length=50)
+    createdAt = models.DateField(auto_now_add=True,blank=True,null=True)
+
+    def save(self,*args,**kwargs):
+        self.id_tu_motor_pemprov = uuid.uuid4()
+        super(bab2_tatausaha_motor_pemprov,self).save(*args,**kwargs)
+    
+    class Meta:
+        unique_together=['id_lhe','detail']
+

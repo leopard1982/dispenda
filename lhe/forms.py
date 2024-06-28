@@ -10,8 +10,8 @@ class inputHeaderLHE(forms.ModelForm):
 
 		widgets = {
 			'suratTugas': forms.Select(attrs={'class':'form-control'}),
-			'nomor_lhe':forms.TextInput(attrs={'required':'required','class':'form-control'}),
-			'tanggal_lhe':DatePickerInput(attrs={'required':'required','class':'form-control','min':'<script></script'})
+			'nomor_lhe':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'Nomor LHE'}),
+			'tanggal_lhe':DatePickerInput(attrs={'required':'required','class':'form-control','placeholder':'Tanggal Buat LHE'})
 		}
 		
 	def __init__(self,*args,**kwargs):
@@ -25,6 +25,6 @@ class inputNormatifLHE(forms.ModelForm):
 
 		widgets = {
 			'jabatan': forms.Select(attrs={'class':'form-control'}),
-			'nama':forms.TextInput(attrs={'required':'required','class':'form-control'}),
-			'nip':forms.TextInput(attrs={'required':'required','class':'form-control'})
+			'nama':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'Nama Pegawai'}),
+			'nip':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'N.I.P Pegawai'})
 		}

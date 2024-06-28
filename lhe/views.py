@@ -7,6 +7,7 @@ from lhe.models import bab2_tatausaha_kepegawaian, bab2_tatausaha_kepegawaian_de
 from lhe.models import bab2_tatausaha_keuangan
 import datetime
 from django.core.paginator import Paginator
+from lhe.models import bab2_tatausaha_bangun_tanah, bab2_tatausaha_mobil_pemkab, bab2_tatausaha_mobil_pemprov, bab2_tatausaha_motor_pemprov
 
 def getPendingSurat():
 	return TrxSuratTugas.objects.all().filter(submit=False)
@@ -14,6 +15,53 @@ def getPendingSurat():
 def getPendingLHE():
 	return headerLHE.objects.all().filter(submit=False)
 
+def konversi_angka(angka:int):
+	try:
+		if(angka==0):
+			return " belum ada "
+		if(angka==1):
+			return " satu "
+		if(angka==2):
+			return " dua "
+		if(angka==3):
+			return " tiga "
+		if(angka==4):
+			return " empat "
+		if(angka==5):
+			return " lima "
+		if(angka==6):
+			return " enam "
+		if(angka==7):
+			return " tujuh "
+		if(angka==8):
+			return " delapan "
+		if(angka==9):
+			return " sembilan "
+		if(angka==10):
+			return " sepuluh "
+		if(angka==11):
+			return " sebelas "
+		if(angka==12):
+			return " dua belas "
+		if(angka==13):
+			return " tiga belas "
+		if(angka==14):
+			return " empat belas "
+		if(angka==15):
+			return " lima belas "
+		if(angka==16):
+			return " enam belas "
+		if(angka==17):
+			return " tujuh belas "
+		if(angka==18):
+			return " delapan belas "
+		if(angka==19):
+			return " sembilan belas "
+		if(angka==20):
+			return " dua puluh "
+	except:
+		return None
+	
 def addLHE(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
@@ -138,8 +186,12 @@ def addLHE_b1(request,id):
 		try:
 			simpulan.save()
 		except Exception as ex:
-			print(ex)	
+			print(ex)
+			print('yehehehe')   
+   	
 	simpulan_val_bin = simpulanHasilValBin.objects.filter(id_lhe=headerlhe)
+ 
+     
 
 	context = {
 		'nomor_lhe':headerlhe.nomor_lhe,
@@ -291,8 +343,11 @@ def delLHE_b2_umum(request,id,id_del):
 def addLHE_b2_ketatausahaan(request,id):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
-	#mendapatkan headerLHE
+
 	headerlhe = headerLHE.objects.get(id_lhe=id)
+	fKeuangan = False
+	fKepegawaian = False
+	fBMD = False
 
 	if request.method=="POST":
 		if 'periode' in request.POST:
@@ -310,6 +365,7 @@ def addLHE_b2_ketatausahaan(request,id):
 					createdAt=datetime.datetime.now().date(),
 					createdBy=request.user.username
 				) 
+			fKepegawaian=True
 		if 'golongan' in request.POST:
 			try:
 				id_tu_kepegawaian = bab2_tatausaha_kepegawaian.objects.get(id_lhe=id).id_tu_kepegawaian
@@ -322,6 +378,7 @@ def addLHE_b2_ketatausahaan(request,id):
 				detail.save()
 			except:
 				pass
+			fKepegawaian=True
 			
 		if 'nip' in request.POST:
 			try:
@@ -336,6 +393,7 @@ def addLHE_b2_ketatausahaan(request,id):
 				normatif.save()
 			except Exception as ex:
 				print(ex)
+			fKepegawaian=True
 
 		if 'keuangan' in request.POST:
 			try:
@@ -347,6 +405,60 @@ def addLHE_b2_ketatausahaan(request,id):
 				keuangan.save()
 			except Exception as ex:
 				print(ex)
+			fKeuangan=True
+		
+		if 'aset_tak_bergerak' in request.POST:
+			try:
+				aset = bab2_tatausaha_bangun_tanah()
+				aset.createdBy = request.user.username
+				aset.createdAt = datetime.datetime.now().date()
+				aset.detail=request.POST['aset_tak_bergerak']
+				aset.id_lhe = headerlhe
+				aset.save()
+			except Exception as ex:
+				print(ex)
+				pass
+			fBMD=True
+
+		if 'mobil_pemkab' in request.POST:
+			try:
+				aset = bab2_tatausaha_mobil_pemkab()
+				aset.createdBy = request.user.username
+				aset.createdAt = datetime.datetime.now().date()
+				aset.detail=request.POST['mobil_pemkab']
+				aset.id_lhe = headerlhe
+				aset.save()
+			except Exception as ex:
+				print(ex)
+				pass
+			fBMD=True
+
+		if 'mobil_pemprov' in request.POST:
+			try:
+				aset = bab2_tatausaha_mobil_pemprov()
+				aset.createdBy = request.user.username
+				aset.createdAt = datetime.datetime.now().date()
+				aset.detail=request.POST['mobil_pemprov']
+				aset.id_lhe = headerlhe
+				aset.save()
+			except Exception as ex:
+				print(ex)
+				pass
+			fBMD=True
+
+		if 'motor_pemprov' in request.POST:
+			try:
+				aset = bab2_tatausaha_motor_pemprov()
+				aset.createdBy = request.user.username
+				aset.createdAt = datetime.datetime.now().date()
+				aset.detail=request.POST['motor_pemprov']
+				aset.id_lhe = headerlhe
+				aset.save()
+			except Exception as ex:
+				print(ex)
+				pass
+			fBMD=True
+
 	try:
 		tu_header = bab2_tatausaha_kepegawaian.objects.get(id_lhe=headerlhe)
 	except:
@@ -356,6 +468,13 @@ def addLHE_b2_ketatausahaan(request,id):
 	tu_detail = bab2_tatausaha_kepegawaian_detail.objects.all().filter(id_tu_kepegawaian=tu_header)
 	tu_normatif = bab2_tatausaha_kepegawaian_normatif.objects.all().filter(id_tu_kepegawaian=tu_header)
 	tu_keuangan = bab2_tatausaha_keuangan.objects.all().filter(id_lhe=headerlhe)
+	aset_tak_bergerak = bab2_tatausaha_bangun_tanah.objects.all().filter(id_lhe=headerlhe)
+	mobil_pemkab = bab2_tatausaha_mobil_pemkab.objects.all().filter(id_lhe=headerlhe)
+	jml_mobil_pemkab = konversi_angka(mobil_pemkab.count())
+	mobil_pemprov = bab2_tatausaha_mobil_pemprov.objects.all().filter(id_lhe=headerlhe)
+	jml_mobil_pemprov = konversi_angka(mobil_pemprov.count())
+	motor_pemprov = bab2_tatausaha_motor_pemprov.objects.all().filter(id_lhe=headerlhe)
+	jml_motor_pemprov = konversi_angka(motor_pemprov.count())
 	forms = inputNormatifLHE()
 	context = {
 		'nomor_lhe':headerlhe.nomor_lhe,
@@ -367,6 +486,16 @@ def addLHE_b2_ketatausahaan(request,id):
 		'tu_normatif':tu_normatif,
 		'forms':forms,
 		'lokasi':lokasi,
-		'tu_keuangan':tu_keuangan
+		'tu_keuangan':tu_keuangan,
+		'fKepegawaian':fKepegawaian,
+		'fKeuangan':fKeuangan,
+		'fBMD':fBMD,
+		'aset_tak_bergerak':aset_tak_bergerak,
+		'mobil_pemkab':mobil_pemkab,
+		'jml_mobil_pemkab':jml_mobil_pemkab,
+		'mobil_pemprov':mobil_pemprov,
+		'jml_mobil_pemprov':jml_mobil_pemprov,
+		'motor_pemprov':motor_pemprov,
+		'jml_motor_pemprov':jml_motor_pemprov
 	}
 	return render(request,'lhe/create_lhe_bab2_c_ketatausahaan.html',context)

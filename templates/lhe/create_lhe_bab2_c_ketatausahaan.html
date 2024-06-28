@@ -8,180 +8,334 @@
 <hr/>
 <div class="p-2">
     <p><b>C. Ketatausahaan</b></p>
-    <p style="margin-left:20px">
-        {% if tu_header is None%}
-        <div class="w-100 bg-warning text-center p-2 text-black" style="color:black">
-            Silakan Isi Terlebih Dahulu Periode Kepegawaian Untuk Bisa Melanjutkan Pengisian Data Kepegawaian!
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button
+                    class="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseOne"
+                    aria-expanded="true"
+                    aria-controls="collapseOne"
+                >
+                   <b>1. Kepegawaian</b>
+                </button>
+            </h2>
+            <div
+                id="collapseOne"
+                class="accordion-collapse collapse {%if fKepegawaian %}show{%else%}hide{%endif%}"
+                aria-labelledby="headingOne"
+                data-bs-parent="#accordionExample"
+            >
+                <div class="accordion-body"  style="width: 100%;overflow-x: scroll;">
+                    <p style="margin-left:20px">
+                        {% if tu_header is None%}
+                        <div class="w-100 bg-warning text-center p-2 text-black" style="color:black">
+                            Silakan Isi Terlebih Dahulu Periode Kepegawaian Untuk Bisa Melanjutkan Pengisian Data Kepegawaian!
+                        </div>
+                        {% endif%}
+                        
+                    </p>
+    
+    
+                    <div style="margin-left: 40px;" >
+                        <p>a. Sumber Daya Manusia per {{tu_header.periode}} di UPPD {{lokasi|title}} berdasarkan status kepegawaian:</p>
+                        
+                        {% for detail in tu_detail %}
+                        <p style="margin-left: 50px">{{forloop.counter}}. {{detail.golongan}} = {{detail.jumlah}} orang <a href="#" class="badge badge-danger small">X</a></p>
+                        {% endfor%}
+                        <div class="small">
+                            <table class="table">
+                                <thead>
+                                    <th colspan="4" class="py-2 text-center small">
+                                        <b>Tabel II.1<br/>
+                                        Data Norminatif Pegawai<br/>
+                                        Per <span id="tu_periode">{{tu_header.periode}}</span>
+                                    </b>
+                                    </th>
+                                </thead>
+                                <thead>
+                                    <th>No.</th>
+                                    <th>NIP</th>
+                                    <th>Nama Pegawai</th>
+                                    <th>Jabatan</th>
+                                </thead>
+                                {% for normatif in tu_normatif %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{normatif.nip}}</td>
+                                    <td>{{normatif.nama|title}}</td>
+                                    <td>{{normatif.jabatan.keterangan|title}} <a href="#" class="badge badge-danger small">X</a></td>
+                                </tr>
+                                {% endfor%}
+                            </table>
+                            
+                        </div>
+                        <p>b.	Pengelolaan administrasi kepegawaian sudah dilaksanakan dengan <b>baik</b> dan <b>tertib</b></p>
+                        <hr>
+                        
+                        
+                        
+                    </div>
+                </div>
+            </div>
         </div>
-        {% endif%}
-        <b>1. Kepegawaian</b>
-    </p>
-    <div style="margin-left: 40px;">
-        <p>a. Sumber Daya Manusia per {{tu_header.periode}} di UPPD {{lokasi|title}} berdasarkan status kepegawaian:</p>
-        
-        {% for detail in tu_detail %}
-        <p style="margin-left: 50px">{{forloop.counter}}. {{detail.golongan}} = {{detail.jumlah}} orang <a href="#" class="badge badge-danger small">X</a></p>
-        {% endfor%}
-        <div class="small">
-            <table class="table">
-                <thead>
-                    <th colspan="4" class="py-2 text-center small">
-                        <b>Tabel II.1<br/>
-                        Data Norminatif Pegawai<br/>
-                        Per <span id="tu_periode">{{tu_header.periode}}</span>
-                    </b>
-                    </th>
-                </thead>
-                <thead>
-                    <th>No.</th>
-                    <th>NIP</th>
-                    <th>Nama Pegawai</th>
-                    <th>Jabatan</th>
-                </thead>
-                {% for normatif in tu_normatif %}
-                <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td>{{normatif.nip}}</td>
-                    <td>{{normatif.nama|title}}</td>
-                    <td>{{normatif.jabatan.keterangan|title}} <a href="#" class="badge badge-danger small">X</a></td>
-                </tr>
-                {% endfor%}
-            </table>
-            
-        </div>
-        <p>b.	Pengelolaan administrasi kepegawaian sudah dilaksanakan dengan <b>baik</b> dan <b>tertib</b></p>
-        <hr>
-        <div style="margin-top:50px" class="small"><b>Penyesuaian Data:</b></div>
-        <p>
-            <form method="post" class="my-2  p-2 border border-1 rounded">
-                {% csrf_token %}
-                <table>
-                    <tr>
-                        <td colspan="3" class="small"><u>Melakukan Update Periode</u></td>
-                    </tr>
-                    <tr>
-                        <td style="width:200px">Periode Update Menjadi: </td>
-                        <td><input class="form-control" type="text" name="periode" required></td>
-                        <td><button type="submit" class="btn btn-success">+ Update</button></td>
-                    </tr>
-                    {% if tu_header is None%}
-                    <tr>
-                        <td colspan="3">
-                            <div clas="w-100  rounded p-2" style="color:black;background-color: orange;padding:5px;border-radius: 5px;">Silakan Diisi Terlebih Dahulu!</div>
-                        </td>
-                    </tr>
-                    {% endif %}
-                </table>
-            </form>
-        </p>
-        <p>
-            <form method="post" class="my-2  p-2 border border-1 rounded">
-                {% csrf_token %}
-                <table>
-                    <tr>
-                        <td colspan="3" class="small"><u>Menambah Status Kepegawaian</u></td>
-                    </tr>
-                    <tr>
-                        <td style="width:200px">Status Kepegawaian: </td>
-                        <td><input class="form-control" type="text" name="golongan" required></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Jumlah: </td>
-                        <td><input class="form-control" type="number" min="1" name="jumlah" required></td>
-                        <td><button type="submit" class="btn btn-success">+ Tambahkan</button></td>
-                    </tr>
-                </table>
+    </div>
 
-            </form>
+    <div class="accordion" id="accordionExample2">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button
+                    class="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo"
+                    aria-expanded="true"
+                    aria-controls="collapseTwo"
+                >
+                   <b>2. Keuangan</b>
+                </button>
+            </h2>
+            <div
+                id="collapseTwo"
+                class="accordion-collapse collapse {% if fKeuangan %}show{%else%}hide{%endif%}"
+                aria-labelledby="headingTwo"
+                data-bs-parent="#accordionExample2"
+            >
+                <div class="accordion-body" style="width: 100%;overflow-x: scroll;">
+                    <div style="margin-left: 5px;" class="border border-1 p-2 rounded">
+                        {% for keuangan in tu_keuangan %}
+                        <p style="margin-left: 50px">{{forloop.counter}}. {{keuangan.detail}} <a href="#" class="badge badge-danger small">X</a></p>
+                        {% if forloop.last %}
+                        <p style="margin-left: 50px">{{forloop.counter|add:1}}. Pengelolaan administrasi keuangan sudah dilaksanakan dengan <b>baik</b> dan <b>tertib</b></p>        
+                        {% endif %}
+                        {% endfor%}
+                        <div class="border border-1 rounded p-2">
+                            <p  class="small">Menambah Data Keuangan</p>
+                            <div>
+                                <form method="post" class="form">
+                                    {% csrf_token%}
+                                    <textarea class="form-control" style="width:100%" required rows="2" placeholder="tambahkan data keuangan..." name="keuangan"></textarea>
+                                    <button type="submit" class="btn btn-success small"><i>+ Tambah</i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionExample3">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button
+                    class="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseThree"
+                    aria-expanded="true"
+                    aria-controls="collapseThree"
+                >
+                   <b>3. Barang Milik Daerah</b>
+                </button>
+            </h2>
+            <div
+                id="collapseThree"
+                class="accordion-collapse collapse {% if fBMD %}show{%else%}hide{%endif%}"
+                aria-labelledby="headingThree"
+                data-bs-parent="#accordionExample3"
+            >
+                <div class="accordion-body" style="width: 100%;overflow-x: scroll;">
+                    <div style="margin-left: 5px;">
+                        <div>a. Aset tidak Bergerak</div>
+                        <div style="margin-left: 5px;" class="p-2 rounded border border-1 m-3" >
+                            {% if aset_tak_bergerak.count == 0%}<b><i>---belum ada data---</i></b>{%endif%}
+                            {% for aset in aset_tak_bergerak %}
+                            <p style="margin-left: 50px">{{forloop.counter}}. {{aset.detail}} <a href="#" class="badge badge-danger small">X</a></p>
+                            {% endfor%}
+                            
+                        </div>
+                        <div>b. Aset Bergerak</div>
+                        <div style="margin-left: 5px;">
+                            <div style="margin-left:5px; margin-top: 5px;">1. Kendaraan Roda 4 (empat) milik {{lokasi}} {% if mobil_pemkab.count == 0%} belum ada {%else%}sebanyak {{mobil_pemkab.count}} ({{jml_mobil_pemkab}}) unit yaitu:{%endif%}</div>
+                                <div style="margin-left: 5px;" class="p-2 rounded border border-1 m-3" >
+                                {% if mobil_pemkab.count == 0%}<b><i>---belum ada data---</i></b>{%endif%}
+                                {% for aset in mobil_pemkab %}
+                                <p style="margin-left: 50px">{{forloop.counter}}. {{aset.detail}} <a href="#" class="badge badge-danger small">X</a></p>
+                                {% endfor%}
+                                
+                            </div>
+                            <div style="margin-left:5px; margin-top: 5px;">2. Kendaraan Roda 4 (empat) milik Pemerintah Provinsi Jawa Tengah {% if mobil_pemprov.count == 0%} belum ada {%else%}sebanyak {{mobil_pemprov.count}} ({{jml_mobil_pemprov}}) unit yaitu:{%endif%}:</div>
+                            <div style="margin-left: 5px;" class="p-2 rounded border border-1 m-3" >
+                                {% if mobil_pemprov.count == 0%}<b><i>---belum ada data---</i></b>{%endif%}
+                                {% for aset in mobil_pemprov %}
+                                <p style="margin-left: 50px">{{forloop.counter}}. {{aset.detail}} <a href="#" class="badge badge-danger small">X</a></p>
+                                {% endfor%}
+                               
+                            </div>
+                            <div style="margin-left:5px; margin-top: 5px;">3. Kendaraan Roda 2 ( dua ) milik Pemerintah Provinsi Jawa Tengah {% if motor_pemprov.count == 0%} belum ada {%else%}sebanyak {{motor_pemprov.count}} ({{jml_motor_pemprov}}) unit yaitu:{%endif%}:</div>
+                            <div style="margin-left: 5px;" class="p-2 rounded border border-1 m-3" >
+                                {% if motor_pemprov.count == 0%}<b><i>---belum ada data---</i></b>{%endif%}
+                                {% for aset in motor_pemprov %}
+                                <p style="margin-left: 50px">{{forloop.counter}}. {{aset.detail}} <a href="#" class="badge badge-danger small">X</a></p>
+                                {% endfor%}
+                                
+                            </div>
+                        </div>
+                        <div>c.	Pengelolaan administrasi pengelolaan BMD sudah dilaksanakan dengan <b>baik</b> dan <b>tertib</b></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-2 my-2" style="width: 100%;overflow-x: scroll;">
+        <hr/>
+        <div><h3>Penambahan Data</h3></div>
+        <p>
+                            <form method="post" class="my-2  p-2 border border-1 rounded">
+                                {% csrf_token %}
+                                <table>
+                                    <tr style="width: 100%;">
+                                        <td colspan="3" class="small"><u>Melakukan Update Periode</u></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width:200px">Periode Update Menjadi: </td>
+                                        <td style="min-width: 300px;"><input class="form-control" type="text" name="periode" placeholder="mis. Oktober 2024" required></td>
+                                        <td style="min-width: 200px;">
+                                            <div class="d-flex justify-content-end">
+                                                <button type="submit" class="btn btn-success justify-content-end">+ Update</button>
+                                            </div>
+                                        </td>                 
+                                    </tr>
+                                    {% if tu_header is None%}
+                                    <tr>
+                                        <td colspan="3">
+                                            <div clas="w-100  rounded p-2" style="color:black;background-color: orange;padding:5px;border-radius: 5px;">Silakan Diisi Terlebih Dahulu!</div>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </table>
+                            </form>
         </p>
         <p>
-            <form method="post" class="my-2 p-2 border border-1 rounded">
-                {% csrf_token %}
-                <table>
-                    <tr>
-                        <td colspan="3" class="small"><u>Menambah Data Norminatif</u></td>
-                    </tr>
-                    <tr>
-                        <td style="width:200px">N.I.P Pegawai: </td>
-                        <td>{{forms.nip}}</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Nama Pegawai: </td>
-                        <td>{{forms.nama}}</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Jabatan Pegawai: </td>
-                        <td>{{forms.jabatan}}</td>
-                        <td><button type="submit" class="btn btn-success">+ Tambahkan</button></td>
-                    </tr>
-                </table>
-                
-            </form>
+                            <form method="post" class="my-2  p-2 border border-1 rounded">
+                                {% csrf_token %}
+                                <table>
+                                    <tr>
+                                        <td colspan="3" class="small"><u>Menambah Status Kepegawaian</u></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width:200px">Status Kepegawaian: </td>
+                                        <td style="min-width: 300px;"><input class="form-control" type="text" name="golongan" required placeholder="mis.Staff"></td>
+                                        <td style="min-width: 200px;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jumlah: </td>
+                                        <td><input class="form-control" type="number" min="1" name="jumlah" required placeholder="min.1"></td>
+                                        <td>
+                                            <div class="justify-content-end d-flex">
+                                                <button type="submit" class="btn btn-success">+ Tambah</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </form>
+                        </p>
+                        <p>
+                            <form method="post" class="my-2 p-2 border border-1 rounded">
+                                {% csrf_token %}
+                                <table>
+                                    <tr>
+                                        <td colspan="3" class="small"><u>Menambah Data Norminatif</u></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="min-width:200px">N.I.P Pegawai: </td>
+                                        <td style="min-width: 300px;">{{forms.nip}}</td>
+                                        <td  style="min-width: 200px;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nama Pegawai: </td>
+                                        <td>{{forms.nama}}</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jabatan Pegawai: </td>
+                                        <td>{{forms.jabatan}}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-end">
+                                                <button type="submit" class="btn btn-success">+ Tambah</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                
+                            </form>
         </p>
-    <hr/>
         
-        
-        
-        <!-- <p>
-            <form method="post" class="my-2">
-                <table>
-                    <tr>
-                        <td>Status Kepegawaian: </td>
-                        <input type="text" name="golongan" required>
-                    </tr>
-                    <tr>
-                        <td>Jumlah: </td>
-                        <input type="number" min="1" name="jumlah" required>
-                    </tr>
-                </table>
-                <button type="submit" class="btn btn-secondary">+ Tambahkan</button>
-            </form>
-        </p> -->
-    </div>
-    <p style="margin-left:20px">
-        <b>2. Keuangan</b>
-    </p>
-    <div style="margin-left: 5px;" class="border border-1 p-2 rounded">
-        {% for keuangan in tu_keuangan %}
-        <p style="margin-left: 50px">{{forloop.counter}}. {{keuangan.detail}} <a href="#" class="badge badge-danger small">X</a></p>
-        {% if forloop.last %}
-        <p style="margin-left: 50px">{{forloop.counter|add:1}}. Pengelolaan administrasi keuangan sudah dilaksanakan dengan <b>baik</b> dan <b>tertib</b></p>        
-        {% endif %}
-        {% endfor%}
-        <div class="border border-1 rounded p-2">
-            <p  class="small">Menambah Data Keuangan</p>
-            <p>
-                <form method="post">
-                    {% csrf_token%}
-                    <textarea class="form-control" required rows="2" name="keuangan"></textarea>
-                    <button type="submit" class="btn btn-success small"><i>+ Menambah Data Keuangan</i></button>
-                </form>
-            </p>
+        <div class="border border-1 rounded p-2 my-2">
+                                    <p  class="small">Menambah Aset Tak Bergerak</p>
+                                    
+                                        <form method="post" class="form">
+                                            {% csrf_token%}
+                                            <div class="d-flex justify-content-start">
+                                                <input type="text" class="form-control" style="min-width:500px;max-width: 500px;" required placeholder="mis.tanah seluas 1000m2" name="aset_tak_bergerak"></input>
+                                                <button type="submit" class="btn btn-success small" style="margin-left:100px"><i>+ Tambah</i></button>
+                                            </div>
+
+                                        </form>
+                                    
+        </div>
+        <div class="border border-1 rounded p-2 my-2">
+                                        <p  class="small">Menambah Kendaraan Roda 4 milik {{lokasi}}</p>
+                                  
+                                            <form method="post" class="form">
+                                                {% csrf_token%}
+                                                <div class="d-flex justify-content-start">
+                                                    <input type="text" class="form-control" style="min-width:500px;max-width: 500px;" required placeholder="Toyota Inova tahun 2024 plat H1234HEE" name="mobil_pemkab"></input>
+                                                    <button type="submit" class="btn btn-success small" style="margin-left:100px"><i>+ Tambah</i></button>
+                                                </div>
+
+                                            </form>
+                                    
+        </div>
+        <div class="border border-1 rounded p-2 my-2">
+                                        <p  class="small">Menambah Kendaraan Roda 4 milik Pemerintah Provinsi Jawa Tengah</p>
+                                        
+                                            <form method="post" class="form">
+                                                {% csrf_token%}
+                                                <div class="d-flex justify-content-start">
+                                                    <input type="text" class="form-control" style="min-width:500px;max-width: 500px;" required placeholder="Toyota Inova tahun 2024 plat H1234HEE" name="mobil_pemprov"></input>
+                                                    <button type="submit" class="btn btn-success small" style="margin-left:100px"><i>+ Tambah</i></button>
+                                                </div>
+
+                                            </form>
+                                        
+        </div>
+        <div class="border border-1 rounded p-2 my-2">
+                                        <p  class="small">Menambah Kendaraan Roda 2 milik Pemerintah Provinsi Jawa Tengah</p>
+                                        
+                                            <form method="post" >
+                                                {% csrf_token%}
+                                                <div class="d-flex justify-content-start">
+                                                    <input type="text" class="form-control" style="min-width:500px;max-width: 500px;" required placeholder="Susuki tahun 2024 plat H1234HEE" name="motor_pemprov"></input>
+                                                    <button type="submit" class="btn btn-success small" style="margin-left:100px"><i>+ Tambah</i></button>
+                                                </div>
+
+                                            </form>
+                                        
         </div>
     </div>
-    <hr/>
+
+    
+
     <p style="margin-left:20px;margin-top:20px">
-        <b>3. Barang Milik Daerah</b>
+        
     </p>
-    <div style="margin-left: 5px;">
-        <div>a. Aset tidak Bergerak</div>
-        <div style="margin-left: 5px;" class="p-2 rounded border border-1 m-3" >
-            1. Rumah
-        </div>
-        <div>b. Aset Bergerak</div>
-        <div style="margin-left: 5px;">
-            <div style="margin-left:5px; margin-top: 5px;">1. Kendaraan Roda 4 (empat) milik {{lokasi}} sebanyak 4 (empat) unit yaitu:</div>
-            <div class="p-2 rounded border border-1 m-3">1. Inova</div>
-            <div style="margin-left:5px; margin-top: 5px;">2. Kendaraan Roda 4 (empat) milik Pemerintah Provinsi Jawa Tengah sebanyak 4 (empat) unit yaitu:</div>
-            <div class="p-2 rounded border border-1 m-3">1. Inova</div>
-            <div style="margin-left:5px; margin-top: 5px;">3. Kendaraan Roda 2 ( dua ) milik Pemerintah Provinsi Jawa Tengah sebanyak 10 (sepuluh) unit, yaitu:</div>
-            <div class="p-2 rounded border border-1 m-3">1. Inova</div>
-        </div>
-        <div>c.	Pengelolaan administrasi pengelolaan BMD sudah dilaksanakan dengan <b>baik</b> dan <b>tertib</b></div>
-    </div>
+    
     <a href="/lhe/add/b2/umum/{{id_lhe}}" class="btn btn-secondary mx-2"><i>&larr; Kembali ke Bab II.B Data Umum</i></a>
     <a class="btn btn-primary my-3" href="#"><i>Lanjutkan Bab II.D Pendapatan Asli Daerah &rarr;</i></a>
 </div>
