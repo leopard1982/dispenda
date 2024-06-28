@@ -499,3 +499,59 @@ def addLHE_b2_ketatausahaan(request,id):
 		'jml_motor_pemprov':jml_motor_pemprov
 	}
 	return render(request,'lhe/create_lhe_bab2_c_ketatausahaan.html',context)
+
+def delPegawaiDetail(request,id,id_del):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	
+	bab2_tatausaha_kepegawaian_detail.objects.all().filter(id_tu_kepegawaian_detail=id_del).delete()
+
+	return HttpResponseRedirect(f'/lhe/add/b2/tu/{id}/')
+
+def delNorminatif(request,id,id_del):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	
+	bab2_tatausaha_kepegawaian_normatif.objects.all().filter(id_tu_kepegawaian_normatif=id_del).delete()
+
+	return HttpResponseRedirect(f'/lhe/add/b2/tu/{id}/')
+
+def delKeuangan(request,id,id_del):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	
+	bab2_tatausaha_keuangan.objects.all().filter(id_tu_keuangan =id_del).delete()
+
+	return HttpResponseRedirect(f'/lhe/add/b2/tu/{id}/')
+
+def delTanahBangunan(request,id,id_del):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	
+	bab2_tatausaha_bangun_tanah.objects.all().filter(id_tu_bagun_tanah=id_del).delete()
+
+	return HttpResponseRedirect(f'/lhe/add/b2/tu/{id}/')
+
+def delMobilPemkab(request,id,id_del):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	
+	bab2_tatausaha_mobil_pemkab.objects.all().filter(id_tu_mobil_pemkab=id_del).delete()
+
+	return HttpResponseRedirect(f'/lhe/add/b2/tu/{id}/')
+
+def delMobilPemprov(request,id,id_del):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	
+	bab2_tatausaha_mobil_pemprov.objects.all().filter(id_tu_mobil_pemprov=id_del).delete()
+
+	return HttpResponseRedirect(f'/lhe/add/b2/tu/{id}/')
+
+def delMotorPemprov(request,id,id_del):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	
+	bab2_tatausaha_motor_pemprov.objects.all().filter(id_tu_motor_pemprov=id_del).delete()
+
+	return HttpResponseRedirect(f'/lhe/add/b2/tu/{id}/')

@@ -41,9 +41,11 @@
     
                     <div style="margin-left: 40px;" >
                         <p>a. Sumber Daya Manusia per {{tu_header.periode}} di UPPD {{lokasi|title}} berdasarkan status kepegawaian:</p>
-                        
+                        {%if tu_detail.count == 0 %}
+                        <p><b><i>---belum ada data---</i></b></p>
+                        {% endif%}
                         {% for detail in tu_detail %}
-                        <p style="margin-left: 50px">{{forloop.counter}}. {{detail.golongan}} = {{detail.jumlah}} orang <a href="#" class="badge badge-danger small">X</a></p>
+                        <p style="margin-left: 50px">{{forloop.counter}}. {{detail.golongan}} = {{detail.jumlah}} orang <a href="/lhe/del/b2/tu/{{id_lhe}}/{{detail.id_tu_kepegawaian_detail}}" class="badge badge-danger small">X</a></p>
                         {% endfor%}
                         <div class="small">
                             <table class="table">
@@ -61,14 +63,20 @@
                                     <th>Nama Pegawai</th>
                                     <th>Jabatan</th>
                                 </thead>
-                                {% for normatif in tu_normatif %}
+                                {% if tu_normatif.count == 0%}
                                 <tr>
-                                    <td>{{forloop.counter}}</td>
-                                    <td>{{normatif.nip}}</td>
-                                    <td>{{normatif.nama|title}}</td>
-                                    <td>{{normatif.jabatan.keterangan|title}} <a href="#" class="badge badge-danger small">X</a></td>
+                                    <td colspan="4" class="text-center"><b><i>---belum ada data---</i></b></td>
                                 </tr>
-                                {% endfor%}
+                                {% else %}
+                                    {% for normatif in tu_normatif %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{normatif.nip}}</td>
+                                        <td>{{normatif.nama|title}}</td>
+                                        <td>{{normatif.jabatan.keterangan|title}} <a href="/lhe/del/b2/tu/norm/{{id_lhe}}/{{normatif.id_tu_kepegawaian_normatif}}/" class="badge badge-danger small">X</a></td>
+                                    </tr>
+                                    {% endfor%}
+                                {% endif %}
                             </table>
                             
                         </div>
@@ -105,22 +113,16 @@
             >
                 <div class="accordion-body" style="width: 100%;overflow-x: scroll;">
                     <div style="margin-left: 5px;" class="border border-1 p-2 rounded">
+                        {%if tu_keuangan.count == 0 %}
+                        <p><b><i>---belum ada data---</i></b></p>
+                        {% endif%}
                         {% for keuangan in tu_keuangan %}
-                        <p style="margin-left: 50px">{{forloop.counter}}. {{keuangan.detail}} <a href="#" class="badge badge-danger small">X</a></p>
+                        <p style="margin-left: 50px">{{forloop.counter}}. {{keuangan.detail}} <a href="/lhe/del/b2/tu/keu/{{id_lhe}}/{{keuangan.id_tu_keuangan}}/" class="badge badge-danger small">X</a></p>
                         {% if forloop.last %}
                         <p style="margin-left: 50px">{{forloop.counter|add:1}}. Pengelolaan administrasi keuangan sudah dilaksanakan dengan <b>baik</b> dan <b>tertib</b></p>        
                         {% endif %}
                         {% endfor%}
-                        <div class="border border-1 rounded p-2">
-                            <p  class="small">Menambah Data Keuangan</p>
-                            <div>
-                                <form method="post" class="form">
-                                    {% csrf_token%}
-                                    <textarea class="form-control" style="width:100%" required rows="2" placeholder="tambahkan data keuangan..." name="keuangan"></textarea>
-                                    <button type="submit" class="btn btn-success small"><i>+ Tambah</i></button>
-                                </form>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -153,7 +155,7 @@
                         <div style="margin-left: 5px;" class="p-2 rounded border border-1 m-3" >
                             {% if aset_tak_bergerak.count == 0%}<b><i>---belum ada data---</i></b>{%endif%}
                             {% for aset in aset_tak_bergerak %}
-                            <p style="margin-left: 50px">{{forloop.counter}}. {{aset.detail}} <a href="#" class="badge badge-danger small">X</a></p>
+                            <p style="margin-left: 50px">{{forloop.counter}}. {{aset.detail}} <a href="/lhe/del/b2/tu/ban/{{id_lhe}}/{{aset.id_tu_bagun_tanah}}/" class="badge badge-danger small">X</a></p>
                             {% endfor%}
                             
                         </div>
@@ -163,7 +165,7 @@
                                 <div style="margin-left: 5px;" class="p-2 rounded border border-1 m-3" >
                                 {% if mobil_pemkab.count == 0%}<b><i>---belum ada data---</i></b>{%endif%}
                                 {% for aset in mobil_pemkab %}
-                                <p style="margin-left: 50px">{{forloop.counter}}. {{aset.detail}} <a href="#" class="badge badge-danger small">X</a></p>
+                                <p style="margin-left: 50px">{{forloop.counter}}. {{aset.detail}} <a href="/lhe/del/b2/tu/mobpk/{{id_lhe}}/{{aset.id_tu_mobil_pemkab}}/" class="badge badge-danger small">X</a></p>
                                 {% endfor%}
                                 
                             </div>
@@ -171,7 +173,7 @@
                             <div style="margin-left: 5px;" class="p-2 rounded border border-1 m-3" >
                                 {% if mobil_pemprov.count == 0%}<b><i>---belum ada data---</i></b>{%endif%}
                                 {% for aset in mobil_pemprov %}
-                                <p style="margin-left: 50px">{{forloop.counter}}. {{aset.detail}} <a href="#" class="badge badge-danger small">X</a></p>
+                                <p style="margin-left: 50px">{{forloop.counter}}. {{aset.detail}} <a href="/lhe/del/b2/tu/mobpr/{{id_lhe}}/{{aset.id_tu_mobil_pemprov}}/" class="badge badge-danger small">X</a></p>
                                 {% endfor%}
                                
                             </div>
@@ -179,7 +181,7 @@
                             <div style="margin-left: 5px;" class="p-2 rounded border border-1 m-3" >
                                 {% if motor_pemprov.count == 0%}<b><i>---belum ada data---</i></b>{%endif%}
                                 {% for aset in motor_pemprov %}
-                                <p style="margin-left: 50px">{{forloop.counter}}. {{aset.detail}} <a href="#" class="badge badge-danger small">X</a></p>
+                                <p style="margin-left: 50px">{{forloop.counter}}. {{aset.detail}} <a href="/lhe/del/b2/tu/motor/{{id_lhe}}/{{aset.id_tu_motor_pemprov}}/" class="badge badge-danger small">X</a></p>
                                 {% endfor%}
                                 
                             </div>
@@ -275,7 +277,16 @@
                                 
                             </form>
         </p>
-        
+        <div class="border border-1 rounded p-2">
+                            <p  class="small">Menambah Data Keuangan</p>
+                            <div>
+                                <form method="post" class="form">
+                                    {% csrf_token%}
+                                    <textarea class="form-control" style="width:100%" required rows="2" placeholder="tambahkan data keuangan..." name="keuangan"></textarea>
+                                    <button type="submit" class="btn btn-success small"><i>+ Tambah</i></button>
+                                </form>
+                            </div>
+        </div>
         <div class="border border-1 rounded p-2 my-2">
                                     <p  class="small">Menambah Aset Tak Bergerak</p>
                                     
