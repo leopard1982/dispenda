@@ -1,13 +1,14 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from lhe.models import headerLHE, simpulanHasilValBin
-from lhe.forms import inputHeaderLHE, inputNormatifLHE
+from lhe.forms import inputHeaderLHE, inputNormatifLHE, inputBab3PKB
 from surat_tugas.models import TrxSuratTugas, ST_Peserta, MasterJabatan
 from lhe.models import bab2_sasaran_evaluasi_pembinaan, bab2_tujuan_evaluasi_pembinaan, bab2_data_umum
 from lhe.models import bab2_tatausaha_kepegawaian, bab2_tatausaha_kepegawaian_detail, bab2_tatausaha_kepegawaian_normatif
-from lhe.models import bab2_tatausaha_keuangan
+from lhe.models import bab2_tatausaha_keuangan, bab3_pkb, bab3_pkb_detail
 import datetime
 from django.core.paginator import Paginator
 from lhe.models import bab2_tatausaha_bangun_tanah, bab2_tatausaha_mobil_pemkab, bab2_tatausaha_mobil_pemprov, bab2_tatausaha_motor_pemprov
+from django.db.models import Sum
 
 def getPendingSurat():
 	return TrxSuratTugas.objects.all().filter(submit=False)
@@ -62,6 +63,33 @@ def konversi_angka(angka:int):
 	except:
 		return None
 	
+def konversi_bulan(bul:int):
+	if(bul==1):
+		return "JANUARI"
+	if(bul==2):
+		return "FEBRUARI"
+	if(bul==3):
+		return "MARET"
+	if(bul==4):
+		return "APRIL"
+	if(bul==5):
+		return "MEI"
+	if(bul==6):
+		return "JUNI"
+	if(bul==7):
+		return "JULI"
+	if(bul==8):
+		return "AGUSTUS"
+	if(bul==9):
+		return "SEPTEMBER"
+	if(bul==10):
+		return "OKTOBER"
+	if(bul==11):
+		return "NOVEMBER"
+	if(bul==12):
+		return "DESEMBER"
+	
+
 def addLHE(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
@@ -555,3 +583,158 @@ def delMotorPemprov(request,id,id_del):
 	bab2_tatausaha_motor_pemprov.objects.all().filter(id_tu_motor_pemprov=id_del).delete()
 
 	return HttpResponseRedirect(f'/lhe/add/b2/tu/{id}/')
+
+def addLHE_b2_pkb(request,id):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+
+	headerlhe = headerLHE.objects.get(id_lhe=id)
+	
+	
+
+	if request.method == "POST":
+		print(request.POST.items)
+		try:
+			try:
+				bulan_awal = request.POST['bulan_awal']
+			except:
+				bulan_awal=None
+			try:
+				bulan_akhir = request.POST['bulan_akhir']
+			except:
+				bulan_akhir=None
+			try:
+				tahun_awal = int(request.POST['tahun_awal'])
+			except:
+				tahun_awal=None
+			try:
+				tahun_akhir = int(request.POST['tahun_akhir'])
+			except:
+				tahun_akhir=None
+			try:
+				keterangan = request.POST['keterangan']
+			except:
+				keterangan=None
+
+			#request awal
+			if(bulan_awal!=None and tahun_awal!=None and keterangan!=None):	
+				pkb = bab3_pkb()
+				pkb.id_lhe = headerlhe
+				pkb.bulan_awal=bulan_awal
+				pkb.bulan_akhir = bulan_akhir
+				pkb.tahun_akhir = tahun_akhir
+				pkb.tahun_awal = tahun_awal
+				pkb.keterangan = keterangan
+				pkb.createdAt = datetime.datetime.now().date()
+				pkb.createdBy = request.user.username
+				pkb.is_periode=True #true akan menghapus semua data
+				pkb.save()
+
+			#request update bulan
+			elif(bulan_awal!=None and tahun_awal==None and keterangan==None):	
+				pkb=bab3_pkb.objects.get(id_lhe=headerlhe)
+				pkb.bulan_awal=bulan_awal
+				pkb.bulan_akhir=bulan_akhir
+				pkb.is_periode=True #true akan menghapus semua data
+				pkb.save()
+			
+			#request update tahun
+			elif(bulan_awal==None and tahun_awal!=None and keterangan==None):	
+				pkb=bab3_pkb.objects.get(id_lhe=headerlhe)
+				pkb.tahun_awal=tahun_awal
+				pkb.tahun_akhir=tahun_akhir
+				pkb.is_periode=False
+				pkb.save()
+
+			#request update keterangan
+			elif(bulan_awal==None and tahun_awal==None and keterangan!=None):	
+				pkb=bab3_pkb.objects.get(id_lhe=headerlhe)
+				pkb.keterangan=keterangan
+				pkb.is_periode=False
+				pkb.save()
+
+				
+		except Exception as ex:
+			print(ex)
+			print('error post')
+
+	try:
+		pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
+		pkb_detail = bab3_pkb_detail.objects.all().filter(id_pkb=pkb)
+	except Exception as ex:
+		print(ex)
+		print('get headerlhe')
+		pkb=None
+		pkb_detail=None
+			
+	lokasi = headerlhe.suratTugas.lokasi
+	forms = inputBab3PKB
+
+	try:
+		keterangan = pkb.keterangan
+	except:
+		keterangan=None
+	
+	try:
+		tahun_awal = pkb.tahun_awal
+	except:
+		tahun_awal=None
+	try:
+		tahun_akhir = pkb.tahun_akhir
+	except:
+		tahun_akhir=None
+	try:
+		bulan_awal = konversi_bulan(pkb.bulan_awal)
+	except:
+		bulan_awal=None
+	try:
+		bulan_akhir = konversi_bulan(pkb.bulan_akhir)
+	except:
+		bulan_akhir=None
+	try:
+		selisih_angka = pkb_detail.aggregate(Sum('selisih_angka'))['selisih_angka__sum']
+	except:
+		selisih_angka=0
+	try:
+		selisih_persen = pkb_detail.aggregate(Sum('selisih_persen'))['selisih_persen__sum']
+	except:
+		selisih_persen=0
+	try:
+		total_tahun_awal = pkb_detail.aggregate(Sum('nilai_awal'))['nilai_awal__sum']
+	except:
+		total_tahun_awal = 0
+	try:
+		total_tahun_akhir = pkb_detail.aggregate(Sum('nilai_akhir'))['nilai_akhir__sum']
+	except:
+		total_tahun_akhir=0
+
+	context = {
+		'nomor_lhe':headerlhe.nomor_lhe,
+		'id_lhe':headerlhe.id_lhe,
+		'forms':forms,
+		'lokasi':lokasi,
+		'tahun_awal':tahun_awal,
+		'tahun_akhir':tahun_akhir,
+		'bulan_awal':bulan_awal,
+		'bulan_akhir':bulan_akhir,
+		'selisih_angka':selisih_angka,
+		'selisih_persen':selisih_persen,
+		'total_tahun_awal':total_tahun_awal,
+		'total_tahun_akhir':total_tahun_akhir,
+		'pkb_detail':pkb_detail,
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE(),
+		'keterangan': keterangan
+	}
+	return render(request,'lhe/create_lhe_bab2_c_pkb.html',context)
+
+def updatePKBDetail(request,id,id_update):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	
+	id_pkb_detail = bab3_pkb_detail.objects.get(id_pkb_detail=id_update)
+	id_pkb_detail.nilai_awal=int(request.POST['nilai_awal_new'])
+	id_pkb_detail.nilai_akhir=int(request.POST['nilai_akhir_new'])
+	id_pkb_detail.save()
+
+	return HttpResponseRedirect(f'/lhe/add/b2/pkb/{id}/')
