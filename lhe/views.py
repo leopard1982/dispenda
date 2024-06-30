@@ -696,7 +696,8 @@ def addLHE_b2_pkb(request,id):
 	except:
 		selisih_angka=0
 	try:
-		selisih_persen = pkb_detail.aggregate(Sum('selisih_persen'))['selisih_persen__sum']
+		total_tahun_awal = pkb_detail.aggregate(Sum('nilai_awal'))['nilai_awal__sum']
+		selisih_persen = selisih_angka/total_tahun_awal
 	except:
 		selisih_persen=0
 	try:
