@@ -205,6 +205,14 @@
                             <th class="p-2 border border-1 border-black text-center"><a onclick="setcounter('{{forloop.counter}}')" class="btn btn-border-primary small" data-bs-nilaiakhir="{{pkb.nilai_akhir}}" data-bs-nilaiawal="{{pkb.nilai_awal}}" data-bs-toggle="modal" id="setpkb{{forloop.counter}}" data-bs-counter="{{forloop.counter}}" data-bs-bulan="{{pkb.bulan}}" data-bs-idlhe="{{pkb.id_pkb.id_lhe.id_lhe}}" data-bs-idpkb-detail="{{pkb.id_pkb_detail}}" data-bs-target="#modalId"><i class="fa fa-edit"></i></a></th>
                         </tr>
                         {% endfor %}
+                        <tr>
+                            <td colspan="2" class="text-center fw-bold">JUMLAH</td>
+                            <td class="small p-2 border border-1 border-black text-center fw-bold">Rp.{{total_tahun_awal|intcomma}},00</td>
+                            <td class="small p-2 border border-1 border-black text-center fw-bold">Rp.{{total_tahun_akhir|intcomma}},00</td>
+                            <td class="small p-2 border border-1 border-black text-center">Rp.{{selisih_angka|intcomma}},00</td>
+                            <td class="small p-2 border border-1 border-black text-center fw-bold">{% widthratio selisih_persen  1 100 %}%</td>
+                            <td></td>
+                        </tr>
                     </table>
                 </div>
                 <div class="p-2">
