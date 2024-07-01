@@ -239,7 +239,7 @@ class bab3_pkb(models.Model):
     id_pkb = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()))
     bulan_awal = models.PositiveSmallIntegerField(default=1,choices=BULAN)
     bulan_akhir = models.PositiveSmallIntegerField(default=12,choices=BULAN)
-    tahun_awal = models.PositiveSmallIntegerField(default=2024)
+    tahun_awal = models.PositiveSmallIntegerField(default=2023)
     tahun_akhir = models.PositiveSmallIntegerField(default=2024)
     uppd = models.CharField(max_length=100,blank=True,null=True)
     keterangan = models.CharField(max_length=200)
@@ -257,16 +257,21 @@ class bab3_pkb(models.Model):
             super(bab3_pkb,self).save(*args,**kwargs)
             if(self.is_periode):
                 bab3_pkb_detail.objects.all().filter(id_pkb=bab3_pkb.objects.get(id_pkb=self.id_pkb)).delete()
-                for i in range(int(self.bulan_awal),int(self.bulan_akhir)+1):
-                    detail = bab3_pkb_detail()
-                    detail.id_pkb=bab3_pkb.objects.get(id_pkb=self.id_pkb)
-                    detail.id_pkb_detail = str(uuid.uuid4())
-                    detail.tahun_awal=self.tahun_awal
-                    detail.tahun_akhir = self.tahun_akhir
-                    detail.nilai_awal=0
-                    detail.nilai_akhir=0
-                    detail.bulan=i
-                    detail.save()
+                try:
+                    for i in range(int(self.bulan_awal),int(self.bulan_akhir)+1):
+                        detail = bab3_pkb_detail()
+                        detail.id_pkb=bab3_pkb.objects.get(id_pkb=self.id_pkb)
+                        detail.id_pkb_detail = str(uuid.uuid4())
+                        detail.tahun_awal=self.tahun_awal
+                        detail.tahun_akhir = self.tahun_akhir
+                        detail.nilai_awal=0
+                        detail.nilai_akhir=0
+                        detail.bulan=i
+                        detail.save()
+                except Exception as ex:
+                    print('ini di table')
+                    print(ex)
+            
 
 class bab3_pkb_detail(models.Model):
     id_pkb = models.ForeignKey(bab3_pkb,on_delete=models.RESTRICT)
