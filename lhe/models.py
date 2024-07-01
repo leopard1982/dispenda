@@ -248,7 +248,13 @@ class bab3_pkb(models.Model):
     createdBy = models.CharField(max_length=50,blank=False,null=False,default="")
     createdAt = models.CharField(max_length=50,blank=False,null=False,default="")
     is_periode = models.BooleanField(null=True,blank=True)
- 
+    obj_data_piutang = models.IntegerField(default=0,null=True,blank=True)
+    obj_data_piutang_nominal = models.BigIntegerField(default=0,null=True,blank=True)
+    obj_pelunasan_piutang = models.IntegerField(default=0,null=True,blank=True)    
+    obj_pelunasan_piutang_persen = models.FloatField(default=0,null=True,blank=True)
+    pelunasan_piutang_rupiah = models.BigIntegerField(default=0,null=True,blank=True)
+    pelunasan_piutang_persen = models.FloatField(default=0,null=True,blank=True)
+
     def save(self,*args,**kwargs):
         self.uppd = self.id_lhe.suratTugas.lokasi
         self.selisih_angka=0
