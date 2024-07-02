@@ -16,6 +16,28 @@ def getPendingSurat():
 def getPendingLHE():
 	return headerLHE.objects.all().filter(submit=False)
 
+def angka1_9(angka):
+		if(angka==1):
+			return " satu "
+		if(angka==2):
+			return " dua "
+		if(angka==3):
+			return " tiga "
+		if(angka==4):
+			return " empat "
+		if(angka==5):
+			return " lima "
+		if(angka==6):
+			return " enam "
+		if(angka==7):
+			return " tujuh "
+		if(angka==8):
+			return " delapan "
+		if(angka==9):
+			return " sembilan "
+		if(angka==0):
+			return ""
+
 def konversi_angka(angka:int):
 	try:
 		if(angka==0):
@@ -60,6 +82,11 @@ def konversi_angka(angka:int):
 			return " sembilan belas "
 		if(angka==20):
 			return " dua puluh "
+		if angka>20:
+			pul=int(angka/10)
+			sat=angka%10
+			return angka1_9(pul) + "puluh" + angka1_9(sat)
+			
 	except:
 		return None
 	
@@ -592,6 +619,7 @@ def addLHE_b2_pkb(request,id):
 	
 	acc_pkb=False
 	acc_piutang=False
+	acc_penetapan=False
 
 	obj_data_piutang = 0
 	obj_data_piutang_nominal = 0
@@ -599,11 +627,54 @@ def addLHE_b2_pkb(request,id):
 	obj_pelunasan_piutang_persen =0
 	pelunasan_piutang_rupiah=0
 	pelunasan_piutang_persen=0
+	jml_pkb_roda4_angka = 0
+	jml_pkb_kuning_angka = 0
+	jml_pkb_hitam_angka = 0
+	jml_pkb_roda4_huruf = ""
+	jml_pkb_kuning_huruf = ""
+	jml_pkb_hitam_huruf = ""
+	penelitian_ulang=0
 
 	if request.method == "POST":
 		#apakah update piutang?
 		#cek dolo
 		try:
+			if 'jml_pkb_roda4' in request.POST:
+				if(int(request.POST['jml_pkb_roda4'])<100):
+					pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
+					pkb.jml_pkb_roda4=request.POST['jml_pkb_roda4']
+					pkb.is_periode=False
+					pkb.is_new=False
+					pkb.save()
+					acc_penetapan=True
+
+			if 'jml_pkb_kuning' in request.POST:
+				if(int(request.POST['jml_pkb_kuning'])<100):
+					pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
+					pkb.jml_pkb_kuning=request.POST['jml_pkb_kuning']
+					pkb.is_periode=False
+					pkb.is_new=False
+					pkb.save()
+					acc_penetapan=True
+
+			if 'jml_pkb_hitam' in request.POST:
+				if(int(request.POST['jml_pkb_hitam'])<100):
+					pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
+					pkb.jml_pkb_hitam=request.POST['jml_pkb_hitam']
+					pkb.is_periode=False
+					pkb.is_new=False
+					pkb.save()
+					acc_penetapan=True
+
+			if 'penelitian_ulang' in request.POST:
+				if(int(request.POST['penelitian_ulang'])<100):
+					pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
+					pkb.penelitian_ulang=request.POST['penelitian_ulang']
+					pkb.is_periode=False
+					pkb.is_new=False
+					pkb.save()
+					acc_penetapan=True
+
 			if 'obj_data_piutang' in request.POST:
 				pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
 				pkb.obj_data_piutang=request.POST['obj_data_piutang']
@@ -679,19 +750,21 @@ def addLHE_b2_pkb(request,id):
 			#request awal
 			
 			if(bulan_awal!=None and tahun_awal!=None and keterangan!=None):	
-				pkb = bab3_pkb()
-				pkb.id_lhe = headerlhe
-				pkb.bulan_awal=bulan_awal
-				pkb.bulan_akhir = bulan_akhir
-				pkb.tahun_akhir = tahun_akhir
-				pkb.tahun_awal = tahun_awal
-				pkb.keterangan= keterangan
-				pkb.createdAt = datetime.datetime.now().date()
-				pkb.createdBy = request.user.username
-				pkb.is_periode=True #true akan menghapus semua data			
-				pkb.is_new=True	#akan create awal	
-				pkb.save()
-				acc_pkb=True
+				
+				if bab3_pkb.objects.filter(id_lhe=headerlhe).count()==0:
+					pkb = bab3_pkb()
+					pkb.id_lhe = headerlhe
+					pkb.bulan_awal=bulan_awal
+					pkb.bulan_akhir = bulan_akhir
+					pkb.tahun_akhir = tahun_akhir
+					pkb.tahun_awal = tahun_awal
+					pkb.keterangan= keterangan
+					pkb.createdAt = datetime.datetime.now().date()
+					pkb.createdBy = request.user.username
+					pkb.is_periode=True #true akan menghapus semua data			
+					pkb.is_new=True	#akan create awal	
+					pkb.save()
+					acc_pkb=True
 			
 			#request update bulan
 			if(bulan_awal!=None and tahun_awal==None and keterangan==None):	
@@ -705,7 +778,6 @@ def addLHE_b2_pkb(request,id):
 				pkb.is_new=False	
 				pkb.save()				
 				acc_pkb=True
-				print('update')
 			
 			#request update tahun
 			if(bulan_awal==None and tahun_awal!=None and keterangan==None):	
@@ -742,7 +814,13 @@ def addLHE_b2_pkb(request,id):
 		obj_pelunasan_piutang_persen = pkb.obj_pelunasan_piutang_persen
 		pelunasan_piutang_persen = pkb.pelunasan_piutang_persen
 		pelunasan_piutang_rupiah = pkb.pelunasan_piutang_rupiah
-
+		jml_pkb_roda4_angka = pkb.jml_pkb_roda4
+		jml_pkb_kuning_angka = pkb.jml_pkb_kuning
+		jml_pkb_hitam_angka = pkb.jml_pkb_hitam
+		jml_pkb_roda4_huruf = konversi_angka(jml_pkb_roda4_angka)
+		jml_pkb_kuning_huruf = konversi_angka(jml_pkb_kuning_angka)
+		jml_pkb_hitam_huruf = konversi_angka(jml_pkb_hitam_angka)
+		penelitian_ulang = pkb.penelitian_ulang		
 		pkb_detail = bab3_pkb_detail.objects.all().filter(id_pkb=pkb)
 	
 	except Exception as ex:
@@ -758,6 +836,10 @@ def addLHE_b2_pkb(request,id):
 		keterangan = pkb.keterangan
 	except:
 		keterangan=None
+	# jml_pkb_roda4 = models.IntegerField(default=0,blank=True,null=True)
+    # jml_pkb_kuning = models.IntegerField(default=0,blank=True,null=True)
+    # jml_pkb_hitam = models.IntegerField(default=0,blank=True,null=True)
+    
 	
 	try:
 		tahun_awal = pkb.tahun_awal
@@ -792,6 +874,7 @@ def addLHE_b2_pkb(request,id):
 		total_tahun_akhir = pkb_detail.aggregate(Sum('nilai_akhir'))['nilai_akhir__sum']
 	except:
 		total_tahun_akhir=0
+	
 
 	context = {
 		'nomor_lhe':headerlhe.nomor_lhe,
@@ -817,7 +900,15 @@ def addLHE_b2_pkb(request,id):
 		'obj_pelunasan_piutang':obj_pelunasan_piutang,
 		'obj_pelunasan_piutang_persen':obj_pelunasan_piutang_persen,
 		'pelunasan_piutang_persen':pelunasan_piutang_persen,
-		'pelunasan_piutang_rupiah':pelunasan_piutang_rupiah
+		'pelunasan_piutang_rupiah':pelunasan_piutang_rupiah,
+		'acc_penetapan':acc_penetapan,
+		'jml_pkb_roda4_angka':jml_pkb_roda4_angka,
+		'jml_pkb_kuning_angka':jml_pkb_kuning_angka,
+		'jml_pkb_hitam_angka':jml_pkb_hitam_angka,
+		'jml_pkb_roda4_huruf':jml_pkb_roda4_huruf,
+		'jml_pkb_kuning_huruf':jml_pkb_kuning_huruf,
+		'jml_pkb_hitam_huruf':jml_pkb_hitam_huruf,
+		'penelitian_ulang':penelitian_ulang
 	}
 	return render(request,'lhe/create_lhe_bab2_c_pkb.html',context)
 

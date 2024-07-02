@@ -228,7 +228,7 @@
                                         <td colspan="2" class="text-center fw-bold">JUMLAH</td>
                                         <td class="small p-2 border border-1 border-black text-center fw-bold">Rp.{{total_tahun_awal|intcomma}},00</td>
                                         <td class="small p-2 border border-1 border-black text-center fw-bold">Rp.{{total_tahun_akhir|intcomma}},00</td>
-                                        <td class="small p-2 border border-1 border-black text-center">Rp.{{selisih_angka|intcomma}},00</td>
+                                        <td class="small p-2 border border-1 border-black text-center fw-bold">Rp.{{selisih_angka|intcomma}},00</td>
                                         <td class="small p-2 border border-1 border-black text-center fw-bold">{% widthratio selisih_persen  1 100 %}%</td>
                                         <td></td>
                                     </tr>
@@ -286,6 +286,100 @@
             </div>
         </div>
 
+        <div class="accordion py-2 px-4" id="accordionExample3">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button
+                        class="accordion-button"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseThree"
+                        aria-expanded="true"
+                        aria-controls="collapseThree"
+                    >
+                    <b>3. Penetapan PKB</b>
+                    </button>
+                </h2>
+                <div
+                    id="collapseThree"
+                    class="accordion-collapse p-2 collapse {%if acc_penetapan%}show{%else%}hide{%endif%}"
+                    aria-labelledby="headingThree"
+                    data-bs-parent="#accordionExample3"
+                >
+                    <div class="accordion-body" style="width: 100%;overflow-x: scroll;">
+                        <div style="margin-left: 5px;">
+                            <p style="padding-top: 20px;">
+                                a.	Telah dilakukan uji petik perhitungan penetapan terhadap kendaraan bermotor baru roda  4 (empat) sebanyak {{jml_pkb_roda4_angka|intcomma}} ({{jml_pkb_roda4_huruf}}) unit, terdiri dari kendaraan baru dengan tanda nomor kendaraan bermotor (TNKB) berwarna kuning sebanyak {{jml_pkb_kuning_angka|intcomma}} ({{jml_pkb_kuning_huruf}}) unit dan tanda nomor kendaraan bermotor (TNKB) berwarna hitam sebanyak {{jml_pkb_hitam_angka|intcomma}} ({{jml_pkb_hitam_huruf}}) unit. 
+                            </p>
+                            <p style="padding-top: 20px;">
+                                b.	Terhadap uji petik perhitungan penetapan proses Penelitian Ulang (PU) terdapat {{penelitian_ulang|intcomma}} obyek/nopol dengan selisih kurang
+                            </p> 
+                            <p style="padding-top: 20px;">
+                                c.	Penetapan PKB oleh petugas masih kurang/sudah cermat dan teliti.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion py-2 px-4" id="accordionExample4">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFour">
+                    <button
+                        class="accordion-button"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseFour"
+                        aria-expanded="true"
+                        aria-controls="collapseFour"
+                    >
+                    <b>4. Pengelolaan Administrasi PKB</b>
+                    </button>
+                </h2>
+                <div
+                    id="collapseFour"
+                    class="accordion-collapse p-2 collapse hide"
+                    aria-labelledby="headingFour"
+                    data-bs-parent="#accordionExample4"
+                >
+                    <div class="accordion-body" style="width: 100%;overflow-x: scroll;">
+                        <div style="margin-left: 5px;">
+                            <p style="padding-top: 20px;">
+                                a.	Administrasi Persyaratan Pembayaran PKB 
+                                <p style="margin-left: 20px;">
+                                    Administrasi Persyaratan Pembayaran PKB oleh petugas masih kurang/sudah sesuai dengan ketentuan yang berlaku
+                                </p>
+                            </p>
+                            <p style="padding-top: 20px;">
+                                b.	Administrasi SKKP 
+                                <p style="margin-left: 20px;">
+                                    Administrasi SKPP oleh petugas masih kurang/sudah sesuai dengan ketentuan yang berlaku
+                                </p>
+                            </p>
+                            <p style="padding-top: 20px;">
+                                c.	Administrasi Perubahan Password 
+                                <p style="margin-left: 20px;">
+                                   Administrasi Perubahan Password oleh petugas masih kurang/sudah sesuai dengan ketentuan yang berlaku
+                                </p>
+                            </p>
+                            <p style="padding-top: 20px;">
+                                d.	Administrasi Perubahan Data Identifikasi Kendaraan bermotor
+                                <p style="margin-left: 20px;">
+                                    Administrasi Perubahan Data Identifikasi Kendaraan bermotor masih kurang/sudah sesuai dengan ketentuan yang berlaku.
+                                </p>
+                            </p>
+                            <p style="padding-top: 20px;">
+                                e.	Administrasi Penghapusan Transaksi
+                                <p style="margin-left: 20px;">
+                                    Administrasi Penghapusan Transaksi masih kurang/sudah sesuai dengan ketentuan yang berlaku
+                                </p>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="p-2">
             <p></p>
@@ -469,6 +563,56 @@
                         <tr>
                             <td colspan="3"></td>
                         </tr>
+                    </table>
+                </div>
+                {% endif %}
+                {% if pkb_detail.count > 0 %}
+                <b>3. Penetapan PKB</b>
+                <div class="p-2 border border-1 my-2">
+                    <table>
+                        <tr>
+                            <form method="post">
+                                {% csrf_token %}
+                                <td style="min-width:300px;">a. Jumlah PKB Roda 4:</td>
+                                <td style="min-width: 200px;"><input type="number" class="form-control" name="jml_pkb_roda4" min="0" max="99" placeholder="0-99" required></td>
+                                <td><button type="submit" class="small mx-4 btn btn-success">+ Update</button></td>
+                            </form>
+
+                        </tr>
+                        <tr>
+                            <td colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <form method="post">
+                                {% csrf_token %}
+                                <td style="min-width:300px;">b. Jumlah PKB Plat Kuning:</td>
+                                <td style="min-width: 200px;"><input type="number" class="form-control" name="jml_pkb_kuning" min="0" max="99" placeholder="0-99" required></td>
+                                <td><button type="submit" class="small  mx-4 btn btn-success">+ Update</button></td>
+                            </form>
+                        </tr>
+                        <tr>
+                            <td colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <form method="post">
+                                {% csrf_token %}
+                                <td style="min-width:300px;">c. Jumlah PKB Plat Hitam:</td>
+                                <td style="min-width: 200px;"><input type="number" class="form-control" name="jml_pkb_hitam" min="0" max="99" placeholder="0-99" required></td>
+                                <td><button type="submit" class="small mx-4 btn btn-success">+ Update</button></td>
+                            </form>
+                        </tr>
+                        <tr>
+                            <td colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <form method="post">
+                                {% csrf_token %}
+                                <td style="min-width:300px;">d. Jumlah Proses Penelitian Ulang:</td>
+                                <td style="min-width: 200px;"><input type="number" class="form-control" name="penelitian_ulang"  min="0" max="99" placeholder="0-99" required></td>
+                                <td><button type="submit" class="small mx-4 btn btn-success">+ Update</button></td>
+                            </form>
+                        </tr>
+                        
                     </table>
                 </div>
                 {% endif %}

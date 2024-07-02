@@ -255,9 +255,16 @@ class bab3_pkb(models.Model):
     pelunasan_piutang_rupiah = models.BigIntegerField(default=0,null=True,blank=True)
     pelunasan_piutang_persen = models.FloatField(default=0,null=True,blank=True)
     is_new = models.BooleanField(null=True,blank=True)
+    jml_pkb_roda4 = models.IntegerField(default=0,blank=True,null=True)
+    jml_pkb_kuning = models.IntegerField(default=0,blank=True,null=True)
+    jml_pkb_hitam = models.IntegerField(default=0,blank=True,null=True)
+    penelitian_ulang = models.IntegerField(default=0,blank=True,null=True)
+    
 
     def save(self,*args,**kwargs):
         if self.is_periode:
+            baru = bab3_pkb.objects.all().filter(id_lhe=self.id_lhe).count()
+            print(baru)
             if self.is_new:
                 self.id_pkb = str(uuid.uuid4())
             self.uppd = self.id_lhe.suratTugas.lokasi
