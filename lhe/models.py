@@ -295,6 +295,7 @@ class bab3_pkb_detail(models.Model):
 
     def save(self,*args,**kwargs):
         self.selisih_angka=self.nilai_akhir-self.nilai_awal
+        self.id_pkb_detail=str(uuid.uuid4())
         try:
             self.selisih_persen=(self.selisih_angka)/self.nilai_awal
         except:
