@@ -236,7 +236,7 @@ BULAN = [
 ]
 class bab3_pkb(models.Model):
     id_lhe = models.ForeignKey(headerLHE,on_delete=models.RESTRICT)
-    id_pkb = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()))
+    id_pkb = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()),unique=True)
     bulan_awal = models.PositiveSmallIntegerField(default=1,choices=BULAN)
     bulan_akhir = models.PositiveSmallIntegerField(default=12,choices=BULAN)
     tahun_awal = models.PositiveSmallIntegerField(default=2023)
@@ -257,6 +257,7 @@ class bab3_pkb(models.Model):
 
     def save(self,*args,**kwargs):
         self.uppd = self.id_lhe.suratTugas.lokasi
+        self.id_pkb = str(uuid.uuid4())
         self.selisih_angka=0
         self.selisih_persen=0
         if(self.bulan_awal<self.bulan_akhir and self.tahun_awal<self.tahun_akhir):

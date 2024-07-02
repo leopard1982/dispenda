@@ -603,40 +603,43 @@ def addLHE_b2_pkb(request,id):
 	if request.method == "POST":
 		#apakah update piutang?
 		#cek dolo
-		if 'obj_data_piutang' in request.POST:
-			pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
-			pkb.obj_data_piutang=request.POST['obj_data_piutang']
-			pkb.is_periode=False
-			pkb.save()
-			acc_piutang=True
-		
-		if 'obj_data_piutang_nominal' in request.POST:
-			pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
-			pkb.obj_data_piutang_nominal=request.POST['obj_data_piutang_nominal']
-			pkb.is_periode=False
-			pkb.save()
-			acc_piutang=True
-		
-		if 'obj_pelunasan_piutang' in request.POST:
-			pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
-			pkb.obj_pelunasan_piutang=request.POST['obj_pelunasan_piutang']
-			pkb.is_periode=False
-			pkb.save()
-			acc_piutang=True
+		try:
+			if 'obj_data_piutang' in request.POST:
+				pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
+				pkb.obj_data_piutang=request.POST['obj_data_piutang']
+				pkb.is_periode=False
+				pkb.save()
+				acc_piutang=True
+			
+			if 'obj_data_piutang_nominal' in request.POST:
+				pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
+				pkb.obj_data_piutang_nominal=request.POST['obj_data_piutang_nominal']
+				pkb.is_periode=False
+				pkb.save()
+				acc_piutang=True
+			
+			if 'obj_pelunasan_piutang' in request.POST:
+				pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
+				pkb.obj_pelunasan_piutang=request.POST['obj_pelunasan_piutang']
+				pkb.is_periode=False
+				pkb.save()
+				acc_piutang=True
 
-		if 'obj_pelunasan_piutang_persen' in request.POST:
-			pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
-			pkb.obj_pelunasan_piutang_persen=request.POST['obj_pelunasan_piutang_persen']
-			pkb.is_periode=False
-			pkb.save()
-			acc_piutang=True
+			if 'obj_pelunasan_piutang_persen' in request.POST:
+				pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
+				pkb.obj_pelunasan_piutang_persen=request.POST['obj_pelunasan_piutang_persen']
+				pkb.is_periode=False
+				pkb.save()
+				acc_piutang=True
 
-		if 'pelunasan_piutang_rupiah' in request.POST:
-			pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
-			pkb.pelunasan_piutang_rupiah=request.POST['pelunasan_piutang_rupiah']
-			pkb.is_periode=False
-			pkb.save()
-			acc_piutang=True
+			if 'pelunasan_piutang_rupiah' in request.POST:
+				pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
+				pkb.pelunasan_piutang_rupiah=request.POST['pelunasan_piutang_rupiah']
+				pkb.is_periode=False
+				pkb.save()
+				acc_piutang=True
+		except:
+			pass
 
 		if 'pelunasan_piutang_persen' in request.POST:
 			pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
@@ -663,50 +666,58 @@ def addLHE_b2_pkb(request,id):
 			except:
 				tahun_akhir=None
 			try:
-				keterangan = request.POST['keterangan']
+				keterangan = request.POST['keterangan'].strip()
+				if len(keterangan)==0:
+					keterangan=None
 			except:
 				keterangan=None
 
 			#request awal
+			
 			if(bulan_awal!=None and tahun_awal!=None and keterangan!=None):	
-				pkb = bab3_pkb()
-				pkb.id_lhe = headerlhe
-				pkb.bulan_awal=bulan_awal
-				pkb.bulan_akhir = bulan_akhir
-				pkb.tahun_akhir = tahun_akhir
-				pkb.tahun_awal = tahun_awal
-				pkb.keterangan = keterangan
-				pkb.createdAt = datetime.datetime.now().date()
-				pkb.createdBy = request.user.username
-				pkb.is_periode=True #true akan menghapus semua data
-				pkb.save()
-				acc_pkb=True
-
-			#request update bulan
-			elif(bulan_awal!=None and tahun_awal==None and keterangan==None):	
-				pkb=bab3_pkb.objects.get(id_lhe=headerlhe)
-				pkb.bulan_awal=bulan_awal
-				pkb.bulan_akhir=bulan_akhir
-				pkb.is_periode=True #true akan menghapus semua data
-				pkb.save()
+				bab3_pkb.objects.update_or_create(
+				id_lhe = headerlhe,
+				bulan_awal=bulan_awal,
+				bulan_akhir = bulan_akhir,
+				tahun_akhir = tahun_akhir,
+				tahun_awal = tahun_awal,
+				keterangan= keterangan,
+				createdAt = datetime.datetime.now().date(),
+				createdBy = request.user.username,
+				is_periode=True #true akan menghapus semua data					
+				)
 				acc_pkb=True
 			
-			#request update tahun
-			elif(bulan_awal==None and tahun_awal!=None and keterangan==None):	
-				pkb=bab3_pkb.objects.get(id_lhe=headerlhe)
-				pkb.tahun_awal=tahun_awal
-				pkb.tahun_akhir=tahun_akhir
-				pkb.is_periode=False
-				pkb.save()
-				acc_pkb=True
+			# #request update bulan
+			# if(bulan_awal!=None and tahun_awal==None and keterangan==None):	
+			# 	bab3_pkb.objects.filter(id_lhe=headerlhe).update(
+			# 		bulan_awal=bulan_awal,
+			# 		bulan_akhir=bulan_akhir,
+			# 		is_periode=True #true akan menghapus semua data
+			# 	)
+			# 	# .update(
+			# 	# 	
+			# 	# 	bulan_akhir=bulan_akhir
+			# 	# 	is_periode=True #true akan menghapus semua data
+			# 	# )
+			# 	acc_pkb=True
+			
+			# #request update tahun
+			# if(bulan_awal==None and tahun_awal!=None and keterangan==None):	
+			# 	bab3_pkb.objects.filter(id_lhe=headerlhe).update(
+			# 		tahun_awal=tahun_awal,
+			# 		tahun_akhir=tahun_akhir,
+			# 		is_periode=False
+			# 	)
+			# 	acc_pkb=True
 
-			#request update keterangan
-			elif(bulan_awal==None and tahun_awal==None and keterangan!=None):	
-				pkb=bab3_pkb.objects.get(id_lhe=headerlhe)
-				pkb.keterangan=keterangan
-				pkb.is_periode=False
-				pkb.save()
-				acc_pkb=True
+			# #request update keterangan
+			# if(bulan_awal==None and tahun_awal==None and keterangan!=None):	
+			# 	bab3_pkb.objects.filter(id_lhe=headerlhe).update(
+			# 		keterangan=keterangan,
+			# 		is_periode=False
+			# 	)
+			# 	acc_pkb=True
 
 		except Exception as ex:
 			print(ex)
