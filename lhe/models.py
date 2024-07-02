@@ -254,31 +254,31 @@ class bab3_pkb(models.Model):
     obj_pelunasan_piutang_persen = models.FloatField(default=0,null=True,blank=True)
     pelunasan_piutang_rupiah = models.BigIntegerField(default=0,null=True,blank=True)
     pelunasan_piutang_persen = models.FloatField(default=0,null=True,blank=True)
+    is_new = models.BooleanField(null=True,blank=True)
 
     def save(self,*args,**kwargs):
-        self.uppd = self.id_lhe.suratTugas.lokasi
-        self.id_pkb = str(uuid.uuid4())
-        self.selisih_angka=0
-        self.selisih_persen=0
-        if(self.bulan_awal<self.bulan_akhir and self.tahun_awal<self.tahun_akhir):
-            super(bab3_pkb,self).save(*args,**kwargs)
-            if(self.is_periode):
+        if self.is_periode:
+            if self.is_new:
+                self.id_pkb = str(uuid.uuid4())
+            self.uppd = self.id_lhe.suratTugas.lokasi
+            self.selisih_angka=0
+            self.selisih_persen=0
+            if(self.bulan_awal<self.bulan_akhir):
+                super(bab3_pkb,self).save(*args,**kwargs)
                 bab3_pkb_detail.objects.all().filter(id_pkb=bab3_pkb.objects.get(id_pkb=self.id_pkb)).delete()
-                try:
-                    for i in range(int(self.bulan_awal),int(self.bulan_akhir)+1):
-                        detail = bab3_pkb_detail()
-                        detail.id_pkb=bab3_pkb.objects.get(id_pkb=self.id_pkb)
-                        detail.id_pkb_detail = str(uuid.uuid4())
-                        detail.tahun_awal=self.tahun_awal
-                        detail.tahun_akhir = self.tahun_akhir
-                        detail.nilai_awal=0
-                        detail.nilai_akhir=0
-                        detail.bulan=i
-                        detail.save()
-                except Exception as ex:
-                    print('ini di table')
-                    print(ex)
-            
+                for i in range(int(self.bulan_awal),int(self.bulan_akhir)+1):
+                    detail = bab3_pkb_detail()
+                    detail.id_pkb=bab3_pkb.objects.get(id_pkb=self.id_pkb)
+                    detail.id_pkb_detail = str(uuid.uuid4())
+                    detail.tahun_awal=self.tahun_awal
+                    detail.tahun_akhir = self.tahun_akhir
+                    detail.nilai_awal=0
+                    detail.nilai_akhir=0
+                    detail.bulan=i
+                    detail.save()
+                
+        else:
+            super(bab3_pkb,self).save(*args,**kwargs)    
 
 class bab3_pkb_detail(models.Model):
     id_pkb = models.ForeignKey(bab3_pkb,on_delete=models.RESTRICT)
@@ -295,7 +295,6 @@ class bab3_pkb_detail(models.Model):
 
     def save(self,*args,**kwargs):
         self.selisih_angka=self.nilai_akhir-self.nilai_awal
-        self.id_pkb_detail=str(uuid.uuid4())
         try:
             self.selisih_persen=(self.selisih_angka)/self.nilai_awal
         except:
