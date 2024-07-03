@@ -113,9 +113,8 @@
             csrfmiddlewaretoken:csrf_token
         }
         console.log(data);
-        $.post('/lhe/add/b2/pkb/' + id_lhe + "/" +id_pkb_detail + "/",data);
-        window.location.href='/lhe/add/b2/pkb/' + id_lhe + "/";
-    }
+        $.post('/lhe/add/b2/pkb/' + id_lhe + "/" +id_pkb_detail + "/",data).done(()=>window.location.reload());
+        
 
     // modalId.addEventListener('show.bs.modal', function (event) {
     //     // $('#bulan').text(button.getAttribute('data-bs-bulan'));
@@ -622,7 +621,7 @@
 
     
     <a href="/lhe/add/b2/umum/{{id_lhe}}" class="btn btn-secondary mx-2"><i>&larr; Kembali ke Bab II.B Data Umum</i></a>
-    <a class="btn btn-primary my-3" href="#"><i>Lanjutkan Bab II.D Pendapatan Asli Daerah &rarr;</i></a>
+    <a class="btn btn-primary my-3" href="/lhe/add/b2/bbnkb/{{id_lhe}}"><i>Lanjutkan Pajak Daerah... b.BBNKB &rarr;</i></a>
 </div>
 
 {% endblock%}

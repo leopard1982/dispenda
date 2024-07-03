@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from lhe.models import headerLHE, simpulanHasilValBin
-from lhe.forms import inputHeaderLHE, inputNormatifLHE, inputBab3PKB
+from lhe.forms import inputHeaderLHE, inputNormatifLHE, inputBab3PKB, inputBab3BNKB
 from surat_tugas.models import TrxSuratTugas, ST_Peserta, MasterJabatan
 from lhe.models import bab2_sasaran_evaluasi_pembinaan, bab2_tujuan_evaluasi_pembinaan, bab2_data_umum
 from lhe.models import bab2_tatausaha_kepegawaian, bab2_tatausaha_kepegawaian_detail, bab2_tatausaha_kepegawaian_normatif
@@ -9,6 +9,7 @@ import datetime
 from django.core.paginator import Paginator
 from lhe.models import bab2_tatausaha_bangun_tanah, bab2_tatausaha_mobil_pemkab, bab2_tatausaha_mobil_pemprov, bab2_tatausaha_motor_pemprov
 from django.db.models import Sum
+from lhe.models import bab3_bbnkb, bab3_bbnkb_detail
 
 def getPendingSurat():
 	return TrxSuratTugas.objects.all().filter(submit=False)
@@ -922,3 +923,176 @@ def updatePKBDetail(request,id,id_update):
 	id_pkb_detail.save()
 
 	return HttpResponseRedirect(f'/lhe/add/b2/pkb/{id}/')
+
+def addLHE_b2_bbnkb(request,id):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+
+	headerlhe = headerLHE.objects.get(id_lhe=id)
+		
+	if request.method == "POST":
+		#apakah update piutang?
+		#cek dolo
+		try:
+			try:
+				bulan_awal = request.POST['bulan_awal']
+			except:
+				bulan_awal=None
+			try:
+				bulan_akhir = request.POST['bulan_akhir']
+			except:
+				bulan_akhir=None
+			try:
+				tahun_awal = int(request.POST['tahun_awal'])
+			except:
+				tahun_awal=None
+			try:
+				tahun_akhir = int(request.POST['tahun_akhir'])
+			except:
+				tahun_akhir=None
+			try:
+				keterangan = request.POST['keterangan'].strip()
+				if len(keterangan)==0:
+					keterangan=None
+			except:
+				keterangan=None
+
+			#request awal
+			
+			if(bulan_awal!=None and tahun_awal!=None and keterangan!=None):	
+				if bab3_bbnkb.objects.filter(id_lhe=headerlhe).count()==0:
+					bnkb = bab3_bbnkb()
+					bnkb.id_lhe = headerlhe
+					bnkb.bulan_awal=bulan_awal
+					bnkb.bulan_akhir = bulan_akhir
+					bnkb.tahun_akhir = tahun_akhir
+					bnkb.tahun_awal = tahun_awal
+					bnkb.keterangan= keterangan
+					bnkb.createdAt = datetime.datetime.now().date()
+					bnkb.createdBy = request.user.username
+					bnkb.is_periode=True #true akan menghapus semua data			
+					bnkb.is_new=True	#akan create awal	
+					bnkb.save()
+			
+			#request update bulan
+			if(bulan_awal!=None and tahun_awal==None and keterangan==None):	
+				bnkb=bab3_bbnkb.objects.all().get(id_lhe=headerlhe)#.objects.all().filter(id_lhe=headerlhe)
+				bnkb.bulan_awal=bulan_awal
+				bnkb.bulan_akhir=bulan_akhir
+				bnkb.createdAt = datetime.datetime.now().date()
+				bnkb.createdBy = request.user.username
+				bnkb.is_periode=True #true akan menghapus semua data
+				bnkb.is_new=False	
+				bnkb.save()				
+			
+			#request update tahun
+			if(bulan_awal==None and tahun_awal!=None and keterangan==None):	
+				bnkb=bab3_bbnkb.objects.all().get(id_lhe=headerlhe)
+				bnkb.tahun_awal=tahun_awal
+				bnkb.tahun_akhir=tahun_akhir
+				bnkb.is_periode=False
+				bnkb.is_new=False	
+				bnkb.createdAt = datetime.datetime.now().date()
+				bnkb.createdBy = request.user.username
+				bnkb.save()
+
+			#request update keterangan
+			if(bulan_awal==None and tahun_awal==None and keterangan!=None):	
+				bnkb=bab3_bbnkb.objects.get(id_lhe=headerlhe)
+				bnkb.keterangan = keterangan
+				bnkb.is_periode=False
+				bnkb.createdAt = datetime.datetime.now().date()
+				bnkb.createdBy = request.user.username
+				bnkb.is_new=False
+				bnkb.save()
+
+		except Exception as ex:
+			print(ex)
+			print('error post')
+
+	try:
+		bnkb = bab3_bbnkb.objects.get(id_lhe=headerlhe)
+		bnkb_detail = bab3_bbnkb_detail.objects.all().filter(id_bbnkb=bnkb)
+	
+	except Exception as ex:
+		print(ex)
+		print('get headerlhe')
+		bnkb=None
+		bnkb_detail=None
+			
+	lokasi = headerlhe.suratTugas.lokasi
+	forms = inputBab3BNKB
+
+	try:
+		keterangan = bnkb.keterangan
+	except:
+		keterangan=None
+	# jml_pkb_roda4 = models.IntegerField(default=0,blank=True,null=True)
+    # jml_pkb_kuning = models.IntegerField(default=0,blank=True,null=True)
+    # jml_pkb_hitam = models.IntegerField(default=0,blank=True,null=True)
+    
+	
+	try:
+		tahun_awal = bnkb.tahun_awal
+	except:
+		tahun_awal=None
+	try:
+		tahun_akhir = bnkb.tahun_akhir
+	except:
+		tahun_akhir=None
+	try:
+		bulan_awal = konversi_bulan(bnkb.bulan_awal)
+	except:
+		bulan_awal=None
+	try:
+		bulan_akhir = konversi_bulan(bnkb.bulan_akhir)
+	except:
+		bulan_akhir=None
+	try:
+		selisih_angka = bnkb_detail.aggregate(Sum('selisih_angka'))['selisih_angka__sum']
+	except:
+		selisih_angka=0
+	try:
+		total_tahun_awal = bnkb_detail.aggregate(Sum('nilai_awal'))['nilai_awal__sum']
+		selisih_persen = selisih_angka/total_tahun_awal
+	except:
+		selisih_persen=0
+	try:
+		total_tahun_awal = bnkb_detail.aggregate(Sum('nilai_awal'))['nilai_awal__sum']
+	except:
+		total_tahun_awal = 0
+	try:
+		total_tahun_akhir = bnkb_detail.aggregate(Sum('nilai_akhir'))['nilai_akhir__sum']
+	except:
+		total_tahun_akhir=0
+	
+
+	context = {
+		'nomor_lhe':headerlhe.nomor_lhe,
+		'id_lhe':headerlhe.id_lhe,
+		'forms':forms,
+		'lokasi':lokasi,
+		'tahun_awal':tahun_awal,
+		'tahun_akhir':tahun_akhir,
+		'bulan_awal':bulan_awal,
+		'bulan_akhir':bulan_akhir,
+		'selisih_angka':selisih_angka,
+		'selisih_persen':selisih_persen,
+		'total_tahun_awal':total_tahun_awal,
+		'total_tahun_akhir':total_tahun_akhir,
+		'bnkb_detail':bnkb_detail,
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE(),
+		'keterangan': keterangan,
+	}
+	return render(request,'lhe/create_lhe_bab2_c_bnkb.html',context)
+
+def updateBBNKBDetail(request,id,id_update):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	id_bbnkb_detail = bab3_bbnkb_detail.objects.get(id_bbnkb_detail=id_update)
+	id_bbnkb_detail.nilai_awal=int(request.POST['nilai_awal_new'])
+	id_bbnkb_detail.nilai_akhir=int(request.POST['nilai_akhir_new'])
+	id_bbnkb_detail.save()
+
+	return HttpResponseRedirect(f'/lhe/add/b2/bbnkb/{id}/')

@@ -1,0 +1,333 @@
+{% extends 'base.html'%}
+{% load humanize %}
+
+{% load static %}
+
+{% block contents%}
+<!-- Modal -->
+<div
+    class="modal fade"
+    id="modalId"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="modalTitleId"
+    aria-hidden="true"
+>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitleId">
+                    Mengubah Nilai Penerimaan BBNKB
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    BULAN: <span id="bulan"></span><br>
+                    <table class="table w-100">
+                        <thead>
+                            <th>Tahun</th>
+                            <th>Nilai Lama</th>
+                            <th>Nilai Baru</th>
+                        </thead>
+                        <tr>
+                            <td class="small p-2">{{tahun_awal}}</td>
+                            <td class="small p-2">Rp.<span id="nilai_awal_old"></span>,00</td>
+                            <td><input type='number' min=0 id='nilai_awal_new' placeholder="Rp." class="small form-control"/></td>
+                        </tr>
+                        <tr>
+                            <td class="small p-2">{{tahun_akhir}}</td>
+                            <td class="small p-2">Rp.<span id="nilai_akhir_old"></span>,00</td>
+                            <td><input type='number' min=0 id='nilai_akhir_new' placeholder="Rp." class="small form-control"/></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="updatedata()">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var modalId = document.getElementById('modalId');
+    let bulan="";
+    let id_lhe="";
+    let id_pkb_detail="";
+    let data="";
+    let nilai_awal_new ="";
+    let nilai_akhir_new="";
+    let counter=0;
+
+    function setcounter(data) {
+        counter=data;
+        console.log(counter);
+        bulan=$('#setpkb'+counter).attr('data-bs-bulan');
+        id_lhe = $('#setpkb'+counter).attr('data-bs-idlhe');
+        id_pkb_detail = $('#setpkb'+counter).attr('data-bs-idpkb-detail');
+        data = {
+            nilai_awal_new: $('#nilai_awal_new').value,
+            nilai_akhir_new: $('#nilai_akhir_new').value
+        }
+        
+        let bulannya="";
+        if(bulan==1) bulannya="JANUARI";
+        else if(bulan==2) bulannya="FEBRUARI";
+        else if(bulan==3) bulannya="MARET";
+        else if(bulan==4) bulannya="APRIL";
+        else if(bulan==5) bulannya="MEI";
+        else if(bulan==6) bulannya="JUNI";
+        else if(bulan==7) bulannya="JULI";
+        else if(bulan==8) bulannya="AGUSTUS";
+        else if(bulan==9) bulannya="SEPTEMBER";
+        else if(bulan==10) bulannya="OKTOBER";
+        else if(bulan==11) bulannya="NOVEMBER";
+        else if(bulan==12) bulannya="DESEMBER";
+        $("#bulan").text(bulannya);
+        $("#nilai_awal_old").text($('#setpkb'+counter).attr('data-bs-nilaiawal'));
+        $("#nilai_akhir_old").text($('#setpkb'+counter).attr('data-bs-nilaiakhir'));
+        $('#modalId').show();
+    }
+
+    function updatedata() {
+        nilai_akhir=$("#nilai_akhir_new").val();
+        nilai_awal=$('#nilai_awal_new').val();
+        let csrf_token = $('input[name=csrfmiddlewaretoken]').val();
+        console.log(id_pkb_detail);
+        data = {
+            nilai_awal_new:nilai_awal,
+            nilai_akhir_new:nilai_akhir,
+            csrfmiddlewaretoken:csrf_token
+        }
+        console.log(data);
+        $.post('/lhe/add/b2/bbnkb/' + id_lhe + "/" +id_pkb_detail + "/",data).done(()=>window.location.reload());
+        
+    }
+
+    // modalId.addEventListener('show.bs.modal', function (event) {
+    //     // $('#bulan').text(button.getAttribute('data-bs-bulan'));
+    //     // Use above variables to manipulate the DOM
+    //     console.log(counter);
+    //     bulan=$('#setpkb').attr('data-bs-bulan');
+    //     id_lhe = $('#setpkb').attr('data-bs-idlhe');
+    //     id_pkb_detail = $('#setpkb').attr('data-bs-idpkb-detail');
+    //     data = {
+    //         nilai_awal_new: $('#nilai_awal_new').value,
+    //         nilai_akhir_new: $('#nilai_akhir_new').value
+    //     }
+    //     let nilai_awal_lama = 
+    //     let bulannya="";
+    //     if(bulan==1) bulannya="JANUARI";
+    //     else if(bulan==2) bulannya="FEBRUARI";
+    //     else if(bulan==3) bulannya="MARET";
+    //     else if(bulan==4) bulannya="APRIL";
+    //     else if(bulan==5) bulannya="MEI";
+    //     else if(bulan==6) bulannya="JUNI";
+    //     else if(bulan==7) bulannya="JULI";
+    //     else if(bulan==8) bulannya="AGUSTUS";
+    //     else if(bulan==9) bulannya="SEPTEMBER";
+    //     else if(bulan==10) bulannya="OKTOBER";
+    //     else if(bulan==11) bulannya="NOVEMBER";
+    //     else if(bulan==12) bulannya="DESEMBER";
+    //     $("#bulan").text(bulannya);
+    // });
+</script>
+
+
+<h4>Nomor Laporan Hasil Evaluasi: <b>{{nomor_lhe}}</b></h4>
+<h5>Bab 2: Uraian Hasil Evaluasi dan Pembinaan</h5>
+<hr/>
+<div class="p-2">
+    <p><b>D. Pendapatan Asli Daerah</b></p>
+    <div class="p-2">
+        <p><b>1. Pajak Daerah</b></p>
+        <p class="p-2"><b>B. BBNKB</b></p>
+                        <div style="margin-left: 5px;">
+                            <p class="px-2">
+                                Target Pajak Kendaraan Bermotor di UPPD {{lokasi}} tahun {{tahun_awal}} Rp.{{total_tahun_awal|intcomma}},00, sedangkan tahun {{tahun_akhir}} Rp.{{total_tahun_akhir|intcomma}},00. Perbandingan penerimaan PKB bulan {{bulan_awal}} sampai dengan {{bulan_akhir}} tahun {{tahun_awal}} dan {{tahun_akhir}} dapat dilihat pada tabel berikut ini:
+                            </p>
+                            <div class="px-2">
+                                <table class="w-100 shadow">
+                                    <thead>
+                                        <th class="text-center small fw-bold p-2" colspan="6">
+                                            Tabel.IV.4<br>
+                                            Perbandingan Penerimaan BBNKB<br>
+                                            Bulan {{bulan_awal}} s/d {{bulan_akhir}}<br>
+                                            Tahun {{tahun_awal}} dan {{tahun_akhir}}
+                                        </th>
+                                    </thead>
+                                    <thead class="border border-1 border-black p-2" style="background-color: whitesmoke;">
+                                        <th class="p-2 border border-1 border-black fw-bold text-center">No.</th>
+                                        <th class="p-2 border border-1 border-black fw-bold  text-center">Bulan</th>
+                                        <th class="p-2 border border-1 border-black fw-bold  text-center">{{tahun_awal}}</th>
+                                        <th class="p-2 border border-1 border-black fw-bold  text-center">{{tahun_akhir}}</th>
+                                        <th class="p-2 border border-1 border-black fw-bold  text-center">Selisih (+/-)</th>
+                                        <th class="p-2  border border-1 border-black fw-bold  text-center">%</th>
+                                        <th></th>
+                                    </thead>
+                                    {% for pkb in bnkb_detail %}
+                                    <tr class="border border-1 border-black p-2" style="background-color: whitesmoke;">
+                                        <td class="small p-2 border border-1 border-black text-center">{{forloop.counter}}</td>
+                                        <td class="small p-2 border border-1 border-black text-center">
+                                            {% if pkb.bulan == 1 %} JANUARI {% endif %}
+                                            {% if pkb.bulan == 2 %} FEBRUARI {% endif %}
+                                            {% if pkb.bulan == 3 %} MARET {% endif %}
+                                            {% if pkb.bulan == 4 %} APRIL {% endif %}
+                                            {% if pkb.bulan == 5 %} MEI {% endif %}
+                                            {% if pkb.bulan == 6 %} JUNI {% endif %}
+                                            {% if pkb.bulan == 7 %} JULI {% endif %}
+                                            {% if pkb.bulan == 8 %} AGUSTUS {% endif %}
+                                            {% if pkb.bulan == 9 %} SEPTEMBER {% endif %}
+                                            {% if pkb.bulan == 10 %} OKTOBER {% endif %}
+                                            {% if pkb.bulan == 11 %} NOVEMBER {% endif %}
+                                            {% if pkb.bulan == 12 %} DESEMBER {% endif %}
+
+                                        </td>
+                                        <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.nilai_awal|intcomma}},00</td>
+                                        <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.nilai_akhir|intcomma}},00</td>
+                                        <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.selisih_angka|intcomma}},00</td>
+                                        <td class="small p-2 border border-1 border-black text-center">{% widthratio pkb.selisih_persen  1 100 %}%</td>
+                                        <th class="p-2 border border-1 border-black text-center"><a onclick="setcounter('{{forloop.counter}}')" class="btn btn-border-primary small" data-bs-nilaiakhir="{{pkb.nilai_akhir}}" data-bs-nilaiawal="{{pkb.nilai_awal}}" data-bs-toggle="modal" id="setpkb{{forloop.counter}}" data-bs-counter="{{forloop.counter}}" data-bs-bulan="{{pkb.bulan}}" data-bs-idlhe="{{pkb.id_bbnkb.id_lhe.id_lhe}}" data-bs-idpkb-detail="{{pkb.id_bbnkb_detail}}" data-bs-target="#modalId"><i class="fa fa-edit"></i></a></th>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <td colspan="2" class="text-center fw-bold">JUMLAH</td>
+                                        <td class="small p-2 border border-1 border-black text-center fw-bold">Rp.{{total_tahun_awal|intcomma}},00</td>
+                                        <td class="small p-2 border border-1 border-black text-center fw-bold">Rp.{{total_tahun_akhir|intcomma}},00</td>
+                                        <td class="small p-2 border border-1 border-black text-center fw-bold">Rp.{{selisih_angka|intcomma}},00</td>
+                                        <td class="small p-2 border border-1 border-black text-center fw-bold">{% widthratio selisih_persen  1 100 %}%</td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="p-2">
+                                Berdasarkan tabel perbandingan  penerimaan BBNKB di atas, terlihat perbandingan penerimaan BBNKB mulai bulan {{bulan_awal}} s/d {{bulan_akhir}} {{pkb.tahun_awal}}, jika dibandingkan dengan penerimaan BBNKB tahun {{pkb.tahun_akhir}} mengalami {% if selisih_angka > 0 %}peningkatan{%else%}penurunan{%endif%} sebesar {% widthratio selisih_persen 1 100 %}% atau sebesar Rp.{{selisih_angka|intcomma}},00. Hal ini terjadi disebabkan {{keterangan}}.
+                            </div>
+                        </div>
+                    
+    </div>
+
+    
+    <hr>
+    <div class="p-2 my-3">
+        <div>
+            <p class="h3">Pengisian Data:</p>
+            <div class="p-2">
+                {% if bnkb_detail.count > 0 %}
+                <div class="p-2 border border-1 my-2">
+                    <p><u>Update Periode Penerimaan BBNKB</u></p>
+                    <form method="post" class="px-2">
+                        {% csrf_token %}
+                        <table class="table">
+                            <tr>
+                                <td style="width: 300px;">Bulan Awal:</td>
+                                <td>{{forms.bulan_awal}}</td>
+                            </tr>
+                            <tr>
+                                <td>Bulan Akhir:</td>
+                                <td>{{forms.bulan_akhir}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button type="submit" class="small btn btn-success">Update Periode</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                <div class="p-2 border border-1 my-2">
+                    <p><u>Update Tahun Penerimaan BBNKB</u></p>
+                    <form method="post" class="px-2">
+                        {% csrf_token %}
+                        <table class="table">
+                            <tr>
+                                <td style="width: 300px;">Tahun Awal:</td>
+                                <td>{{forms.tahun_awal}}</td>
+                            </tr>
+                            <tr>
+                                <td>Tahun Akhir:</td>
+                                <td>{{forms.tahun_akhir}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button type="submit" class="small btn btn-success">Update Tahun Penerimaan</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                <div class="p-2 border border-1 my-2">
+                    <p><u>Update Analisa BBNKB</u></p>
+                    <form method="post" class="px-2">
+                        {% csrf_token %}
+                        <table class="table">
+                            <tr>
+                                <td style="width: 300px;">Analisa:</td>
+                                <td>{{forms.keterangan}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button type="submit" class="small btn btn-success">Update Analisa</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                {% else %}
+                <div>
+                    <form method="post" class="px-2">
+                        {% csrf_token %}
+                        <table class="table">
+                            <tr>
+                                <td style="width: 300px;">Bulan Awal:</td>
+                                <td>{{forms.bulan_awal}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;">Bulan Akhir:</td>
+                                <td>{{forms.bulan_akhir}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;">Tahun Awal:</td>
+                                <td>{{forms.tahun_awal}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;">Tahun Akhir:</td>
+                                <td>{{forms.tahun_akhir}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;">Analisa:</td>
+                                <td>{{forms.keterangan}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button type="submit" class="small btn btn-success">+ Tambahkan Detail Penerimaan BBNKB</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    
+    <a href="/lhe/add/b2/pkb/{{id_lhe}}" class="btn btn-secondary mx-2"><i>&larr; Kembali ke Pajak Daerah... A. PKB</i></a>
+    <a class="btn btn-primary my-3" href="#"><i>Lanjutkan ke Pajak Daerah C.PAP &rarr;</i></a>
+</div>
+
+{% endblock%}

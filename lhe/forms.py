@@ -1,5 +1,5 @@
 from django import forms
-from lhe.models import headerLHE, bab2_tatausaha_kepegawaian_normatif, bab3_pkb
+from lhe.models import headerLHE, bab2_tatausaha_kepegawaian_normatif, bab3_pkb, bab3_bbnkb
 from surat_tugas.models import TrxSuratTugas
 from bootstrap_datepicker_plus.widgets import DatePickerInput
 
@@ -33,6 +33,19 @@ class inputNormatifLHE(forms.ModelForm):
 class inputBab3PKB(forms.ModelForm):
 	class Meta:
 		model = bab3_pkb
+		fields = ['bulan_awal','bulan_akhir','tahun_awal','tahun_akhir','keterangan']
+
+		widgets = {
+			'bulan_awal': forms.Select(attrs={'class':'form-control'}),
+			'bulan_akhir': forms.Select(attrs={'class':'form-control'}),
+			'tahun_awal':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'mis.2022'}),
+			'tahun_akhir':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'mis.2024'}),
+			'keterangan':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'analisa penyebab naik dan turun'}),
+		}
+
+class inputBab3BNKB(forms.ModelForm):
+	class Meta:
+		model = bab3_bbnkb
 		fields = ['bulan_awal','bulan_akhir','tahun_awal','tahun_akhir','keterangan']
 
 		widgets = {
