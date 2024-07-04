@@ -1,6 +1,6 @@
 from django import forms
 from surat_tugas.models import MasterGolongan, MasterJabatan, MasterPegawai, Pengguna, TrxSuratTugas
-from bootstrap_datepicker_plus.widgets import DatePickerInput
+# from bootstrap_datepicker_plus.widgets import DatePickerInput
 from surat_tugas.models import ST_DasarTugas, ST_Peserta, MasterDasarST, ConfigDispenda
 
 
@@ -58,11 +58,11 @@ class inputSuratTugas(forms.ModelForm):
 		widgets= {
 			'nomor_surat': forms.TextInput(attrs={'required':'required','placeholder':'Nomor surat','class':'form-control'}),
 			'lokasi_surat': forms.TextInput(attrs={'required':'required','placeholder':'Tempat dibuat surat','class':'form-control'}),
-			'tgl_surat': DatePickerInput(attrs={'required':'required','class':'form-control'}),#forms.DateInput(attrs={'id':'tgl_surat','required':'required','class':'form-control'}),
+			'tgl_surat': forms.TextInput(attrs={'type':'date','required':'required','class':'form-control'}),#forms.DateInput(attrs={'id':'tgl_surat','required':'required','class':'form-control'}),
 			'tujuan': forms.TextInput(attrs={'required':'required','placeholder':'Tujuan Penugasan','class':'form-control'}),
 			'lokasi': forms.TextInput(attrs={'required':'required','placeholder':'Lokasi Penugasan','class':'form-control'}),
-			'tgl_awal_tugas':DatePickerInput(attrs={'required':'required','class':'form-control'}), #(attrs={'id':'tgl_awal_tugas','required':'required','class':'form-control'}),
-			'tgl_akhir_tugas': DatePickerInput(attrs={'required':'required','class':'form-control'})#forms.DateInput(attrs={'id':'tgl_akhir_tugas','required':'required','class':'form-control'})
+			'tgl_awal_tugas':forms.TextInput(attrs={'type':'date','required':'required','class':'form-control'}), #(attrs={'id':'tgl_awal_tugas','required':'required','class':'form-control'}),
+			'tgl_akhir_tugas': forms.TextInput(attrs={'type':'date','required':'required','class':'form-control'})#forms.DateInput(attrs={'id':'tgl_akhir_tugas','required':'required','class':'form-control'})
 			
 		}
 

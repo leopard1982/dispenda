@@ -1,7 +1,7 @@
 from django import forms
 from lhe.models import headerLHE, bab2_tatausaha_kepegawaian_normatif, bab3_pkb, bab3_bbnkb
 from surat_tugas.models import TrxSuratTugas
-from bootstrap_datepicker_plus.widgets import DatePickerInput
+
 
 class inputHeaderLHE(forms.ModelForm):
 	class Meta:
@@ -11,7 +11,7 @@ class inputHeaderLHE(forms.ModelForm):
 		widgets = {
 			'suratTugas': forms.Select(attrs={'class':'form-control'}),
 			'nomor_lhe':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'Nomor LHE'}),
-			'tanggal_lhe':DatePickerInput(attrs={'required':'required','class':'form-control','placeholder':'Tanggal Buat LHE'})
+			'tanggal_lhe':forms.TextInput(attrs={'type':'date','required':'required','class':'form-control','placeholder':'Tanggal Buat LHE'})
 		}
 		
 	def __init__(self,*args,**kwargs):
