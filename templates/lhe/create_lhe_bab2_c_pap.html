@@ -1,0 +1,503 @@
+{% extends 'base.html'%}
+{% load humanize %}
+
+{% load static %}
+
+{% block contents%}
+<!-- Modal -->
+<div
+    class="modal fade"
+    id="modalId"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="modalTitleId"
+    aria-hidden="true"
+>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitleId">
+                    Mengubah Nilai Penerimaan BBNKB
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    BULAN: <span id="bulan"></span><br>
+                    <table class="table w-100">
+                        <thead>
+                            <th>Tahun</th>
+                            <th>Nilai Lama</th>
+                            <th>Nilai Baru</th>
+                        </thead>
+                        <tr>
+                            <td class="small p-2">{{tahun_awal}}</td>
+                            <td class="small p-2">Rp.<span id="nilai_awal_old"></span>,00</td>
+                            <td><input type='number' min=0 id='nilai_awal_new' placeholder="Rp." class="small form-control"/></td>
+                        </tr>
+                        <tr>
+                            <td class="small p-2">{{tahun_akhir}}</td>
+                            <td class="small p-2">Rp.<span id="nilai_akhir_old"></span>,00</td>
+                            <td><input type='number' min=0 id='nilai_akhir_new' placeholder="Rp." class="small form-control"/></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="updatedata()">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var modalId = document.getElementById('modalId');
+    let bulan="";
+    let id_lhe="";
+    let id_pkb_detail="";
+    let data="";
+    let nilai_awal_new ="";
+    let nilai_akhir_new="";
+    let counter=0;
+
+    function setcounter(data) {
+        counter=data;
+        console.log(counter);
+        bulan=$('#setpkb'+counter).attr('data-bs-bulan');
+        id_lhe = $('#setpkb'+counter).attr('data-bs-idlhe');
+        id_pkb_detail = $('#setpkb'+counter).attr('data-bs-idpkb-detail');
+        data = {
+            nilai_awal_new: $('#nilai_awal_new').value,
+            nilai_akhir_new: $('#nilai_akhir_new').value
+        }
+        
+        let bulannya="";
+        if(bulan==1) bulannya="JANUARI";
+        else if(bulan==2) bulannya="FEBRUARI";
+        else if(bulan==3) bulannya="MARET";
+        else if(bulan==4) bulannya="APRIL";
+        else if(bulan==5) bulannya="MEI";
+        else if(bulan==6) bulannya="JUNI";
+        else if(bulan==7) bulannya="JULI";
+        else if(bulan==8) bulannya="AGUSTUS";
+        else if(bulan==9) bulannya="SEPTEMBER";
+        else if(bulan==10) bulannya="OKTOBER";
+        else if(bulan==11) bulannya="NOVEMBER";
+        else if(bulan==12) bulannya="DESEMBER";
+        $("#bulan").text(bulannya);
+        $("#nilai_awal_old").text($('#setpkb'+counter).attr('data-bs-nilaiawal'));
+        $("#nilai_akhir_old").text($('#setpkb'+counter).attr('data-bs-nilaiakhir'));
+        $('#modalId').show();
+    }
+
+    function updatedata() {
+        nilai_akhir=$("#nilai_akhir_new").val();
+        nilai_awal=$('#nilai_awal_new').val();
+        let csrf_token = $('input[name=csrfmiddlewaretoken]').val();
+        console.log(id_pkb_detail);
+        data = {
+            nilai_awal_new:nilai_awal,
+            nilai_akhir_new:nilai_akhir,
+            csrfmiddlewaretoken:csrf_token
+        }
+        console.log(data);
+        $.post('/lhe/add/b2/bbnkb/' + id_lhe + "/" +id_pkb_detail + "/",data).done(()=>window.location.reload());
+        
+    }
+
+    // modalId.addEventListener('show.bs.modal', function (event) {
+    //     // $('#bulan').text(button.getAttribute('data-bs-bulan'));
+    //     // Use above variables to manipulate the DOM
+    //     console.log(counter);
+    //     bulan=$('#setpkb').attr('data-bs-bulan');
+    //     id_lhe = $('#setpkb').attr('data-bs-idlhe');
+    //     id_pkb_detail = $('#setpkb').attr('data-bs-idpkb-detail');
+    //     data = {
+    //         nilai_awal_new: $('#nilai_awal_new').value,
+    //         nilai_akhir_new: $('#nilai_akhir_new').value
+    //     }
+    //     let nilai_awal_lama = 
+    //     let bulannya="";
+    //     if(bulan==1) bulannya="JANUARI";
+    //     else if(bulan==2) bulannya="FEBRUARI";
+    //     else if(bulan==3) bulannya="MARET";
+    //     else if(bulan==4) bulannya="APRIL";
+    //     else if(bulan==5) bulannya="MEI";
+    //     else if(bulan==6) bulannya="JUNI";
+    //     else if(bulan==7) bulannya="JULI";
+    //     else if(bulan==8) bulannya="AGUSTUS";
+    //     else if(bulan==9) bulannya="SEPTEMBER";
+    //     else if(bulan==10) bulannya="OKTOBER";
+    //     else if(bulan==11) bulannya="NOVEMBER";
+    //     else if(bulan==12) bulannya="DESEMBER";
+    //     $("#bulan").text(bulannya);
+    // });
+</script>
+
+
+<h4>Nomor Laporan Hasil Evaluasi: <b>{{nomor_lhe}}</b></h4>
+<h5>Bab 2: Uraian Hasil Evaluasi dan Pembinaan</h5>
+<hr/>
+<div class="p-2">
+    <p><b>D. Pendapatan Asli Daerah</b></p>
+    <div class="p-2">
+        <p><b>1. Pajak Daerah</b></p>
+        <p class="p-2"><b>C. PAP</b></p>
+        {% if mypap != None %}
+                        <div style="margin-left: 5px;">
+                            <p class="px-2">
+                                1. Target dan Realisasi
+                                <div class="px-2">
+                                    Target Tahun {{mypap.tahun1}} sebesar Rp.{{mypap.jml_penetapan_tahun1|intcomma}},- dengan realisasi penerimaan sampai dengan 
+                                                {% if mypap.bulan1_akhir == 1 %} JANUARI {% endif %}
+                                                {% if mypap.bulan1_akhir == 2 %} FEBRUARI {% endif %}
+                                                {% if mypap.bulan1_akhir == 3 %} MARET {% endif %}
+                                                {% if mypap.bulan1_akhir == 4 %} APRIL {% endif %}
+                                                {% if mypap.bulan1_akhir == 5 %} MEI {% endif %}
+                                                {% if mypap.bulan1_akhir == 6 %} JUNI {% endif %}
+                                                {% if mypap.bulan1_akhir == 7 %} JULI {% endif %}
+                                                {% if mypap.bulan1_akhir == 8 %} AGUSTUS {% endif %}
+                                                {% if mypap.bulan1_akhir == 9 %} SEPTEMBER {% endif %}
+                                                {% if mypap.bulan1_akhir == 10 %} OKTOBER {% endif %}
+                                                {% if mypap.bulan1_akhir == 11 %} NOVEMBER {% endif %}
+                                                {% if mypap.bulan1_akhir == 12 %} DESEMBER {% endif %}
+                                    {{mypap.tahun1}} adalah Rp.{{mypap.jml_pembayaran_tahun1}},- atau {%widthratio mypap.selisih_tahun1_persen 100 1%}%, telah melebihi target capaian sebesar {% widthratio mypap.selisih_tahun1_persen 1 100 %} % dari target tahapan yang telah ditetapkan (100%). Target tahun {{mypap.tahun2}} sebesar Rp.{{mypap.jml_penetapan_tahun2|intcomma}},- dengan realisasi penerimaan sampai dengan 
+                                                {% if mypap.bulan2_akhir == 1 %} JANUARI {% endif %}
+                                                {% if mypap.bulan2_akhir == 2 %} FEBRUARI {% endif %}
+                                                {% if mypap.bulan2_akhir == 3 %} MARET {% endif %}
+                                                {% if mypap.bulan2_akhir == 4 %} APRIL {% endif %}
+                                                {% if mypap.bulan2_akhir == 5 %} MEI {% endif %}
+                                                {% if mypap.bulan2_akhir == 6 %} JUNI {% endif %}
+                                                {% if mypap.bulan2_akhir == 7 %} JULI {% endif %}
+                                                {% if mypap.bulan2_akhir == 8 %} AGUSTUS {% endif %}
+                                                {% if mypap.bulan2_akhir == 9 %} SEPTEMBER {% endif %}
+                                                {% if mypap.bulan2_akhir == 10 %} OKTOBER {% endif %}
+                                                {% if mypap.bulan2_akhir == 11 %} NOVEMBER {% endif %}
+                                                {% if mypap.bulan2_akhir == 12 %} DESEMBER {% endif %}
+                                    {{mypap.tahun2}} adalah Rp.{{mypap.jml_pembayaran_tahun2|intcomma}},- atau sebesar {% widthratio mypap.selisih_tahun1_persen 2 100 %} %.
+                                </div>
+                            </p>
+                            <p class="px-2">
+                                2.	Obyek PAP yang dikelola sebanyak {{mypap.jml_obj_pap_berijin|add:mypap.jml_obj_pap_nonijin}}, {{mypap.jml_obj_pap_berijin}} obyek sudah berijin sedangkan {{mypap.jml_obj_pap_nonijin}} obyek belum berijin
+                            </p>
+                            <p class="px-2">
+                                3.	Penetapan dan Pembayaran PAP terdapat pada tabel berikut ini:
+                                <div class="px-2 py-3">
+                                    <table class="w-100 shadow" style="border:2px solid lightgrey;border-radius: 5px;">
+                                        <thead>
+                                            <th class="text-center small fw-bold p-2" colspan="6">
+                                                Tabel.IV.25<br>
+                                                Penetapan dan Pembayaran PAP<br>
+                                                Tahun {{mypap.tahun1}}
+                                            </th>
+                                        </thead>
+                                        <thead class="border border-1 border-black p-2" style="background-color: whitesmoke;">
+                                            <th class="p-2 border border-1 border-black fw-bold text-center">NO.</th>
+                                            <th class="p-2 border border-1 border-black fw-bold  text-center">BULAN</th>
+                                            <th class="p-2 border border-1 border-black fw-bold  text-center">PENETAPAN</th>
+                                            <th class="p-2 border border-1 border-black fw-bold  text-center">PEMBAYARAN</th>
+                                            <th class="p-2 border border-1 border-black fw-bold  text-center">SELISIH</th>
+                                            <th></th>
+                                        </thead>
+                                        {% for pkb in mypap_tahun1 %}
+                                        <tr class="border border-1 border-black p-2" style="background-color: whitesmoke;">
+                                            <td class="small p-2 border border-1 border-black text-center">{{forloop.counter}}</td>
+                                            <td class="small p-2 border border-1 border-black text-center">
+                                                {% if pkb.bulan == 1 %} JANUARI {% endif %}
+                                                {% if pkb.bulan == 2 %} FEBRUARI {% endif %}
+                                                {% if pkb.bulan == 3 %} MARET {% endif %}
+                                                {% if pkb.bulan == 4 %} APRIL {% endif %}
+                                                {% if pkb.bulan == 5 %} MEI {% endif %}
+                                                {% if pkb.bulan == 6 %} JUNI {% endif %}
+                                                {% if pkb.bulan == 7 %} JULI {% endif %}
+                                                {% if pkb.bulan == 8 %} AGUSTUS {% endif %}
+                                                {% if pkb.bulan == 9 %} SEPTEMBER {% endif %}
+                                                {% if pkb.bulan == 10 %} OKTOBER {% endif %}
+                                                {% if pkb.bulan == 11 %} NOVEMBER {% endif %}
+                                                {% if pkb.bulan == 12 %} DESEMBER {% endif %}
+
+                                            </td>
+                                            <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.penetapan|intcomma}},00</td>
+                                            <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.pembayaran|intcomma}},00</td>
+                                            <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.selisih_angka|intcomma}},00</td>
+                                            <th class="p-2 border border-1 border-black text-center"><a onclick="setcounter('{{forloop.counter}}')" class="btn btn-border-primary small" data-bs-nilaiakhir="{{pkb.nilai_akhir}}" data-bs-nilaiawal="{{pkb.nilai_awal}}" data-bs-toggle="modal" id="setpkb{{forloop.counter}}" data-bs-counter="{{forloop.counter}}" data-bs-bulan="{{pkb.bulan}}" data-bs-idlhe="{{pkb.id_pkb.id_lhe.id_lhe}}" data-bs-idpkb-detail="{{pkb.id_pkb_detail}}" data-bs-target="#modalId"><i class="fa fa-edit"></i></a></th>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                                <div class="px-2 py-3">
+                                    <table class="w-100 shadow"  style="border:2px solid lightgrey;border-radius: 5px;">
+                                        <thead>
+                                            <th class="text-center small fw-bold p-2" colspan="6">
+                                                Tabel.IV.26<br>
+                                                Penetapan dan Pembayaran PAP<br>
+                                                Tahun {{mypap.tahun2}}
+                                            </th>
+                                        </thead>
+                                        <thead class="border border-1 border-black p-2" style="background-color: whitesmoke;">
+                                            <th class="p-2 border border-1 border-black fw-bold text-center">NO.</th>
+                                            <th class="p-2 border border-1 border-black fw-bold  text-center">BULAN</th>
+                                            <th class="p-2 border border-1 border-black fw-bold  text-center">PENETAPAN</th>
+                                            <th class="p-2 border border-1 border-black fw-bold  text-center">PEMBAYARAN</th>
+                                            <th class="p-2 border border-1 border-black fw-bold  text-center">SELISIH</th>
+                                            <th></th>
+                                        </thead>
+                                        {% for pkb in mypap_tahun2 %}
+                                        <tr class="border border-1 border-black p-2" style="background-color: whitesmoke;">
+                                            <td class="small p-2 border border-1 border-black text-center">{{forloop.counter}}</td>
+                                            <td class="small p-2 border border-1 border-black text-center">
+                                                {% if pkb.bulan == 1 %} JANUARI {% endif %}
+                                                {% if pkb.bulan == 2 %} FEBRUARI {% endif %}
+                                                {% if pkb.bulan == 3 %} MARET {% endif %}
+                                                {% if pkb.bulan == 4 %} APRIL {% endif %}
+                                                {% if pkb.bulan == 5 %} MEI {% endif %}
+                                                {% if pkb.bulan == 6 %} JUNI {% endif %}
+                                                {% if pkb.bulan == 7 %} JULI {% endif %}
+                                                {% if pkb.bulan == 8 %} AGUSTUS {% endif %}
+                                                {% if pkb.bulan == 9 %} SEPTEMBER {% endif %}
+                                                {% if pkb.bulan == 10 %} OKTOBER {% endif %}
+                                                {% if pkb.bulan == 11 %} NOVEMBER {% endif %}
+                                                {% if pkb.bulan == 12 %} DESEMBER {% endif %}
+
+                                            </td>
+                                            <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.penetapan|intcomma}},00</td>
+                                            <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.pembayaran|intcomma}},00</td>
+                                            <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.selisih_angka|intcomma}},00</td>
+                                            <th class="p-2 border border-1 border-black text-center"><a onclick="setcounter('{{forloop.counter}}')" class="btn btn-border-primary small" data-bs-nilaiakhir="{{pkb.nilai_akhir}}" data-bs-nilaiawal="{{pkb.nilai_awal}}" data-bs-toggle="modal" id="setpkb{{forloop.counter}}" data-bs-counter="{{forloop.counter}}" data-bs-bulan="{{pkb.bulan}}" data-bs-idlhe="{{pkb.id_pkb.id_lhe.id_lhe}}" data-bs-idpkb-detail="{{pkb.id_pkb_detail}}" data-bs-target="#modalId"><i class="fa fa-edit"></i></a></th>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                                <div class="px-2 py-3">
+                                    Berdasarkan tabel di atas, menunjukkan bahwa penetapan dan pembayaran PAP: {% if mypap.keterangan %} {{mypap.keterangan}} {%else%} <i>--belum dibuat analisis--</i> {%endif%}
+                                </div>
+                            </p>
+                            <p class="px-2">
+                                4.	Administrasi PAP
+                                <div style="margin-left: 20px;">
+                                    Administrasi pajak air Permukaan oleh petugas masih kurang/sudah sesuai dengan ketentuan yang berlaku
+                                </div>
+                            </p>
+
+                        </div>
+        {% else %}
+        <div style="font-style: italic;margin-left: 5px;text-align: center; padding:5px;color:black;" class="bg-warning rounded">
+            Data PAP Belum Ditambahkan! Silakan Tambahkan Data PAP terlebih dahulu!
+        </div> 
+        {% endif%}
+        <p class="p-2" style="margin-top: 30px;"><b>D. PBBKB</b></p>
+        {% if mypap != None %}
+                        <div style="margin-left: 5px;">
+                            <p class="px-2">
+                                1. Terdapat Stasiun Pengisian Bahan Bakar Umum (SPBU) sejumlah {{mypap.jml_obj_spbu}} obyek
+                            </p>
+                            <p class="px-2">
+                                2.	Pelaporan PBBKB terhadap data penjualan dan Delivery Order (DO) sebaiknya sama.
+                            </p>
+                        </div>
+        {% else %}
+        <div style="font-style: italic;margin-left: 5px;text-align: center; padding:5px;color:black;" class="bg-warning rounded">
+            Data PBBKB Belum Ditambahkan! Silakan Tambahkan Data PAP terlebih dahulu!
+        </div> 
+        {% endif%}
+                    
+    </div>
+
+    
+    <hr>
+    <div class="p-2 my-3">
+        <div>
+            <p class="h3">Pengisian Data:</p>
+            <div class="p-2">
+                {% if mypap != None %}
+                <div class="p-2 border border-1 my-2">
+                    <p><u>Update Periode Tahun Pertama PAP</u></p>
+                    <form method="post" class="px-2">
+                        {% csrf_token %}
+                        <table class="table">
+                            <tr>
+                                <td style="width: 300px;">Tahun Pertama:</td>
+                                <td>{{forms.tahun1}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;">Bulan Awal:</td>
+                                <td>{{forms.bulan1_awal}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;">Bulan Akhir:</td>
+                                <td>{{forms.bulan1_akhir}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button type="submit" class="small btn btn-success">Update Periode Tahun Pertama PAP</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                <div class="p-2 border border-1 my-2">
+                    <p><u>Update Periode Tahun Kedua PAP</u></p>
+                    <form method="post" class="px-2">
+                        {% csrf_token %}
+                        <table class="table">
+                            <tr>
+                                <td style="width: 300px;">Tahun Kedua:</td>
+                                <td>{{forms.tahun2}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;">Bulan Awal:</td>
+                                <td>{{forms.bulan2_awal}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;">Bulan Akhir:</td>
+                                <td>{{forms.bulan2_akhir}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button type="submit" class="small btn btn-success">Update Periode Tahun Kedua PAP</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                <div class="p-2 border border-1 my-2">
+                    <p><u>Update Jumlah PAP berijin</u></p>
+                    <form method="post" class="px-2">
+                        {% csrf_token %}
+                        <table class="table">
+                            <tr>
+                                <td style="width: 300px;">Jumlah PAP berijin:</td>
+                                <td>{{forms.jml_obj_pap_berijin}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button type="submit" class="small btn btn-success">Update Jumlah PAP Berijin</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                <div class="p-2 border border-1 my-2">
+                    <p><u>Update Jumlah PAP tidak berijin</u></p>
+                    <form method="post" class="px-2">
+                        {% csrf_token %}
+                        <table class="table">
+                            <tr>
+                                <td style="width: 300px;">Jumlah PAP tidak berijin:</td>
+                                <td>{{forms.jml_obj_pap_nonijin}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button type="submit" class="small btn btn-success">Update Jumlah PAP Tidak Berijin</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                <div class="p-2 border border-1 my-2">
+                    <p><u>Update Jumlah SPBU</u></p>
+                    <form method="post" class="px-2">
+                        {% csrf_token %}
+                        <table class="table">
+                            <tr>
+                                <td style="width: 300px;">Jumlah SPBU:</td>
+                                <td>{{forms.jml_obj_spbu}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button type="submit" class="small btn btn-success">Update Jumlah SPBU</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                <div class="p-2 border border-1 my-2">
+                    <p><u>Update Analisa PAP</u></p>
+                    <form method="post" class="px-2">
+                        {% csrf_token %}
+                        <table class="table">
+                            <tr>
+                                <td style="width: 300px;">Analisa Tabel PAP:</td>
+                                <td><input type="text" name="keterangan" required placeholder="simpulan analisis..." class="form-control"/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button type="submit" class="small btn btn-success">Update Simpulan Analisa</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                {% else %}
+                <div>
+                    <form method="post" class="px-2">
+                        {% csrf_token %}
+                        <table class="table">
+                            <tr>
+                                <td style="width: 300px;font-weight: bold;">Tahun Pertama:</td>
+                                <td>{{forms.tahun1}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px; font-style: italic;"><span style="margin-left: 50px;">Bulan Awal:</span></td>
+                                <td>{{forms.bulan1_awal}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;  font-style: italic;"><span style="margin-left: 50px;">Bulan Akhir:</span></td>
+                                <td>{{forms.bulan1_akhir}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;font-weight: bold;">Tahun Kedua:</td>
+                                <td>{{forms.tahun2}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;  font-style: italic;"><span style="margin-left: 50px;">Bulan Awal:</span></td>
+                                <td>{{forms.bulan2_awal}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;  font-style: italic;"><span style="margin-left: 50px;">Bulan Akhir:</span></td>
+                                <td>{{forms.bulan2_akhir}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;font-weight: bold;">Jumlah Object PAP berijin:</td>
+                                <td>{{forms.jml_obj_pap_berijin}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;font-weight: bold;">Jumlah Object PAP tidak berijin:</td>
+                                <td>{{forms.jml_obj_pap_nonijin}}</td>
+                            </tr>
+                            <tr>
+                                <td style="width: 300px;font-weight: bold;">Jumlah Object SPBU:</td>
+                                <td>{{forms.jml_obj_spbu}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button type="submit" class="btn small btn-success">+ Tambahkan Data PAP</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    
+    <a href="/lhe/add/b2/bbnkb/{{id_lhe}}" class="btn btn-secondary mx-2"><i>&larr; Kembali ke Pajak Daerah... A. BBNKB</i></a>
+    <a class="btn btn-primary my-3" href="#"><i>Lanjutkan ke Pajak Daerah 2. RETRIBUSI DAERAH &rarr;</i></a>
+</div>
+
+{% endblock%}

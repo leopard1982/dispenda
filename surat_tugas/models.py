@@ -202,6 +202,7 @@ class Pengguna(AbstractUser):
     is_edit = models.BooleanField(default=False)
     is_delete = models.BooleanField(default=False)
     is_create = models.BooleanField(default=True)
+    email = models.CharField(max_length=100,blank=True,null=True,unique=True)
 
 class Logging(models.Model):
     updatedAt = models.DateTimeField(auto_now_add=True,null=True)

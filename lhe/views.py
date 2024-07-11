@@ -1,10 +1,10 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from lhe.models import headerLHE, simpulanHasilValBin
-from lhe.forms import inputHeaderLHE, inputNormatifLHE, inputBab3PKB, inputBab3BNKB
+from lhe.forms import inputHeaderLHE, inputNormatifLHE, inputBab3PKB, inputBab3BNKB, inputBab3PAP
 from surat_tugas.models import TrxSuratTugas, ST_Peserta, MasterJabatan
 from lhe.models import bab2_sasaran_evaluasi_pembinaan, bab2_tujuan_evaluasi_pembinaan, bab2_data_umum
 from lhe.models import bab2_tatausaha_kepegawaian, bab2_tatausaha_kepegawaian_detail, bab2_tatausaha_kepegawaian_normatif
-from lhe.models import bab2_tatausaha_keuangan, bab3_pkb, bab3_pkb_detail
+from lhe.models import bab2_tatausaha_keuangan, bab3_pkb, bab3_pkb_detail, bab3_pap, bab3_pap_tahun1, bab3_pap_tahun2
 import datetime
 from django.core.paginator import Paginator
 from lhe.models import bab2_tatausaha_bangun_tanah, bab2_tatausaha_mobil_pemkab, bab2_tatausaha_mobil_pemprov, bab2_tatausaha_motor_pemprov
@@ -648,6 +648,7 @@ def addLHE_b2_pkb(request,id):
 					pkb.is_new=False
 					pkb.save()
 					acc_penetapan=True
+					request.session['status']="Data Jumlah PKB Roda 4 berhasil diupdate"
 
 			if 'jml_pkb_kuning' in request.POST:
 				if(int(request.POST['jml_pkb_kuning'])<100):
@@ -657,6 +658,7 @@ def addLHE_b2_pkb(request,id):
 					pkb.is_new=False
 					pkb.save()
 					acc_penetapan=True
+					request.session['status']="Data Jumlah PKB Plat Kuning berhasil diupdate"
 
 			if 'jml_pkb_hitam' in request.POST:
 				if(int(request.POST['jml_pkb_hitam'])<100):
@@ -666,6 +668,7 @@ def addLHE_b2_pkb(request,id):
 					pkb.is_new=False
 					pkb.save()
 					acc_penetapan=True
+					request.session['status']="Data Jumlah PKB Plat Hitam berhasil diupdate"
 
 			if 'penelitian_ulang' in request.POST:
 				if(int(request.POST['penelitian_ulang'])<100):
@@ -675,6 +678,7 @@ def addLHE_b2_pkb(request,id):
 					pkb.is_new=False
 					pkb.save()
 					acc_penetapan=True
+					request.session['status']="Data Jumlah PKB penelitian ulang berhasil diupdate"
 
 			if 'obj_data_piutang' in request.POST:
 				pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
@@ -683,6 +687,7 @@ def addLHE_b2_pkb(request,id):
 				pkb.is_new=False
 				pkb.save()
 				acc_piutang=True
+				request.session['status']="Data Jumlah Piutang PKB berhasil diupdate"
 			
 			if 'obj_data_piutang_nominal' in request.POST:
 				pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
@@ -691,6 +696,7 @@ def addLHE_b2_pkb(request,id):
 				pkb.is_new=False
 				pkb.save()
 				acc_piutang=True
+				request.session['status']="Data Rupiah PKB berhasil diupdate"
 			
 			if 'obj_pelunasan_piutang' in request.POST:
 				pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
@@ -699,6 +705,7 @@ def addLHE_b2_pkb(request,id):
 				pkb.is_new=False
 				pkb.save()
 				acc_piutang=True
+				request.session['status']="Data Pelunasan Piutan PKB berhasil diupdate"
 
 			if 'obj_pelunasan_piutang_persen' in request.POST:
 				pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
@@ -707,6 +714,7 @@ def addLHE_b2_pkb(request,id):
 				pkb.is_new=False
 				pkb.save()
 				acc_piutang=True
+				request.session['status']="Data Persentase Pelunasan PKB berhasil diupdate"
 
 			if 'pelunasan_piutang_rupiah' in request.POST:
 				pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
@@ -715,6 +723,7 @@ def addLHE_b2_pkb(request,id):
 				pkb.is_new=False
 				pkb.save()
 				acc_piutang=True
+				request.session['status']="Data Pelunasan PKB dalam rupiah berhasil diupdate"
 		
 
 			if 'pelunasan_piutang_persen' in request.POST:
@@ -724,6 +733,7 @@ def addLHE_b2_pkb(request,id):
 				pkb.is_new=False
 				pkb.save()
 				acc_piutang=True
+				request.session['status']="Data Pelunasan Persentase piutang PKB berhasil diupdate"
 
 			try:
 				bulan_awal = request.POST['bulan_awal']
@@ -766,6 +776,7 @@ def addLHE_b2_pkb(request,id):
 					pkb.is_new=True	#akan create awal	
 					pkb.save()
 					acc_pkb=True
+					request.session['status']="Data PKB Berhasil ditambahkan!"
 			
 			#request update bulan
 			if(bulan_awal!=None and tahun_awal==None and keterangan==None):	
@@ -779,6 +790,7 @@ def addLHE_b2_pkb(request,id):
 				pkb.is_new=False	
 				pkb.save()				
 				acc_pkb=True
+				request.session['status']="Data Periode PKB berhasil diupdate"
 			
 			#request update tahun
 			if(bulan_awal==None and tahun_awal!=None and keterangan==None):	
@@ -791,6 +803,7 @@ def addLHE_b2_pkb(request,id):
 				pkb.createdBy = request.user.username
 				pkb.save()
 				acc_pkb=True
+				request.session['status']="Data Tahun PKB berhasil diupdate"
 
 			#request update keterangan
 			if(bulan_awal==None and tahun_awal==None and keterangan!=None):	
@@ -802,10 +815,10 @@ def addLHE_b2_pkb(request,id):
 				pkb.is_new=False
 				pkb.save()
 				acc_pkb=True
+				request.session['status']="Data Keterangan PKB berhasil diupdate"
 
 		except Exception as ex:
-			print(ex)
-			print('error post')
+			request.session['status']="Data Periode PKB gagal ditambahkan/ diubah!"
 
 	try:
 		pkb = bab3_pkb.objects.get(id_lhe=headerlhe)
@@ -909,8 +922,10 @@ def addLHE_b2_pkb(request,id):
 		'jml_pkb_roda4_huruf':jml_pkb_roda4_huruf,
 		'jml_pkb_kuning_huruf':jml_pkb_kuning_huruf,
 		'jml_pkb_hitam_huruf':jml_pkb_hitam_huruf,
-		'penelitian_ulang':penelitian_ulang
+		'penelitian_ulang':penelitian_ulang,
+		'status':request.session['status']
 	}
+	request.session['status']=""
 	return render(request,'lhe/create_lhe_bab2_c_pkb.html',context)
 
 def updatePKBDetail(request,id,id_update):
@@ -921,6 +936,7 @@ def updatePKBDetail(request,id,id_update):
 	id_pkb_detail.nilai_awal=int(request.POST['nilai_awal_new'])
 	id_pkb_detail.nilai_akhir=int(request.POST['nilai_akhir_new'])
 	id_pkb_detail.save()
+	request.session['status']="Data PKB Berhasil diupdate!"
 
 	return HttpResponseRedirect(f'/lhe/add/b2/pkb/{id}/')
 
@@ -1096,3 +1112,151 @@ def updateBBNKBDetail(request,id,id_update):
 	id_bbnkb_detail.save()
 
 	return HttpResponseRedirect(f'/lhe/add/b2/bbnkb/{id}/')
+
+def addLHE_b2_pap(request,id):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+
+	headerlhe = headerLHE.objects.get(id_lhe=id)
+	
+	if request.method=="POST":
+		if('tahun1' in request.POST and 'tahun2' in request.POST):
+			if(int(request.POST['bulan1_awal'])<int(request.POST['bulan1_akhir']) and int(request.POST['bulan2_awal'])<int(request.POST['bulan2_akhir'])):
+				pap = bab3_pap()
+				pap.id_lhe = headerlhe
+				pap.bulan1_akhir = int(request.POST['bulan1_akhir'])
+				pap.bulan1_awal = int(request.POST['bulan1_awal'])
+				pap.tahun1 = int(request.POST['tahun1'])
+				pap.bulan2_akhir = int(request.POST['bulan2_akhir'])
+				pap.bulan2_awal = int(request.POST['bulan2_awal'])
+				pap.tahun2 = int(request.POST['tahun2'])
+				pap.jml_obj_pap_berijin = int(request.POST['jml_obj_pap_berijin'])
+				pap.jml_obj_pap_nonijin = int(request.POST['jml_obj_pap_nonijin'])
+				pap.jml_obj_spbu=int(request.POST['jml_obj_spbu'])
+				pap.createdBy = request.user.username
+				pap.createdAt = datetime.datetime.now()
+				pap.is_new = True
+				try:
+					pap.save()
+					request.session['status']="Data PAP berhasil ditambahkan!"
+				except:
+					request.session['status']="Data PAP gagal ditambahkan karena sudah ada sebelumnya!"
+			else:	
+				request.session['status']="Data PAP gagal ditambahkan! Bulan Awal harus lebih kecil dari Bulan Akhir!"
+
+		elif('tahun1' in request.POST and 'bulan1_awal' in request.POST):
+			try:
+				if(int(request.POST['bulan1_awal'])<int(request.POST['bulan1_akhir'])):
+					pap = bab3_pap.objects.get(id_lhe=headerlhe)
+					pap.tahun1 = int(request.POST['tahun1'])
+					pap.bulan1_awal = int(request.POST['bulan1_awal'])
+					pap.bulan1_akhir = int(request.POST['bulan1_akhir'])
+					pap.createdAt = datetime.datetime.now()
+					pap.createdBy = request.user.username
+					pap.is_periode1=True
+					pap.save()
+					request.session['status']="Update Periode Pertama Berhasil!"
+				else:
+					request.session['status']="Update Periode Pertama Gagal! Perhatikan Bulan Awal harus lebih kecil dari Bulan Akhir!"
+			except:
+				request.session['status']="Update Periode Pertama Gagal!"
+		
+		elif('tahun2' in request.POST and 'bulan2_awal' in request.POST):
+			try:
+				if(int(request.POST['bulan2_awal'])<int(request.POST['bulan2_akhir'])):
+					pap = bab3_pap.objects.get(id_lhe=headerlhe)
+					pap.tahun2 = int(request.POST['tahun2'])
+					pap.bulan2_awal = int(request.POST['bulan2_awal'])
+					pap.bulan2_akhir = int(request.POST['bulan2_akhir'])
+					pap.createdAt = datetime.datetime.now()
+					pap.createdBy = request.user.username
+					pap.is_periode2=True
+					pap.save()
+					request.session['status']="Update Periode Kedua Berhasil!"
+				else:
+					request.session['status']="Update Periode Kedua Gagal! Perhatikan Bulan Awal harus lebih kecil dari Bulan Akhir!"
+			except:
+				request.session['status']="Update Periode Kedua Gagal!"
+		
+		elif('jml_obj_pap_berijin' in request.POST):
+			try:
+					pap = bab3_pap.objects.get(id_lhe=headerlhe)
+					pap.jml_obj_pap_berijin = int(request.POST['jml_obj_pap_berijin'])
+					pap.createdAt = datetime.datetime.now()
+					pap.createdBy = request.user.username
+					pap.is_obj=True
+					pap.save()
+					request.session['status']="Update Jumlah PAP Berijin Berhasil!"
+			except:
+				request.session['status']="Update Jumlah PAP Berijin Gagal!"
+
+		elif('jml_obj_pap_nonijin' in request.POST):
+			try:
+					pap = bab3_pap.objects.get(id_lhe=headerlhe)
+					pap.jml_obj_pap_nonijin = int(request.POST['jml_obj_pap_nonijin'])
+					pap.createdAt = datetime.datetime.now()
+					pap.createdBy = request.user.username
+					pap.is_obj=True
+					pap.save()
+					request.session['status']="Update Jumlah PAP Tidak Berijin Berhasil!"
+			except:
+				request.session['status']="Update Jumlah PAP Tidak Berijin Gagal!"
+
+		elif('jml_obj_spbu' in request.POST):
+			try:
+					pap = bab3_pap.objects.get(id_lhe=headerlhe)
+					pap.jml_obj_spbu = int(request.POST['jml_obj_spbu'])
+					pap.createdAt = datetime.datetime.now()
+					pap.createdBy = request.user.username
+					pap.is_obj=True
+					pap.save()
+					request.session['status']="Update Jumlah SPBU Berhasil!"
+			except:
+				request.session['status']="Update Jumlah SPBU Gagal!"
+		
+		elif('keterangan' in request.POST):
+			try:
+					pap = bab3_pap.objects.get(id_lhe=headerlhe)
+					pap.keterangan = request.POST['keterangan']
+					pap.createdAt = datetime.datetime.now()
+					pap.createdBy = request.user.username
+					pap.is_obj=True
+					pap.save()
+					request.session['status']="Update Simpulan Analisa Berhasil!"
+			except:
+				request.session['status']="Update Simpulan Analisa Gagal!"
+
+	forms = inputBab3PAP()
+
+	try:
+		mypap = bab3_pap.objects.get(id_lhe=headerlhe)
+		mypap_tahun1 = bab3_pap_tahun1.objects.all().filter(id_pap=mypap)
+		mypap_tahun2 = bab3_pap_tahun2.objects.all().filter(id_pap=mypap)
+	except:
+		mypap = None
+		mypap_tahun1 = None
+		mypap_tahun2 = None
+	context = {
+		'nomor_lhe':headerlhe.nomor_lhe,
+		'id_lhe':headerlhe.id_lhe,
+		'forms':forms,
+		'mypap':mypap,
+		'mypap_tahun1':mypap_tahun1,
+		'mypap_tahun2':mypap_tahun2,
+		'status':request.session['status']
+		# 'lokasi':lokasi,
+		# 'tahun_awal':tahun_awal,
+		# 'tahun_akhir':tahun_akhir,
+		# 'bulan_awal':bulan_awal,
+		# 'bulan_akhir':bulan_akhir,
+		# 'selisih_angka':selisih_angka,
+		# 'selisih_persen':selisih_persen,
+		# 'total_tahun_awal':total_tahun_awal,
+		# 'total_tahun_akhir':total_tahun_akhir,
+		# 'bnkb_detail':bnkb_detail,
+		# 'pending_surat':getPendingSurat(),
+		# 'pending_lhe':getPendingLHE(),
+		# 'keterangan': keterangan,
+	}
+	request.session['status']=""
+	return render(request,'lhe/create_lhe_bab2_c_pap.html',context)

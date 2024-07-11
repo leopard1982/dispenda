@@ -374,3 +374,206 @@ class bab3_bbnkb_detail(models.Model):
         total_persen = bab3_bbnkb_detail.objects.all().filter(id_bbnkb=self.id_bbnkb).aggregate(Sum('selisih_persen'))
         bab3_bbnkb.objects.all().filter(id_bbnkb=self.id_bbnkb.id_bbnkb).update(selisih_angka=total_angka['selisih_angka__sum'])
         bab3_bbnkb.objects.all().filter(id_bbnkb=self.id_bbnkb.id_bbnkb).update(selisih_persen=total_persen['selisih_persen__sum'])        
+
+class bab3_pap(models.Model):
+    id_lhe = models.ForeignKey(headerLHE,on_delete=models.RESTRICT)
+    id_pap = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()),unique=True)
+    bulan1_awal = models.PositiveSmallIntegerField(default=1,choices=BULAN)
+    bulan1_akhir = models.PositiveSmallIntegerField(default=12,choices=BULAN)
+    bulan2_awal = models.PositiveSmallIntegerField(default=1,choices=BULAN)
+    bulan2_akhir = models.PositiveSmallIntegerField(default=12,choices=BULAN)
+    tahun1 = models.PositiveSmallIntegerField(default=2023)
+    tahun2 = models.PositiveSmallIntegerField(default=2024)
+    is_new = models.BooleanField(default=False,null=True,blank=True)
+    is_periode1 = models.BooleanField(default=False,null=True,blank=True)
+    is_periode2 = models.BooleanField(default=False,null=True,blank=True)
+    is_tahun1 = models.BooleanField(default=False,null=True,blank=True)
+    is_tahun2 = models.BooleanField(default=False,null=True,blank=True)
+    createdAt = models.DateTimeField(auto_now_add=False,blank=True,null=True)
+    createdBy = models.CharField(max_length=100,blank=True,null=True)
+    selisih_tahun1_angka= models.BigIntegerField(default=0,null=True)
+    selisih_tahun2_angka= models.BigIntegerField(default=0,null=True)
+    selisih_tahun1_persen= models.FloatField(default=0,null=True)
+    selisih_tahun2_persen= models.FloatField(default=0,null=True)
+    jml_penetapan_tahun1 = models.BigIntegerField(default=0,blank=True,null=True)
+    jml_penetapan_tahun2 = models.BigIntegerField(default=0,blank=True,null=True)
+    jml_pembayaran_tahun1 = models.BigIntegerField(default=0,blank=True,null=True)
+    jml_pembayaran_tahun2 = models.BigIntegerField(default=0,blank=True,null=True)
+    jml_obj_pap_berijin = models.PositiveSmallIntegerField(default=0,blank=True,null=True)
+    jml_obj_pap_nonijin = models.PositiveSmallIntegerField(default=0,blank=True,null=True)
+    jml_obj_spbu= models.PositiveSmallIntegerField(default=0,blank=True,null=True)
+    is_obj = models.BooleanField(default=False,blank=True,null=True)
+    keterangan = models.CharField(max_length=255,default="",null=True,blank=True)
+
+    class Meta:
+        unique_together = ['id_lhe']
+
+    def save(self,*args,**kwargs):
+        if self.is_new:
+            if(self.bulan1_awal<self.bulan1_akhir and self.bulan2_awal<self.bulan2_akhir):
+                self.id_pap = str(uuid.uuid4())
+                self.is_new=False
+                self.is_periode1=False
+                self.is_periode2=False
+                self.is_tahun1=False
+                self.is_tahun2=False
+                self.is_obj=False
+                super(bab3_pap,self).save(*args,**kwargs)
+                bab3_pap_tahun1.objects.all().filter(id_pap=bab3_pap.objects.get(id_pap=self.id_pap)).delete()
+                bab3_pap_tahun2.objects.all().filter(id_pap=bab3_pap.objects.get(id_pap=self.id_pap)).delete()
+                #generate babb3_pap_tahun1
+                for i in range(int(self.bulan1_awal),int(self.bulan1_akhir)+1):
+                    pap_tahun1 = bab3_pap_tahun1()
+                    pap_tahun1.id_pap = bab3_pap.objects.get(id_pap=self.id_pap)
+                    pap_tahun1.bulan = i
+                    pap_tahun1.penetapan=0
+                    pap_tahun1.pembayaran=0
+                    pap_tahun1.createdAt=datetime.datetime.now()
+                    pap_tahun1.createdBy=self.createdBy
+                    pap_tahun1.tahun=self.tahun1
+                    pap_tahun1.id_pap_tahun1=str(uuid.uuid4())
+                    pap_tahun1.save()
+
+                #generate babb3_pap_tahun2
+                for i in range(int(self.bulan2_awal),int(self.bulan2_akhir)+1):
+                    pap_tahun2 = bab3_pap_tahun2()
+                    pap_tahun2.id_pap = bab3_pap.objects.get(id_pap=self.id_pap)
+                    pap_tahun2.bulan = i
+                    pap_tahun2.penetapan=0
+                    pap_tahun2.pembayaran=0
+                    pap_tahun2.createdAt=datetime.datetime.now()
+                    pap_tahun2.createdBy=self.createdBy
+                    pap_tahun2.tahun=self.tahun2
+                    pap_tahun2.id_pap_tahun2=str(uuid.uuid4())
+                    pap_tahun2.save()
+
+        if self.is_periode1:
+            if(self.bulan1_awal<self.bulan1_akhir):
+                self.is_new=False
+                self.is_periode1=False
+                self.is_periode2=False
+                self.is_tahun1=False
+                self.is_tahun2=False
+                self.is_obj=False
+                super(bab3_pap,self).save(*args,**kwargs)
+                bab3_pap_tahun1.objects.all().filter(id_pap=bab3_pap.objects.get(id_pap=self.id_pap)).delete()
+                # bab3_pap_tahun2.objects.all().filter(id_pap=bab3_pap.objects.get(id_pap=self.id_pap)).delete()
+                #generate babb3_pap_tahun1
+                for i in range(int(self.bulan1_awal),int(self.bulan1_akhir)+1):
+                    pap_tahun1 = bab3_pap_tahun1()
+                    pap_tahun1.id_pap = bab3_pap.objects.get(id_pap=self.id_pap)
+                    pap_tahun1.bulan = i
+                    pap_tahun1.penetapan=0
+                    pap_tahun1.pembayaran=0
+                    pap_tahun1.createdAt=datetime.datetime.now()
+                    pap_tahun1.createdBy=self.createdBy
+                    pap_tahun1.id_pap_tahun1=str(uuid.uuid4())
+                    pap_tahun1.save()
+
+        if self.is_periode2:
+            if(self.bulan1_awal<self.bulan1_akhir):
+                self.is_new=False
+                self.is_periode1=False
+                self.is_periode2=False
+                self.is_tahun1=False
+                self.is_tahun2=False
+                self.is_obj=False
+                super(bab3_pap,self).save(*args,**kwargs)
+                bab3_pap_tahun2.objects.all().filter(id_pap=bab3_pap.objects.get(id_pap=self.id_pap)).delete()
+                # bab3_pap_tahun2.objects.all().filter(id_pap=bab3_pap.objects.get(id_pap=self.id_pap)).delete()
+                #generate babb3_pap_tahun1
+                for i in range(int(self.bulan2_awal),int(self.bulan2_akhir)+1):
+                    pap_tahun2 = bab3_pap_tahun2()
+                    pap_tahun2.id_pap = bab3_pap.objects.get(id_pap=self.id_pap)
+                    pap_tahun2.bulan = i
+                    pap_tahun2.penetapan=0
+                    pap_tahun2.pembayaran=0
+                    pap_tahun2.createdAt=datetime.datetime.now()
+                    pap_tahun2.createdBy=self.createdBy
+                    pap_tahun2.id_pap_tahun2=str(uuid.uuid4())
+                    pap_tahun2.save()
+
+        if self.is_tahun1:
+            self.is_new=False
+            self.is_periode1=False
+            self.is_periode2=False
+            self.is_tahun1=False
+            self.is_tahun2=False
+            self.is_obj=False
+            super(bab3_pap,self).save(*args,**kwargs)
+            bab3_pap_tahun1.objects.all().filter(id_pap=bab3_pap.objects.get(id_pap=self.id_pap)).update(tahun=self.tahun1)
+
+        if self.is_tahun2:
+            self.is_new=False
+            self.is_periode1=False
+            self.is_periode2=False
+            self.is_tahun1=False
+            self.is_tahun2=False
+            self.is_obj=False
+            super(bab3_pap,self).save(*args,**kwargs)
+            bab3_pap_tahun2.objects.all().filter(id_pap=bab3_pap.objects.get(id_pap=self.id_pap)).update(tahun=self.tahun2)
+        
+        if self.is_obj:
+            self.is_new=False
+            self.is_periode1=False
+            self.is_periode2=False
+            self.is_tahun1=False
+            self.is_tahun2=False
+            self.is_obj=False
+            super(bab3_pap,self).save(*args,**kwargs)
+
+class bab3_pap_tahun1(models.Model):
+    id_pap = models.ForeignKey(bab3_pap,on_delete=models.RESTRICT)
+    id_pap_tahun1 = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()))
+    bulan = models.PositiveSmallIntegerField(default=1,choices=BULAN)
+    penetapan = models.BigIntegerField(default=0)
+    pembayaran = models.BigIntegerField(default=0)
+    selisih_angka = models.BigIntegerField(default=0,blank=True,null=True)
+    selisih_persen = models.FloatField(default=0,blank=True,null=True)
+    createdAt = models.DateTimeField(auto_now_add=False,blank=True,null=True)
+    createdBy = models.CharField(max_length=100,blank=True,null=True)
+    tahun = models.SmallIntegerField(default=2023)
+
+    def save(self,*args,**kwargs):
+        self.selisih_angka = self.pembayaran - self.penetapan
+        try:
+            self.selisih_persen = self.selisih_angka/self.penetapan
+        except:
+            self.selisih_persen = 0
+        super(bab3_pap_tahun1,self).save(*args,**kwargs)
+        jml_penetapan = bab3_pap_tahun1.objects.filter(id_pap=self.id_pap).aggregate(Sum('penetapan'))
+        jml_pembayaran = bab3_pap_tahun1.objects.filter(id_pap=self.id_pap).aggregate(Sum('pembayaran'))
+        sel_angka = jml_pembayaran['pembayaran__sum']-jml_penetapan['penetapan__sum']
+        try:
+            sel_persen = sel_angka/jml_penetapan['penetapan__sum']
+        except:
+            sel_persen=0
+        bab3_pap.objects.all().filter(id_pap=self.id_pap.id_pap).update(selisih_tahun1_angka=sel_angka,selisih_tahun1_persen=sel_persen,jml_pembayaran_tahun1=jml_pembayaran['pembayaran__sum'],jml_penetapan_tahun1=jml_penetapan['penetapan__sum'])
+
+class bab3_pap_tahun2(models.Model):
+    id_pap = models.ForeignKey(bab3_pap,on_delete=models.RESTRICT)
+    id_pap_tahun2 = models.CharField(max_length=36,primary_key=True,default=str(uuid.uuid4()))
+    bulan = models.PositiveSmallIntegerField(default=1,choices=BULAN)
+    penetapan = models.BigIntegerField(default=0)
+    pembayaran = models.BigIntegerField(default=0)
+    selisih_angka = models.BigIntegerField(default=0,blank=True,null=True)
+    selisih_persen = models.FloatField(default=0,blank=True,null=True)
+    createdAt = models.DateTimeField(auto_now_add=False,blank=True,null=True)
+    createdBy = models.CharField(max_length=100,blank=True,null=True)
+    tahun = models.SmallIntegerField(default=2024)
+
+    def save(self,*args,**kwargs):
+        self.selisih_angka = self.pembayaran - self.penetapan
+        try:
+            self.selisih_persen = self.selisih_angka/self.penetapan
+        except:
+            self.selisih_persen = 0
+        super(bab3_pap_tahun2,self).save(*args,**kwargs)
+        jml_penetapan = bab3_pap_tahun2.objects.filter(id_pap=self.id_pap).aggregate(Sum('penetapan'))
+        jml_pembayaran = bab3_pap_tahun2.objects.filter(id_pap=self.id_pap).aggregate(Sum('pembayaran'))
+        sel_angka = jml_pembayaran['pembayaran__sum']-jml_penetapan['penetapan__sum']
+        try:
+            sel_persen = sel_angka/jml_penetapan['penetapan__sum']
+        except:
+            sel_persen = 0
+        bab3_pap.objects.all().filter(id_pap=self.id_pap.id_pap).update(selisih_tahun2_angka=sel_angka,selisih_tahun2_persen=sel_persen,jml_pembayaran_tahun2=jml_pembayaran['pembayaran__sum'],jml_penetapan_tahun2=jml_penetapan['penetapan__sum'])

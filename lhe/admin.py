@@ -4,6 +4,7 @@ from lhe.models import bab2_sasaran_evaluasi_pembinaan
 from lhe.models import bab2_tatausaha_kepegawaian,bab2_tatausaha_kepegawaian_detail
 from lhe.models import bab2_tujuan_evaluasi_pembinaan, bab2_tatausaha_keuangan,bab3_pkb,bab3_pkb_detail
 from lhe.models import bab3_bbnkb,bab3_bbnkb_detail
+from lhe.models import bab3_pap,bab3_pap_tahun1,bab3_pap_tahun2
 # from lhe.models import 
 
 admin.site.register(headerLHE)
@@ -19,3 +20,6 @@ admin.site.register(bab3_pkb)
 admin.site.register(bab3_pkb_detail)
 admin.site.register(bab3_bbnkb)
 admin.site.register(bab3_bbnkb_detail)
+admin.site.register(bab3_pap)
+admin.site.register(bab3_pap_tahun1)
+admin.site.register(bab3_pap_tahun2)

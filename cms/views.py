@@ -61,6 +61,9 @@ def dashboard(request):
 def addGolongan(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
+	if(request.user.is_create !=True):
+		return HttpResponseRedirect('/auth/')
+
 	if request.method=="POST":
 		kode_golongan = request.POST['kode_golongan']
 		keterangan = request.POST['keterangan']
@@ -315,7 +318,7 @@ def addPengguna(request):
 	if request.method=="POST":
 		username = request.POST['username']
 		password = request.POST['password']
-		email = request.POST['username']
+		email = request.POST['email']
 		
 		try:
 			is_create = request.POST['is_create']
