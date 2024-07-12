@@ -1249,7 +1249,9 @@ def addLHE_b2_pap(request,id):
 		'mypap':mypap,
 		'mypap_tahun1':mypap_tahun1,
 		'mypap_tahun2':mypap_tahun2,
-		'status':request.session['status']
+		'status':request.session['status'],
+		'pending_surat':getPendingSurat(),
+		'pending_lhe':getPendingLHE(),
 		# 'lokasi':lokasi,
 		# 'tahun_awal':tahun_awal,
 		# 'tahun_akhir':tahun_akhir,
