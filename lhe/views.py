@@ -1120,8 +1120,8 @@ def addLHE_b2_pap(request,id):
 	headerlhe = headerLHE.objects.get(id_lhe=id)
 	
 	if request.method=="POST":
-		if('tahun1' in request.POST and 'tahun2' in request.POST):
-			if(int(request.POST['bulan1_awal'])<int(request.POST['bulan1_akhir']) and int(request.POST['bulan2_awal'])<int(request.POST['bulan2_akhir'])):
+		if('tahun1' in request.POST and 'tahun2' in request.POST and 'jml_obj_spbu' in request.POST):
+			if(int(request.POST['bulan1_awal'])<int(request.POST['bulan1_akhir'])  and int(request.POST['bulan2_awal'])<int(request.POST['bulan2_akhir'])):
 				pap = bab3_pap()
 				pap.id_lhe = headerlhe
 				pap.bulan1_akhir = int(request.POST['bulan1_akhir'])
