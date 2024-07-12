@@ -17,7 +17,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalTitleId">
-                    Mengubah Nilai Penerimaan BBNKB
+                    Mengubah Nilai Penetapan dan Pembayaran PAP Tahun <span id="tahunnya"></span>
                 </h5>
                 <button
                     type="button"
@@ -28,22 +28,22 @@
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
-                    BULAN: <span id="bulan"></span><br>
+                    BULAN: <span id="bulan"></span> <span id="tahun_angka"></span><br>
                     <table class="table w-100">
                         <thead>
-                            <th>Tahun</th>
-                            <th>Nilai Lama</th>
+                            <th></th>
+                            <th style="min-width: 125px;">Nilai Lama</th>
                             <th>Nilai Baru</th>
                         </thead>
                         <tr>
-                            <td class="small p-2">{{tahun_awal}}</td>
-                            <td class="small p-2">Rp.<span id="nilai_awal_old"></span>,00</td>
-                            <td><input type='number' min=0 id='nilai_awal_new' placeholder="Rp." class="small form-control"/></td>
+                            <th>Penetapan</th>
+                            <td class="small p-2">Rp.<span id="pembayaran_old"></span>,00</td>
+                            <td><input type='number' min=0 id='penetapan' placeholder="Rp." class="small form-control"/></td>
                         </tr>
                         <tr>
-                            <td class="small p-2">{{tahun_akhir}}</td>
-                            <td class="small p-2">Rp.<span id="nilai_akhir_old"></span>,00</td>
-                            <td><input type='number' min=0 id='nilai_akhir_new' placeholder="Rp." class="small form-control"/></td>
+                            <th>Pembayaran</th>
+                            <td class="small p-2">Rp.<span id="pembayaran_old"></span>,00</td>
+                            <td><input type='number' min=0 id='pembayaran' placeholder="Rp." class="small form-control"/></td>
                         </tr>
                     </table>
                 </div>
@@ -71,13 +71,15 @@
     let nilai_awal_new ="";
     let nilai_akhir_new="";
     let counter=0;
+    let urutannya=0;
 
-    function setcounter(data) {
+    function setcounter(data,urutan) {
         counter=data;
         console.log(counter);
-        bulan=$('#setpkb'+counter).attr('data-bs-bulan');
-        id_lhe = $('#setpkb'+counter).attr('data-bs-idlhe');
-        id_pkb_detail = $('#setpkb'+counter).attr('data-bs-idpkb-detail');
+        urutannya=urutan;
+        bulan=$('#setpkb'+urutan+counter).attr('data-bs-bulan');
+        id_lhe = $('#setpkb'+urutan+counter).attr('data-bs-idlhe');
+        id_pkb_detail = $('#setpkb'+urutan+counter).attr('data-bs-idpkb-detail');
         data = {
             nilai_awal_new: $('#nilai_awal_new').value,
             nilai_akhir_new: $('#nilai_akhir_new').value
@@ -97,23 +99,27 @@
         else if(bulan==11) bulannya="NOVEMBER";
         else if(bulan==12) bulannya="DESEMBER";
         $("#bulan").text(bulannya);
-        $("#nilai_awal_old").text($('#setpkb'+counter).attr('data-bs-nilaiawal'));
-        $("#nilai_akhir_old").text($('#setpkb'+counter).attr('data-bs-nilaiakhir'));
+        $("#pembayaran_old").text($('#setpkb'+urutan+counter).attr('data-bs-pembayaran'));
+
+        $("#tahun_angka").text($('#setpkb'+urutan+counter).attr('data-bs-tahun-angka'));
+        $("#penetapan_old").text($('#setpkb'+urutan+counter).attr('data-bs-penetapan'));
+
+        $("#tahunnya").text($('#setpkb'+urutan+counter).attr('data-bs-tahunnya'));
         $('#modalId').show();
     }
 
     function updatedata() {
-        nilai_akhir=$("#nilai_akhir_new").val();
-        nilai_awal=$('#nilai_awal_new').val();
+        pembayaran=$("#pembayaran").val();
+        penetapan=$('#penetapan').val();
         let csrf_token = $('input[name=csrfmiddlewaretoken]').val();
         console.log(id_pkb_detail);
         data = {
-            nilai_awal_new:nilai_awal,
-            nilai_akhir_new:nilai_akhir,
+            pembayaran:pembayaran,
+            penetapan:penetapan,
             csrfmiddlewaretoken:csrf_token
         }
         console.log(data);
-        $.post('/lhe/add/b2/bbnkb/' + id_lhe + "/" +id_pkb_detail + "/",data).done(()=>window.location.reload());
+        $.post('/lhe/add/b2/pap/'+urutannya+"/" + id_lhe + "/" +id_pkb_detail + "/",data).done(()=>window.location.reload());
         
     }
 
@@ -232,7 +238,7 @@
                                             <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.penetapan|intcomma}},00</td>
                                             <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.pembayaran|intcomma}},00</td>
                                             <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.selisih_angka|intcomma}},00</td>
-                                            <th class="p-2 border border-1 border-black text-center"><a onclick="setcounter('{{forloop.counter}}')" class="btn btn-border-primary small" data-bs-nilaiakhir="{{pkb.nilai_akhir}}" data-bs-nilaiawal="{{pkb.nilai_awal}}" data-bs-toggle="modal" id="setpkb{{forloop.counter}}" data-bs-counter="{{forloop.counter}}" data-bs-bulan="{{pkb.bulan}}" data-bs-idlhe="{{pkb.id_pkb.id_lhe.id_lhe}}" data-bs-idpkb-detail="{{pkb.id_pkb_detail}}" data-bs-target="#modalId"><i class="fa fa-edit"></i></a></th>
+                                            <th class="p-2 border border-1 border-black text-center"><a onclick="setcounter('{{forloop.counter}}','1')" class="btn btn-border-primary small" data-bs-nilaiakhir="{{pkb.nilai_akhir}}" data-bs-tahunnya="Pertama" data-bs-tahun-angka="{{pkb.tahun}}" data-bs-pembayaran="{{pkb.pembayaran}}" data-bs-penetapan="{{pkb.penetapan}}" data-bs-toggle="modal" id="setpkb1{{forloop.counter}}" data-bs-counter="{{forloop.counter}}" data-bs-bulan="{{pkb.bulan}}" data-bs-idlhe="{{id_lhe}}" data-bs-idpkb-detail="{{pkb.id_pap_tahun1}}" data-bs-target="#modalId"><i class="fa fa-edit"></i></a></th>
                                         </tr>
                                         {% endfor %}
                                     </table>
@@ -275,7 +281,7 @@
                                             <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.penetapan|intcomma}},00</td>
                                             <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.pembayaran|intcomma}},00</td>
                                             <td class="small p-2 border border-1 border-black text-center">Rp.{{pkb.selisih_angka|intcomma}},00</td>
-                                            <th class="p-2 border border-1 border-black text-center"><a onclick="setcounter('{{forloop.counter}}')" class="btn btn-border-primary small" data-bs-nilaiakhir="{{pkb.nilai_akhir}}" data-bs-nilaiawal="{{pkb.nilai_awal}}" data-bs-toggle="modal" id="setpkb{{forloop.counter}}" data-bs-counter="{{forloop.counter}}" data-bs-bulan="{{pkb.bulan}}" data-bs-idlhe="{{pkb.id_pkb.id_lhe.id_lhe}}" data-bs-idpkb-detail="{{pkb.id_pkb_detail}}" data-bs-target="#modalId"><i class="fa fa-edit"></i></a></th>
+                                            <th class="p-2 border border-1 border-black text-center"><a onclick="setcounter('{{forloop.counter}}','2')" class="btn btn-border-primary small" data-bs-nilaiakhir="{{pkb.nilai_akhir}}" data-bs-tahunnya="Kedua" data-bs-tahun-angka="{{pkb.tahun}}"  data-bs-pembayaran="{{pkb.pembayaran}}" data-bs-penetapan="{{pkb.penetapan}}"  data-bs-toggle="modal" id="setpkb2{{forloop.counter}}" data-bs-counter="{{forloop.counter}}" data-bs-bulan="{{pkb.bulan}}" data-bs-idlhe="{{id_lhe}}" data-bs-idpkb-detail="{{pkb.id_pap_tahun2}}" data-bs-target="#modalId"><i class="fa fa-edit"></i></a></th>
                                         </tr>
                                         {% endfor %}
                                     </table>

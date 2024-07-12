@@ -1260,3 +1260,31 @@ def addLHE_b2_pap(request,id):
 	}
 	request.session['status']=""
 	return render(request,'lhe/create_lhe_bab2_c_pap.html',context)
+
+def updatePAP_tahun1(request,id,id_update):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	try:
+		pap_tahun1 = bab3_pap_tahun1.objects.get(id_pap_tahun1=id_update)
+		pap_tahun1.pembayaran=int(request.POST['pembayaran'])
+		pap_tahun1.penetapan=int(request.POST['penetapan'])
+		pap_tahun1.save()
+		request.session['status']='Update Pembayaran dan Penetapan Tahun Pertama Gagal!'	
+	except:
+		request.session['status']='Update Pembayaran dan Penetapan Tahun Pertama Berhasil!'
+
+	return HttpResponseRedirect(f'/lhe/add/b2/pap/{id}/')
+
+def updatePAP_tahun2(request,id,id_update):
+	if(request.user.is_authenticated != True):
+		return HttpResponseRedirect('/auth/')
+	try:
+		pap_tahun2 = bab3_pap_tahun2.objects.get(id_pap_tahun2=id_update)
+		pap_tahun2.pembayaran=int(request.POST['pembayaran'])
+		pap_tahun2.penetapan=int(request.POST['penetapan'])
+		pap_tahun2.save()
+		request.session['status']='Update Pembayaran dan Penetapan Tahun Kedua Gagal!'	
+	except:
+		request.session['status']='Update Pembayaran dan Penetapan Tahun Kedua Berhasil!'
+
+	return HttpResponseRedirect(f'/lhe/add/b2/pap/{id}/')

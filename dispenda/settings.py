@@ -26,13 +26,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('DJ_SECRET')
+SECRET_KEY = "DIS-PEN-DA234928490285239058%@&#&@^*#@*&#&*@^#&^#&*@&*#^@&*^#&*@#^***(&*((*)))"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
+DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.50','127.0.0.1','localhost','leopard1982.pythonanywhere.com']
-CSRF_TRUSTED_ORIGINS = ['http://192.168.1.50','http://192.168.1.50:8000','http://127.0.0.1:8000','https://leopard1982.pythonanywhere.com']
+ALLOWED_HOSTS = ['192.168.1.50','127.0.0.1','localhost','dispenda.pythonanywhere.com']
+CSRF_TRUSTED_ORIGINS = ['http://192.168.1.50','http://192.168.1.50:8000','http://127.0.0.1:8000','https://dispenda.pythonanywhere.com']
 
 
 # Application definition

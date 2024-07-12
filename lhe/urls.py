@@ -4,7 +4,8 @@ from lhe.views import delLHE_b2_sasaran, delLHE_b2_tujuan, displayLHE, addLHE_b2
 from lhe.views import addLHE_b2_ketatausahaan, delMobilPemkab, delMobilPemprov, delMotorPemprov
 from lhe.views import delPegawaiDetail, delNorminatif, delKeuangan, delTanahBangunan, addLHE_b2_pkb
 from lhe.views import updatePKBDetail, addLHE_b2_bbnkb, updateBBNKBDetail
-from lhe.views import addLHE_b2_pap
+from lhe.views import addLHE_b2_pap, updatePAP_tahun1, updatePAP_tahun2
+
 urlpatterns = [
     path("add/",addLHE,name="addLHE"),
     path('add/1/',addLHE_ok,name="addLHE_ok"),
@@ -29,4 +30,6 @@ urlpatterns = [
     path('add/b2/bbnkb/<str:id>/',addLHE_b2_bbnkb,name="addLHE_b2_bbnkb"),
     path('add/b2/bbnkb/<str:id>/<str:id_update>/',updateBBNKBDetail,name="updateBBNKBDetail"),
     path('add/b2/pap/<str:id>/',addLHE_b2_pap,name="addLHE_b2_pap"),
+    path('add/b2/pap/1/<str:id>/<str:id_update>/',updatePAP_tahun1,name="updatePAP_tahun1"),
+    path('add/b2/pap/2/<str:id>/<str:id_update>/',updatePAP_tahun2,name="updatePAP_tahun2"),
 ]
