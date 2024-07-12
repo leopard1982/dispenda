@@ -1146,7 +1146,8 @@ def addLHE_b2_pap(request,id):
 
 		elif('tahun1' in request.POST and 'bulan1_awal' in request.POST):
 			if(request.session['pembayaran']==True):
-				request.session['pembayaran']==False
+				print(request.session['pembayaran'])
+				request.session['pembayaran']=False
 			else:
 				try:
 					if(int(request.POST['bulan1_awal'])<int(request.POST['bulan1_akhir'])):
@@ -1166,7 +1167,8 @@ def addLHE_b2_pap(request,id):
 		
 		elif('tahun2' in request.POST and 'bulan2_awal' in request.POST):
 			if(request.session['pembayaran']==True):
-				request.session['pembayaran']==False
+				print(request.session['pembayaran'])
+				request.session['pembayaran']=False
 			else:
 				try:
 					if(int(request.POST['bulan2_awal'])<int(request.POST['bulan2_akhir'])):
