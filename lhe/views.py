@@ -1168,7 +1168,8 @@ def addLHE_b2_pap(request,id):
 						request.session['status']="Update Periode Pertama Berhasil!"
 					else:
 						request.session['status']="Update Periode Pertama Gagal! Perhatikan Bulan Awal harus lebih kecil dari Bulan Akhir!"
-				except:
+				except Exception as ex:
+					print(ex)
 					request.session['status']="Update Periode Pertama Gagal!"
 		
 		elif('tahun2' in request.POST and 'bulan2_awal' in request.POST):
@@ -1281,7 +1282,7 @@ def addLHE_b2_pap(request,id):
 
 def updatePAP_tahun1(request,id,id_update):
 	if(request.user.is_authenticated != True):
-		return HttpResponseRedirect('/auth/')
+			return HttpResponseRedirect('/auth/')
 	try:
 		pap_tahun1 = bab3_pap_tahun1.objects.get(id_pap_tahun1=id_update)
 		pap_tahun1.pembayaran=int(request.POST['pembayaran'])
@@ -1289,9 +1290,10 @@ def updatePAP_tahun1(request,id,id_update):
 		pap_tahun1.save()
 		request.session['pembayaran']=True
 		print(pap_tahun1)
-		request.session['status']='Update Pembayaran dan Penetapan Tahun Pertama Gagal!'	
-	except:
-		request.session['status']='Update Pembayaran dan Penetapan Tahun Pertama Berhasil!'
+		request.session['status']='Update Pembayaran dan Penetapan Tahun Pertama Berhasil!'	
+	except Exception as ex:
+		print(ex)
+		request.session['status']='Update Pembayaran dan Penetapan Tahun Pertama Gagal!'
 
 	return HttpResponseRedirect(f'/lhe/add/b2/pap/{id}/')
 
@@ -1304,8 +1306,8 @@ def updatePAP_tahun2(request,id,id_update):
 		pap_tahun2.penetapan=int(request.POST['penetapan'])
 		pap_tahun2.save()
 		request.session['pembayaran']=True
-		request.session['status']='Update Pembayaran dan Penetapan Tahun Kedua Gagal!'	
+		request.session['status']='Update Pembayaran dan Penetapan Tahun Kedua Berhasil!'	
 	except:
-		request.session['status']='Update Pembayaran dan Penetapan Tahun Kedua Berhasil!'
+		request.session['status']='Update Pembayaran dan Penetapan Tahun Kedua Gagal!'
 
 	return HttpResponseRedirect(f'/lhe/add/b2/pap/{id}/')
