@@ -1146,8 +1146,10 @@ def addLHE_b2_pap(request,id):
 
 		elif('tahun1' in request.POST and 'bulan1_awal' in request.POST):
 			try:
+				print(request.session['pembayaran'])
 				pembayaran = request.session['pembayaran']
-			except:
+			except Exception as ex:
+				print(ex)
 				pembayaran=False
 			if(pembayaran==True):
 				print(request.session['pembayaran'])
@@ -1275,7 +1277,6 @@ def addLHE_b2_pap(request,id):
 		# 'pending_lhe':getPendingLHE(),
 		# 'keterangan': keterangan,
 	}
-	request.session['pembayaran']=False
 	return render(request,'lhe/create_lhe_bab2_c_pap.html',context)
 
 def updatePAP_tahun1(request,id,id_update):
