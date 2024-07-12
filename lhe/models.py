@@ -535,10 +535,13 @@ class bab3_pap_tahun1(models.Model):
     tahun = models.SmallIntegerField(default=2023)
 
     def save(self,*args,**kwargs):
+        print(self.pembayaran)
+        print(self.penetapan)
         self.selisih_angka = self.pembayaran - self.penetapan
         try:
             self.selisih_persen = self.selisih_angka/self.penetapan
-        except:
+        except Exception as ex:
+            print(ex)
             self.selisih_persen = 0
         super(bab3_pap_tahun1,self).save(*args,**kwargs)
         jml_penetapan = bab3_pap_tahun1.objects.filter(id_pap=self.id_pap).aggregate(Sum('penetapan'))
@@ -563,6 +566,8 @@ class bab3_pap_tahun2(models.Model):
     tahun = models.SmallIntegerField(default=2024)
 
     def save(self,*args,**kwargs):
+        print(self.pembayaran)
+        print(self.penetapan)
         self.selisih_angka = self.pembayaran - self.penetapan
         try:
             self.selisih_persen = self.selisih_angka/self.penetapan

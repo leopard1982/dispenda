@@ -1145,38 +1145,44 @@ def addLHE_b2_pap(request,id):
 				request.session['status']="Data PAP gagal ditambahkan! Bulan Awal harus lebih kecil dari Bulan Akhir!"
 
 		elif('tahun1' in request.POST and 'bulan1_awal' in request.POST):
-			try:
-				if(int(request.POST['bulan1_awal'])<int(request.POST['bulan1_akhir'])):
-					pap = bab3_pap.objects.get(id_lhe=headerlhe)
-					pap.tahun1 = int(request.POST['tahun1'])
-					pap.bulan1_awal = int(request.POST['bulan1_awal'])
-					pap.bulan1_akhir = int(request.POST['bulan1_akhir'])
-					pap.createdAt = datetime.datetime.now()
-					pap.createdBy = request.user.username
-					pap.is_periode1=True
-					pap.save()
-					request.session['status']="Update Periode Pertama Berhasil!"
-				else:
-					request.session['status']="Update Periode Pertama Gagal! Perhatikan Bulan Awal harus lebih kecil dari Bulan Akhir!"
-			except:
-				request.session['status']="Update Periode Pertama Gagal!"
+			if(request.session['pembayaran']==True):
+				request.session['pembayaran']==False
+			else:
+				try:
+					if(int(request.POST['bulan1_awal'])<int(request.POST['bulan1_akhir'])):
+						pap = bab3_pap.objects.get(id_lhe=headerlhe)
+						pap.tahun1 = int(request.POST['tahun1'])
+						pap.bulan1_awal = int(request.POST['bulan1_awal'])
+						pap.bulan1_akhir = int(request.POST['bulan1_akhir'])
+						pap.createdAt = datetime.datetime.now()
+						pap.createdBy = request.user.username
+						pap.is_periode1=True
+						pap.save()
+						request.session['status']="Update Periode Pertama Berhasil!"
+					else:
+						request.session['status']="Update Periode Pertama Gagal! Perhatikan Bulan Awal harus lebih kecil dari Bulan Akhir!"
+				except:
+					request.session['status']="Update Periode Pertama Gagal!"
 		
 		elif('tahun2' in request.POST and 'bulan2_awal' in request.POST):
-			try:
-				if(int(request.POST['bulan2_awal'])<int(request.POST['bulan2_akhir'])):
-					pap = bab3_pap.objects.get(id_lhe=headerlhe)
-					pap.tahun2 = int(request.POST['tahun2'])
-					pap.bulan2_awal = int(request.POST['bulan2_awal'])
-					pap.bulan2_akhir = int(request.POST['bulan2_akhir'])
-					pap.createdAt = datetime.datetime.now()
-					pap.createdBy = request.user.username
-					pap.is_periode2=True
-					pap.save()
-					request.session['status']="Update Periode Kedua Berhasil!"
-				else:
-					request.session['status']="Update Periode Kedua Gagal! Perhatikan Bulan Awal harus lebih kecil dari Bulan Akhir!"
-			except:
-				request.session['status']="Update Periode Kedua Gagal!"
+			if(request.session['pembayaran']==True):
+				request.session['pembayaran']==False
+			else:
+				try:
+					if(int(request.POST['bulan2_awal'])<int(request.POST['bulan2_akhir'])):
+						pap = bab3_pap.objects.get(id_lhe=headerlhe)
+						pap.tahun2 = int(request.POST['tahun2'])
+						pap.bulan2_awal = int(request.POST['bulan2_awal'])
+						pap.bulan2_akhir = int(request.POST['bulan2_akhir'])
+						pap.createdAt = datetime.datetime.now()
+						pap.createdBy = request.user.username
+						pap.is_periode2=True
+						pap.save()
+						request.session['status']="Update Periode Kedua Berhasil!"
+					else:
+						request.session['status']="Update Periode Kedua Gagal! Perhatikan Bulan Awal harus lebih kecil dari Bulan Akhir!"
+				except:
+					request.session['status']="Update Periode Kedua Gagal!"
 		
 		elif('jml_obj_pap_berijin' in request.POST):
 			try:
@@ -1269,6 +1275,8 @@ def updatePAP_tahun1(request,id,id_update):
 		pap_tahun1.pembayaran=int(request.POST['pembayaran'])
 		pap_tahun1.penetapan=int(request.POST['penetapan'])
 		pap_tahun1.save()
+		request.session['pembayaran']=True
+		print(pap_tahun1)
 		request.session['status']='Update Pembayaran dan Penetapan Tahun Pertama Gagal!'	
 	except:
 		request.session['status']='Update Pembayaran dan Penetapan Tahun Pertama Berhasil!'
@@ -1283,6 +1291,7 @@ def updatePAP_tahun2(request,id,id_update):
 		pap_tahun2.pembayaran=int(request.POST['pembayaran'])
 		pap_tahun2.penetapan=int(request.POST['penetapan'])
 		pap_tahun2.save()
+		request.session['pembayaran']=True
 		request.session['status']='Update Pembayaran dan Penetapan Tahun Kedua Gagal!'	
 	except:
 		request.session['status']='Update Pembayaran dan Penetapan Tahun Kedua Berhasil!'
