@@ -1145,7 +1145,11 @@ def addLHE_b2_pap(request,id):
 				request.session['status']="Data PAP gagal ditambahkan! Bulan Awal harus lebih kecil dari Bulan Akhir!"
 
 		elif('tahun1' in request.POST and 'bulan1_awal' in request.POST):
-			if(request.session['pembayaran']==True):
+			try:
+				pembayaran = request.session['pembayaran']
+			except:
+				pembayaran=False
+			if(pembayaran==True):
 				print(request.session['pembayaran'])
 				request.session['pembayaran']=False
 			else:
@@ -1166,8 +1170,11 @@ def addLHE_b2_pap(request,id):
 					request.session['status']="Update Periode Pertama Gagal!"
 		
 		elif('tahun2' in request.POST and 'bulan2_awal' in request.POST):
-			if(request.session['pembayaran']==True):
-				print(request.session['pembayaran'])
+			try:
+				pembayaran = request.session['pembayaran']
+			except:
+				pembayaran=False
+			if(pembayaran==True):
 				request.session['pembayaran']=False
 			else:
 				try:
@@ -1268,7 +1275,7 @@ def addLHE_b2_pap(request,id):
 		# 'pending_lhe':getPendingLHE(),
 		# 'keterangan': keterangan,
 	}
-	request.session['status']=""
+	request.session['pembayaran']=False
 	return render(request,'lhe/create_lhe_bab2_c_pap.html',context)
 
 def updatePAP_tahun1(request,id,id_update):
