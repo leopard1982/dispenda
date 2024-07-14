@@ -180,6 +180,9 @@ def displayLHE(request):
 		halaman = p.page(page)
 	except:
 		halaman = p.page(1)
+
+	statusnya = request.session['status']
+	request.session['status']=""
 	
 	context={
 		'lists':halaman,
@@ -188,12 +191,11 @@ def displayLHE(request):
 		'pathway':'Transaksi Hasil Evaluasi - Daftar Hasil Evaluasi',
 		'username':request.user.username,
 		'mywebsite': '/lhe/dis/',
-		'status':request.session['status'],
+		'status':statusnya,
 		'pending_surat':getPendingSurat(),
 		'pending_lhe':getPendingLHE()
 	}
 
-	request.session['status']=""
 	return render(request,'lhe/display_lhe.html',context)
 
 
@@ -247,7 +249,8 @@ def addLHE_b1(request,id):
    	
 	simpulan_val_bin = simpulanHasilValBin.objects.filter(id_lhe=headerlhe)
  
-     
+	statusnya = request.session['status']
+	request.session['status']=""     
 
 	context = {
 		'nomor_lhe':headerlhe.nomor_lhe,
@@ -257,7 +260,8 @@ def addLHE_b1(request,id):
 		'simpulan_val_bin':simpulan_val_bin,
 		'id_lhe':headerlhe.id_lhe,
 		'pending_surat':getPendingSurat(),
-		'pending_lhe':getPendingLHE()
+		'pending_lhe':getPendingLHE(),
+		'status':statusnya
 	}
 
 	return render(request,'lhe/create_lhe_bab1.html',context)
@@ -324,6 +328,9 @@ def addLHE_b2_a(request,id):
 	except:
 		periode_akhir=None
 
+	statusnya = request.session['status']
+	request.session['status']=""
+
 	context = {
 		'nomor_lhe':headerlhe.nomor_lhe,
 		'nomor_surat_tugas': headerlhe.suratTugas.nomor_surat,
@@ -337,7 +344,8 @@ def addLHE_b2_a(request,id):
 		'trxsurattugas':trxsurattugas,
 		'peserta':peserta,
 		'periode_awal':periode_awal,
-		'periode_akhir':periode_akhir
+		'periode_akhir':periode_akhir,
+		'status':statusnya
 	}
 	return render(request,'lhe/create_lhe_bab2_a.html',context)
 	
@@ -379,12 +387,16 @@ def addLHE_b2_umum(request,id):
 				pass
 	data_umum = bab2_data_umum.objects.all().filter(id_lhe=headerlhe)
 
+	statusnya = request.session['status']
+	request.session['status']=""
+
 	context = {
 		'nomor_lhe':headerlhe.nomor_lhe,
 		'id_lhe':headerlhe.id_lhe,
 		'pending_surat':getPendingSurat(),
 		'pending_lhe':getPendingLHE(),		
-		'data_umum':data_umum
+		'data_umum':data_umum,
+		'status':statusnya
 	}
 	return render(request,'lhe/create_lhe_bab2_a_dataumum.html',context)
 
@@ -532,6 +544,9 @@ def addLHE_b2_ketatausahaan(request,id):
 	motor_pemprov = bab2_tatausaha_motor_pemprov.objects.all().filter(id_lhe=headerlhe)
 	jml_motor_pemprov = konversi_angka(motor_pemprov.count())
 	forms = inputNormatifLHE()
+	statusnya = request.session['status']
+	request.session['status']=""
+
 	context = {
 		'nomor_lhe':headerlhe.nomor_lhe,
 		'id_lhe':headerlhe.id_lhe,
@@ -552,7 +567,8 @@ def addLHE_b2_ketatausahaan(request,id):
 		'mobil_pemprov':mobil_pemprov,
 		'jml_mobil_pemprov':jml_mobil_pemprov,
 		'motor_pemprov':motor_pemprov,
-		'jml_motor_pemprov':jml_motor_pemprov
+		'jml_motor_pemprov':jml_motor_pemprov,
+		'status':statusnya
 	}
 	return render(request,'lhe/create_lhe_bab2_c_ketatausahaan.html',context)
 
@@ -889,6 +905,8 @@ def addLHE_b2_pkb(request,id):
 	except:
 		total_tahun_akhir=0
 	
+	statusnya = request.session['status']
+	request.session['status']=""
 
 	context = {
 		'nomor_lhe':headerlhe.nomor_lhe,
@@ -923,9 +941,9 @@ def addLHE_b2_pkb(request,id):
 		'jml_pkb_kuning_huruf':jml_pkb_kuning_huruf,
 		'jml_pkb_hitam_huruf':jml_pkb_hitam_huruf,
 		'penelitian_ulang':penelitian_ulang,
-		'status':request.session['status']
+		'status':statusnya
 	}
-	request.session['status']=""
+
 	return render(request,'lhe/create_lhe_bab2_c_pkb.html',context)
 
 def updatePKBDetail(request,id,id_update):
@@ -1081,6 +1099,9 @@ def addLHE_b2_bbnkb(request,id):
 		total_tahun_akhir = bnkb_detail.aggregate(Sum('nilai_akhir'))['nilai_akhir__sum']
 	except:
 		total_tahun_akhir=0
+
+	statusnya = request.session['status']
+	request.session['status']=""
 	
 
 	context = {
@@ -1100,6 +1121,7 @@ def addLHE_b2_bbnkb(request,id):
 		'pending_surat':getPendingSurat(),
 		'pending_lhe':getPendingLHE(),
 		'keterangan': keterangan,
+		'status':statusnya
 	}
 	return render(request,'lhe/create_lhe_bab2_c_bnkb.html',context)
 
@@ -1118,43 +1140,43 @@ def addLHE_b2_pap(request,id):
 		return HttpResponseRedirect('/auth/')
 
 	headerlhe = headerLHE.objects.get(id_lhe=id)
-	
-	if request.method=="POST":
-		if('tahun1' in request.POST and 'tahun2' in request.POST and 'jml_obj_spbu' in request.POST):
-			if(int(request.POST['bulan1_awal'])<int(request.POST['bulan1_akhir'])  and int(request.POST['bulan2_awal'])<int(request.POST['bulan2_akhir'])):
-				pap = bab3_pap()
-				pap.id_lhe = headerlhe
-				pap.bulan1_akhir = int(request.POST['bulan1_akhir'])
-				pap.bulan1_awal = int(request.POST['bulan1_awal'])
-				pap.tahun1 = int(request.POST['tahun1'])
-				pap.bulan2_akhir = int(request.POST['bulan2_akhir'])
-				pap.bulan2_awal = int(request.POST['bulan2_awal'])
-				pap.tahun2 = int(request.POST['tahun2'])
-				pap.jml_obj_pap_berijin = int(request.POST['jml_obj_pap_berijin'])
-				pap.jml_obj_pap_nonijin = int(request.POST['jml_obj_pap_nonijin'])
-				pap.jml_obj_spbu=int(request.POST['jml_obj_spbu'])
-				pap.createdBy = request.user.username
-				pap.createdAt = datetime.datetime.now()
-				pap.is_new = True
-				try:
-					pap.save()
-					request.session['status']="Data PAP berhasil ditambahkan!"
-				except:
-					request.session['status']="Data PAP gagal ditambahkan karena sudah ada sebelumnya!"
-			else:	
-				request.session['status']="Data PAP gagal ditambahkan! Bulan Awal harus lebih kecil dari Bulan Akhir!"
 
-		elif('tahun1' in request.POST and 'bulan1_awal' in request.POST):
-			try:
-				print(request.session['pembayaran'])
-				pembayaran = request.session['pembayaran']
-			except Exception as ex:
-				print(ex)
-				pembayaran=False
-			if(pembayaran==True):
-				print(request.session['pembayaran'])
-				request.session['pembayaran']=False
-			else:
+	statusnya = request.session['status']
+	try:
+		pembayaran = request.session['pembayaran']
+		print('ini pembayaran')
+		request.session['pembayaran']=False
+	except:
+		print('bukan pembayaran')
+		pembayaran = False
+	if request.method=="POST":
+		if(pembayaran !=True):
+			if('tahun1' in request.POST and 'tahun2' in request.POST and 'jml_obj_spbu' in request.POST):
+				if(int(request.POST['bulan1_awal'])<int(request.POST['bulan1_akhir'])  and int(request.POST['bulan2_awal'])<int(request.POST['bulan2_akhir'])):
+					pap = bab3_pap()
+					pap.id_lhe = headerlhe
+					pap.bulan1_akhir = int(request.POST['bulan1_akhir'])
+					pap.bulan1_awal = int(request.POST['bulan1_awal'])
+					pap.tahun1 = int(request.POST['tahun1'])
+					pap.bulan2_akhir = int(request.POST['bulan2_akhir'])
+					pap.bulan2_awal = int(request.POST['bulan2_awal'])
+					pap.tahun2 = int(request.POST['tahun2'])
+					pap.jml_obj_pap_berijin = int(request.POST['jml_obj_pap_berijin'])
+					pap.jml_obj_pap_nonijin = int(request.POST['jml_obj_pap_nonijin'])
+					pap.jml_obj_spbu=int(request.POST['jml_obj_spbu'])
+					pap.createdBy = request.user.username
+					pap.createdAt = datetime.datetime.now()
+					pap.is_new = True
+					try:
+						pap.save()
+						request.session['status']="Data PAP berhasil ditambahkan!"
+					except:
+						request.session['status']="Data PAP gagal ditambahkan karena sudah ada sebelumnya!"
+				else:	
+					request.session['status']="Data PAP gagal ditambahkan! Bulan Awal harus lebih kecil dari Bulan Akhir!"
+
+			elif('tahun1' in request.POST and 'bulan1_awal' in request.POST):
+				print(f"statusnya: {request.session['status']}")
 				try:
 					if(int(request.POST['bulan1_awal'])<int(request.POST['bulan1_akhir'])):
 						pap = bab3_pap.objects.get(id_lhe=headerlhe)
@@ -1171,15 +1193,8 @@ def addLHE_b2_pap(request,id):
 				except Exception as ex:
 					print(ex)
 					request.session['status']="Update Periode Pertama Gagal!"
-		
-		elif('tahun2' in request.POST and 'bulan2_awal' in request.POST):
-			try:
-				pembayaran = request.session['pembayaran']
-			except:
-				pembayaran=False
-			if(pembayaran==True):
-				request.session['pembayaran']=False
-			else:
+			
+			elif('tahun2' in request.POST and 'bulan2_awal' in request.POST):
 				try:
 					if(int(request.POST['bulan2_awal'])<int(request.POST['bulan2_akhir'])):
 						pap = bab3_pap.objects.get(id_lhe=headerlhe)
@@ -1195,54 +1210,54 @@ def addLHE_b2_pap(request,id):
 						request.session['status']="Update Periode Kedua Gagal! Perhatikan Bulan Awal harus lebih kecil dari Bulan Akhir!"
 				except:
 					request.session['status']="Update Periode Kedua Gagal!"
-		
-		elif('jml_obj_pap_berijin' in request.POST):
-			try:
-					pap = bab3_pap.objects.get(id_lhe=headerlhe)
-					pap.jml_obj_pap_berijin = int(request.POST['jml_obj_pap_berijin'])
-					pap.createdAt = datetime.datetime.now()
-					pap.createdBy = request.user.username
-					pap.is_obj=True
-					pap.save()
-					request.session['status']="Update Jumlah PAP Berijin Berhasil!"
-			except:
-				request.session['status']="Update Jumlah PAP Berijin Gagal!"
+			
+			elif('jml_obj_pap_berijin' in request.POST):
+				try:
+						pap = bab3_pap.objects.get(id_lhe=headerlhe)
+						pap.jml_obj_pap_berijin = int(request.POST['jml_obj_pap_berijin'])
+						pap.createdAt = datetime.datetime.now()
+						pap.createdBy = request.user.username
+						pap.is_obj=True
+						pap.save()
+						request.session['status']="Update Jumlah PAP Berijin Berhasil!"
+				except:
+					request.session['status']="Update Jumlah PAP Berijin Gagal!"
 
-		elif('jml_obj_pap_nonijin' in request.POST):
-			try:
-					pap = bab3_pap.objects.get(id_lhe=headerlhe)
-					pap.jml_obj_pap_nonijin = int(request.POST['jml_obj_pap_nonijin'])
-					pap.createdAt = datetime.datetime.now()
-					pap.createdBy = request.user.username
-					pap.is_obj=True
-					pap.save()
-					request.session['status']="Update Jumlah PAP Tidak Berijin Berhasil!"
-			except:
-				request.session['status']="Update Jumlah PAP Tidak Berijin Gagal!"
+			elif('jml_obj_pap_nonijin' in request.POST):
+				try:
+						pap = bab3_pap.objects.get(id_lhe=headerlhe)
+						pap.jml_obj_pap_nonijin = int(request.POST['jml_obj_pap_nonijin'])
+						pap.createdAt = datetime.datetime.now()
+						pap.createdBy = request.user.username
+						pap.is_obj=True
+						pap.save()
+						request.session['status']="Update Jumlah PAP Tidak Berijin Berhasil!"
+				except:
+					request.session['status']="Update Jumlah PAP Tidak Berijin Gagal!"
 
-		elif('jml_obj_spbu' in request.POST):
-			try:
-					pap = bab3_pap.objects.get(id_lhe=headerlhe)
-					pap.jml_obj_spbu = int(request.POST['jml_obj_spbu'])
-					pap.createdAt = datetime.datetime.now()
-					pap.createdBy = request.user.username
-					pap.is_obj=True
-					pap.save()
-					request.session['status']="Update Jumlah SPBU Berhasil!"
-			except:
-				request.session['status']="Update Jumlah SPBU Gagal!"
-		
-		elif('keterangan' in request.POST):
-			try:
-					pap = bab3_pap.objects.get(id_lhe=headerlhe)
-					pap.keterangan = request.POST['keterangan']
-					pap.createdAt = datetime.datetime.now()
-					pap.createdBy = request.user.username
-					pap.is_obj=True
-					pap.save()
-					request.session['status']="Update Simpulan Analisa Berhasil!"
-			except:
-				request.session['status']="Update Simpulan Analisa Gagal!"
+			elif('jml_obj_spbu' in request.POST):
+				try:
+						pap = bab3_pap.objects.get(id_lhe=headerlhe)
+						pap.jml_obj_spbu = int(request.POST['jml_obj_spbu'])
+						pap.createdAt = datetime.datetime.now()
+						pap.createdBy = request.user.username
+						pap.is_obj=True
+						pap.save()
+						request.session['status']="Update Jumlah SPBU Berhasil!"
+				except:
+					request.session['status']="Update Jumlah SPBU Gagal!"
+			
+			elif('keterangan' in request.POST):
+				try:
+						pap = bab3_pap.objects.get(id_lhe=headerlhe)
+						pap.keterangan = request.POST['keterangan']
+						pap.createdAt = datetime.datetime.now()
+						pap.createdBy = request.user.username
+						pap.is_obj=True
+						pap.save()
+						request.session['status']="Update Simpulan Analisa Berhasil!"
+				except:
+					request.session['status']="Update Simpulan Analisa Gagal!"
 
 	forms = inputBab3PAP()
 
@@ -1254,6 +1269,8 @@ def addLHE_b2_pap(request,id):
 		mypap = None
 		mypap_tahun1 = None
 		mypap_tahun2 = None
+
+	request.session['status']=""
 	context = {
 		'nomor_lhe':headerlhe.nomor_lhe,
 		'id_lhe':headerlhe.id_lhe,
@@ -1261,7 +1278,7 @@ def addLHE_b2_pap(request,id):
 		'mypap':mypap,
 		'mypap_tahun1':mypap_tahun1,
 		'mypap_tahun2':mypap_tahun2,
-		'status':request.session['status'],
+		'status':statusnya,
 		'pending_surat':getPendingSurat(),
 		'pending_lhe':getPendingLHE(),
 		# 'lokasi':lokasi,
@@ -1278,6 +1295,7 @@ def addLHE_b2_pap(request,id):
 		# 'pending_lhe':getPendingLHE(),
 		# 'keterangan': keterangan,
 	}
+
 	return render(request,'lhe/create_lhe_bab2_c_pap.html',context)
 
 def updatePAP_tahun1(request,id,id_update):
@@ -1285,16 +1303,18 @@ def updatePAP_tahun1(request,id,id_update):
 			return HttpResponseRedirect('/auth/')
 	try:
 		pap_tahun1 = bab3_pap_tahun1.objects.get(id_pap_tahun1=id_update)
-		pap_tahun1.pembayaran=int(request.POST['pembayaran'])
-		pap_tahun1.penetapan=int(request.POST['penetapan'])
+		pap_tahun1.pembayaran = int(request.POST['pembayaran'])
+		pap_tahun1.penetapan = int(request.POST['penetapan'])
+		pap_tahun1.selisih_angka = int(request.POST['pembayaran']) - int(request.POST['penetapan'])
+		if(int(request.POST['pembayaran']) - int(request.POST['penetapan']) == 0):
+			pap_tahun1.selisih_persen=0
+		else:
+			pap_tahun1.selisih_persen= (int(request.POST['pembayaran']) - int(request.POST['penetapan']))/int(request.POST['penetapan'])
 		pap_tahun1.save()
-		request.session['pembayaran']=True
-		print(pap_tahun1)
 		request.session['status']='Update Pembayaran dan Penetapan Tahun Pertama Berhasil!'	
 	except Exception as ex:
-		print(ex)
 		request.session['status']='Update Pembayaran dan Penetapan Tahun Pertama Gagal!'
-
+	request.session['pembayaran']=True
 	return HttpResponseRedirect(f'/lhe/add/b2/pap/{id}/')
 
 def updatePAP_tahun2(request,id,id_update):
@@ -1302,12 +1322,18 @@ def updatePAP_tahun2(request,id,id_update):
 		return HttpResponseRedirect('/auth/')
 	try:
 		pap_tahun2 = bab3_pap_tahun2.objects.get(id_pap_tahun2=id_update)
-		pap_tahun2.pembayaran=int(request.POST['pembayaran'])
-		pap_tahun2.penetapan=int(request.POST['penetapan'])
+		pap_tahun2.pembayaran = int(request.POST['pembayaran'])
+		pap_tahun2.penetapan = int(request.POST['penetapan'])
+		# print(pap_tahun2)
+		pap_tahun2.selisih_angka = int(request.POST['pembayaran']) - int(request.POST['penetapan'])
+		if(int(request.POST['pembayaran']) - int(request.POST['penetapan']) == 0):
+			pap_tahun2.selisih_persen=0
+		else:
+			pap_tahun2.selisih_persen= (int(request.POST['pembayaran']) - int(request.POST['penetapan']))/int(request.POST['penetapan'])
 		pap_tahun2.save()
-		request.session['pembayaran']=True
 		request.session['status']='Update Pembayaran dan Penetapan Tahun Kedua Berhasil!'	
-	except:
+	except Exception as ex:
+		print(ex)
 		request.session['status']='Update Pembayaran dan Penetapan Tahun Kedua Gagal!'
-
+	request.session['pembayaran']=True
 	return HttpResponseRedirect(f'/lhe/add/b2/pap/{id}/')

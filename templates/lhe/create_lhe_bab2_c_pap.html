@@ -119,7 +119,16 @@
             csrfmiddlewaretoken:csrf_token
         }
         console.log(data);
-        $.post('/lhe/add/b2/pap/'+urutannya+"/" + id_lhe + "/" +id_pkb_detail + "/",data).done(()=>window.location.reload());
+        $.ajax({
+            type:'POST',
+            url:'/lhe/add/b2/pap/'+urutannya+"/" + id_lhe + "/" +id_pkb_detail + "/",
+            data:data,
+            success: ()=> {
+                window.location.href=window.location.href;
+            }
+        });
+        // $.post('/lhe/add/b2/pap/'+urutannya+"/" + id_lhe + "/" +id_pkb_detail + "/",data).//(window.location.href=window.location.href);//.done();
+        
         
     }
 

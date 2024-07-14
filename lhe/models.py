@@ -447,7 +447,7 @@ class bab3_pap(models.Model):
                     pap_tahun2.id_pap_tahun2=str(uuid.uuid4())
                     pap_tahun2.save()
 
-        if self.is_periode1:
+        elif self.is_periode1:
             if(self.bulan1_awal<self.bulan1_akhir):
                 self.is_new=False
                 self.is_periode1=False
@@ -470,7 +470,7 @@ class bab3_pap(models.Model):
                     pap_tahun1.id_pap_tahun1=str(uuid.uuid4())
                     pap_tahun1.save()
 
-        if self.is_periode2:
+        elif self.is_periode2:
             if(self.bulan1_awal<self.bulan1_akhir):
                 self.is_new=False
                 self.is_periode1=False
@@ -493,7 +493,7 @@ class bab3_pap(models.Model):
                     pap_tahun2.id_pap_tahun2=str(uuid.uuid4())
                     pap_tahun2.save()
 
-        if self.is_tahun1:
+        elif self.is_tahun1:
             self.is_new=False
             self.is_periode1=False
             self.is_periode2=False
@@ -503,7 +503,7 @@ class bab3_pap(models.Model):
             super(bab3_pap,self).save(*args,**kwargs)
             bab3_pap_tahun1.objects.all().filter(id_pap=bab3_pap.objects.get(id_pap=self.id_pap)).update(tahun=self.tahun1)
 
-        if self.is_tahun2:
+        elif self.is_tahun2:
             self.is_new=False
             self.is_periode1=False
             self.is_periode2=False
@@ -513,13 +513,27 @@ class bab3_pap(models.Model):
             super(bab3_pap,self).save(*args,**kwargs)
             bab3_pap_tahun2.objects.all().filter(id_pap=bab3_pap.objects.get(id_pap=self.id_pap)).update(tahun=self.tahun2)
         
-        if self.is_obj:
+        elif self.is_obj:
             self.is_new=False
             self.is_periode1=False
             self.is_periode2=False
             self.is_tahun1=False
             self.is_tahun2=False
             self.is_obj=False
+            super(bab3_pap,self).save(*args,**kwargs)
+
+        else:
+            self.selisih_tahun1_angka=self.jml_pembayaran_tahun1-self.jml_penetapan_tahun1
+            if(self.selisih_tahun1_angka==0):
+                self.selisih_tahun1_persen=0
+            else:
+                self.selisih_tahun1_persen = self.selisih_tahun1_angka/self.jml_penetapan_tahun1
+
+            self.selisih_tahun2_angka=self.jml_pembayaran_tahun2-self.jml_penetapan_tahun2
+            if(self.selisih_tahun2_angka==0):
+                self.selisih_tahun2_persen=0
+            else:
+                self.selisih_tahun2_persen = self.selisih_tahun2_angka/self.jml_penetapan_tahun2
             super(bab3_pap,self).save(*args,**kwargs)
 
 class bab3_pap_tahun1(models.Model):
@@ -535,21 +549,16 @@ class bab3_pap_tahun1(models.Model):
     tahun = models.SmallIntegerField(default=2023)
 
     def save(self,*args,**kwargs):
-        print(self.pembayaran)
-        print(self.penetapan)
-        self.selisih_angka = self.pembayaran - self.penetapan
-        try:
-            self.selisih_persen = self.selisih_angka/self.penetapan
-        except Exception as ex:
-            print(ex)
-            self.selisih_persen = 0
         super(bab3_pap_tahun1,self).save(*args,**kwargs)
+        self.selisih_angka = self.pembayaran - self.penetapan
         jml_penetapan = bab3_pap_tahun1.objects.filter(id_pap=self.id_pap).aggregate(Sum('penetapan'))
+        # print(jml_penetapan)
         jml_pembayaran = bab3_pap_tahun1.objects.filter(id_pap=self.id_pap).aggregate(Sum('pembayaran'))
+        # print(jml_pembayaran)
         sel_angka = jml_pembayaran['pembayaran__sum']-jml_penetapan['penetapan__sum']
-        try:
+        if sel_angka!=0:
             sel_persen = sel_angka/jml_penetapan['penetapan__sum']
-        except:
+        else:
             sel_persen=0
         bab3_pap.objects.all().filter(id_pap=self.id_pap.id_pap).update(selisih_tahun1_angka=sel_angka,selisih_tahun1_persen=sel_persen,jml_pembayaran_tahun1=jml_pembayaran['pembayaran__sum'],jml_penetapan_tahun1=jml_penetapan['penetapan__sum'])
 
@@ -566,8 +575,9 @@ class bab3_pap_tahun2(models.Model):
     tahun = models.SmallIntegerField(default=2024)
 
     def save(self,*args,**kwargs):
-        print(self.pembayaran)
-        print(self.penetapan)
+        # print(self.pembayaran)
+        # print(self.penetapan)        
+        super(bab3_pap_tahun2,self).save(*args,**kwargs)
         self.selisih_angka = self.pembayaran - self.penetapan
         try:
             self.selisih_persen = self.selisih_angka/self.penetapan
@@ -575,7 +585,9 @@ class bab3_pap_tahun2(models.Model):
             self.selisih_persen = 0
         super(bab3_pap_tahun2,self).save(*args,**kwargs)
         jml_penetapan = bab3_pap_tahun2.objects.filter(id_pap=self.id_pap).aggregate(Sum('penetapan'))
+        print(jml_penetapan)
         jml_pembayaran = bab3_pap_tahun2.objects.filter(id_pap=self.id_pap).aggregate(Sum('pembayaran'))
+        print(jml_pembayaran)
         sel_angka = jml_pembayaran['pembayaran__sum']-jml_penetapan['penetapan__sum']
         try:
             sel_persen = sel_angka/jml_penetapan['penetapan__sum']
