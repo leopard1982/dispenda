@@ -1271,6 +1271,11 @@ def addLHE_b2_pap(request,id):
 		mypap_tahun2 = None
 
 	request.session['status']=""
+	
+	persen_tahun1 = f"{mypap.selisih_tahun1_persen*100:.2f}"
+	persen_tahun2 = f"{mypap.selisih_tahun2_persen*100:.1f}"
+	over_tahun1 = int(mypap.selisih_tahun1_persen-1*100)
+
 	context = {
 		'nomor_lhe':headerlhe.nomor_lhe,
 		'id_lhe':headerlhe.id_lhe,
@@ -1281,6 +1286,9 @@ def addLHE_b2_pap(request,id):
 		'status':statusnya,
 		'pending_surat':getPendingSurat(),
 		'pending_lhe':getPendingLHE(),
+		'persen_tahun1':persen_tahun1,
+		'persen_tahun2':persen_tahun2,
+		'over_tahun1':over_tahun1
 		# 'lokasi':lokasi,
 		# 'tahun_awal':tahun_awal,
 		# 'tahun_akhir':tahun_akhir,

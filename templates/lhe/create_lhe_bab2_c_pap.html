@@ -188,7 +188,7 @@
                                                 {% if mypap.bulan1_akhir == 10 %} OKTOBER {% endif %}
                                                 {% if mypap.bulan1_akhir == 11 %} NOVEMBER {% endif %}
                                                 {% if mypap.bulan1_akhir == 12 %} DESEMBER {% endif %}
-                                    {{mypap.tahun1}} adalah Rp.{{mypap.jml_pembayaran_tahun1|intcomma}},- atau {%widthratio mypap.selisih_tahun1_persen 100 1%}%, telah melebihi target capaian sebesar {% widthratio mypap.selisih_tahun1_persen 1 100 %} % dari target tahapan yang telah ditetapkan (100%). Target tahun {{mypap.tahun2}} sebesar Rp.{{mypap.jml_penetapan_tahun2|intcomma}},- dengan realisasi penerimaan sampai dengan 
+                                    {{mypap.tahun1}} adalah Rp.{{mypap.jml_pembayaran_tahun1|intcomma}},- atau {{persen_tahun1}} % {% if over_tahun1 > 100 %}, telah melebihi target capaian sebesar {{over_tahun1|add:"0"}} % dari target tahapan yang telah ditetapkan (100%){%endif%}. Target tahun {{mypap.tahun2}} sebesar Rp.{{mypap.jml_penetapan_tahun2|intcomma}},- dengan realisasi penerimaan sampai dengan 
                                                 {% if mypap.bulan2_akhir == 1 %} JANUARI {% endif %}
                                                 {% if mypap.bulan2_akhir == 2 %} FEBRUARI {% endif %}
                                                 {% if mypap.bulan2_akhir == 3 %} MARET {% endif %}
@@ -201,7 +201,7 @@
                                                 {% if mypap.bulan2_akhir == 10 %} OKTOBER {% endif %}
                                                 {% if mypap.bulan2_akhir == 11 %} NOVEMBER {% endif %}
                                                 {% if mypap.bulan2_akhir == 12 %} DESEMBER {% endif %}
-                                    {{mypap.tahun2}} adalah Rp.{{mypap.jml_pembayaran_tahun2|intcomma}},- atau sebesar {% widthratio mypap.selisih_tahun1_persen 2 100 %} %.
+                                    {{mypap.tahun2}} adalah Rp.{{mypap.jml_pembayaran_tahun2|intcomma}},- atau sebesar {{persen_tahun2|add:"0"}} %.
                                 </div>
                             </p>
                             <p class="px-2">
