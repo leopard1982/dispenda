@@ -1272,10 +1272,18 @@ def addLHE_b2_pap(request,id):
 
 	request.session['status']=""
 	
-	persen_tahun1 = f"{mypap.selisih_tahun1_persen*100:.2f}"
-	persen_tahun2 = f"{mypap.selisih_tahun2_persen*100:.1f}"
-	over_tahun1 = int(mypap.selisih_tahun1_persen-1*100)
-
+	try:
+		persen_tahun1 = f"{mypap.selisih_tahun1_persen*100:.2f}"
+	except:
+		persen_tahun1 = "0.00"
+	try:
+		persen_tahun2 = f"{mypap.selisih_tahun2_persen*100:.1f}"
+	except:
+		persen_tahun2 = "0.00"
+	try:
+		over_tahun1 = int(mypap.selisih_tahun1_persen-1*100)
+	except:
+		over_tahun1 = 0
 	context = {
 		'nomor_lhe':headerlhe.nomor_lhe,
 		'id_lhe':headerlhe.id_lhe,
