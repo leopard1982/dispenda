@@ -3,7 +3,7 @@ from django.conf import settings
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 import docx
 from docx.shared import Pt,Cm
-from cms.forms import inputGolongan, inputJabatan, inputPegawai, inputPengguna, inputSuratTugas
+from cms.forms import inputGolongan, inputJabatan, inputPegawai, inputPengguna, inputSuratTugas, updatePegawai
 from cms.forms import inputMasterDasarST, inputConfig, inputPesertaTugas, inputDasarSuratTugas
 from surat_tugas.models import MasterGolongan,MasterJabatan,MasterPegawai, Pengguna, Logging
 from surat_tugas.models import TrxSuratTugas, ConfigDispenda, MasterDasarST, ST_DasarTugas, ST_Peserta
@@ -11,6 +11,7 @@ from lhe.models import headerLHE
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
+from lhe.forms import inputDataPegawai
 import uuid
 import datetime
 
@@ -322,12 +323,13 @@ def displayPegawai(request):
 	listPegawai = MasterPegawai.objects.all().order_by('-updatedAt')
 	
 	p=Paginator(listPegawai,5)
-	
-	
+
 	try:
 		halaman = p.page(page)
 	except:
 		halaman = p.page(1)
+
+	datapegawai = inputDataPegawai()
 	
 	context={
 		'lists':halaman,
@@ -338,21 +340,53 @@ def displayPegawai(request):
 		'mywebsite': '/master/peg/dis/',
 		'status':request.session['status'],
 		'pending_surat':getPendingSurat(),
-		'pending_lhe':getPendingLHE()
+		'pending_lhe':getPendingLHE(),
+		'datapegawai':datapegawai
 	}
 	request.session['status']=""
 	return render(request,'master/display_pegawai.html',context)
 
-def delPegawai(request,id):
+def updatePegawai(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
-	try:
-		MasterPegawai.objects.filter(nik=id).delete()
-		addLogging(request.user.username,"master_pegawai",f"berhasil-delete kode: {id}" )
-		request.session['status']="Master Pegawai Berhasil dihapus"
-	except:
-		addLogging(request.user.username,"master_pegawai",f"gagal[data sudah terpakai]-delete kode: {id}" )
-		request.session['status']="Master Pegawai Gagal dihapus"
+	if request.method=="POST":
+		print(request)
+		methods = request.POST['method']
+		kode=request.POST['kodePegawai']	
+		if(methods=="delete"):
+			print('delete')
+			try:
+				MasterPegawai.objects.filter(nik=kode).delete()
+				addLogging(request.user.username,"master_pegawai",f"berhasil - delete kode: {kode}" )
+				request.session['status']="Master Pegawai Berhasil dihapus!"
+			except Exception as ex:
+				print(ex)
+				addLogging(request.user.username,"master_pegawai",f"Gagal[data sudah terpakai] - delete kode: {kode}" )
+				request.session['status']="Master Pegawai Gagal dihapus!"
+		
+		elif(methods=="update"):
+			print(request.POST)
+			nama = request.POST['nama']
+			jabatan = request.POST['jabatan']
+			golongan = request.POST['golongan']
+
+			try:
+				pegawai=MasterPegawai.objects.get(nik=kode)
+				pegawai.nama=nama
+				pegawai.kode_jabatan=MasterJabatan.objects.get(kode_jabatan=jabatan)
+				pegawai.kode_golongan=MasterGolongan.objects.get(kode_golongan=golongan)
+				pegawai.updatedBy=request.user.username
+				pegawai.updatedAt=datetime.datetime.now()
+				pegawai.is_update=True
+				pegawai.is_kepala=False
+				pegawai.save()
+				addLogging(request.user.username,"master_pegawai",f"berhasil - update kode: {kode}" )
+				request.session['status']="Master Golongan Pegawai Diupdate!"
+			except Exception as ex:
+				print(ex)
+				addLogging(request.user.username,"master_pegawai",f"Gagal update - update kode: {kode}" )
+				request.session['status']="Master Pegawai Gagal diupdate!"
+
 	return HttpResponseRedirect('/master/peg/dis/')
 
 def addPengguna(request):

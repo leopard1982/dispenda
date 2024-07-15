@@ -54,10 +54,11 @@ class MasterPegawai(models.Model):
             if(MasterPegawai.objects.all().filter(is_kepala=True).count()>0):
                 pass
             else:
+                self.is_kepala=False
                 super(MasterPegawai,self).save(*args,**kwargs)
                 ConfigDispenda.objects.create(
                     kepala = MasterPegawai.objects.get(nik=self.nik),
-                    updatedBy = 'suryo'
+                    updatedBy = self.updatedBy
                 )
         else:
             if(ConfigDispenda.objects.all().count()>0):

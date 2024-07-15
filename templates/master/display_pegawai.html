@@ -12,7 +12,7 @@
         <th style="width:100px">Golongan</th>
         <th style="width:150px">Updated By</th>
         <th style="width:150px">Updated At</th>
-        <th style="width:200px"</th>
+        <th style="width:200px"></th>
     </thead>
     {% for list in lists%}
     <tr>
@@ -24,8 +24,8 @@
         <td>{{list.updatedBy}}</td>
         <td>{{list.updatedAt}}</td>
         <td>
-            <a class="btn" data-toggle="modal" data-target="#editModal"><i class="fa fa-user-edit"></i></a>
-            <a class="btn" data-toggle="modal"  onclick="deletePegawai('{{list.nik}}','{{list.nama}}')"><i class="fa fa-trash"></i></a>
+            <a class="btn"><i class="fa fa-user-edit" id="edit{{list.nik}}" data-bs-golongan="{{list.kode_golongan.keterangan}}" data-bs-jabatan="{{list.kode_jabatan.keterangan}}" data-bs-nama="{{list.nama}}" onclick="editPegawai('{{list.nik}}')"></i></a>
+            <a class="btn"><i class="fa fa-trash" id="del{{list.nik}}" data-bs-golongan="{{list.kode_golongan.keterangan}}" data-bs-jabatan="{{list.kode_jabatan.keterangan}}" data-bs-nama="{{list.nama}}" onclick="deletePegawai('{{list.nik}}')"></i></a>
         </td>
     </tr>
     {% endfor%}
@@ -38,60 +38,227 @@
     {% endfor %}
 </div>
 
+{% csrf_token %}
 <!-- Edit Modal-->
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Master Golongan</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Detail Master Golongan</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
-                </div>
+<!-- Modal Body -->
+<!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
+<div
+    class="modal fade"
+    id="editModal"
+    tabindex="-2"
+    
+    role="dialog"
+    aria-labelledby="Update Master Pegawai"
+    aria-hidden="true"
+>
+    <div
+        class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg"
+        role="document"
+    >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h3" id="modalTitleId">
+                    Melakukan Edit Master Pegawai
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <table style="width: 100%;">
+                    <thead>
+                        <th>Kode Pegawai:</th>
+                        <th><span id="kodeEditPegawai"></span></th>
+                    </thead>
+                    <tr>
+                        <th>Nama Pegawai Lama:</th>
+                        <td><span id="namaEditPegawai"></span></td>
+                    </tr>
+                    <tr>
+                        <th>Nama Pegawai Baru:</th>
+                        <td><input type='text' class='form-control' name='pegawaiBaru' required></td>
+                    </tr>
+                    <tr>        
+                        <th>Jabatan Lama:</th>
+                        <td><span id="jabatanEditPegawai"></span></td>
+                    </tr>
+                    <tr>
+                        <th>Jabatan Baru:</th>
+                        <td>{{datapegawai.kode_jabatan}}</td>
+                    </tr>
+                    <tr>        
+                        <th>Golongan Lama:</th>
+                        <td><span id="golonganEditPegawai"></span></td>
+                    </tr>
+                    <tr>
+                        <th>Golongan Baru:</th>
+                        <td>{{datapegawai.kode_golongan}}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Close
+                </button>
+                <button type="button" class="btn btn-success" onclick="updateNow()">Update</button>
             </div>
         </div>
     </div>
+</div>
+
 
 <!-- Delete Modal-->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Delete Master Golongan</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Apakah benar akan menghapus Data Master ini?</p>
-                    <p>Kode Golongan: <span id="del_kpeg"></span></p>
-                    <p>Nama Golongan: <span id="del_npeg"></span></p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-danger" type="button" data-dismiss="modal"  onclick="delPegID()">Hapus</button>
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
-                </div>
+<!-- Modal Body -->
+<!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
+<div
+    class="modal fade"
+    id="deleteModal"
+    tabindex="-2"
+    
+    role="dialog"
+    aria-labelledby="Delete Master Jabatan"
+    aria-hidden="true"
+>
+    <div
+        class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg"
+        role="document"
+    >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h3" id="modalTitleId">
+                    Melakukan Delete Master Jabatan
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <p>Apakah yakin akan melakukan delete data:</p>
+                    <table style="width: 100%;">
+                        <thead>
+                            <th>Kode Pegawai:</th>
+                            <th><span id="kodeDeletePegawai"></span></th>
+                        </thead>
+                        <tr>
+                            <th>Nama Pegawai Lama:</th>
+                            <td><span id="namaDeletePegawai"></span></td>
+                        </tr>
+                        <tr>        
+                            <th>Jabatan:</th>
+                            <td><span id="jabatanDeletePegawai"></span></td>
+                        </tr>
+                        <tr>        
+                            <th>Golongan:</th>
+                            <td><span id="golonganDeletePegawai"></span></td>
+                        </tr>
+                    </table>
+            </div>
+
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Close
+                </button>
+                <button type="button" class="btn btn-danger" onclick="deleteNow()">Delete/ Hapus</button>
             </div>
         </div>
     </div>
+</div>
 
 <script>
     let kodenya=null;
-    function deletePegawai(kode,nama) {
-        document.getElementById('del_kpeg').innerText=kode;
-        document.getElementById('del_npeg').innerText=nama;
+    let nama=null;
+    let golongan=null;
+    let jabatan=null
+    let data={};
+    
+    // function delJabID() {
+    //     document.location.href="/master/jab/del/" +kodenya +"/";
+    // }
+
+    // function deleteJabatan(kode,nama) {
+    //     document.getElementById('del_kjab').innerText=kode;
+    //     document.getElementById('del_njab').innerText=nama;
+    //     kodenya=kode;
+    //     $("#deleteModal").modal('show');
+    // }
+    
+    function editPegawai(kode) {
+        $("#kodeEditPegawai").text(kode);
+        nama = $("#edit" + kode).attr('data-bs-nama');
+        golongan = $("#edit" + kode).attr('data-bs-golongan');
+        jabatan = $("#edit" + kode).attr('data-bs-jabatan');
         kodenya=kode;
+        $("#namaEditPegawai").text(nama);
+        $("#golonganEditPegawai").text(golongan);
+        $("#jabatanEditPegawai").text(jabatan);
+        $("#editModal").modal('show');
+    }
+
+    function deletePegawai(kode) {
+        $("#kodeDeletePegawai").text(kode);
+        nama = $("#del" + kode).attr('data-bs-nama');
+        golongan = $("#del" + kode).attr('data-bs-golongan');
+        jabatan = $("#del" + kode).attr('data-bs-jabatan');
+        kodenya=kode;
+        $("#namaDeletePegawai").text(nama);
+        $("#golonganDeletePegawai").text(golongan);
+        $("#jabatanDeletePegawai").text(jabatan);
         $("#deleteModal").modal('show');
     }
 
-    function delPegID() {
-        document.location.href="/master/peg/del/" +kodenya +"/";
+    function deleteNow() {
+        csrf_token = $("input[name=csrfmiddlewaretoken]").val()
+        data={
+            kodePegawai:kodenya,
+            method:'delete',
+            csrfmiddlewaretoken:csrf_token
+        };
+        $.ajax({
+            type:'POST',
+            url:'/master/peg/upd/',
+            data:data,
+            success: ()=> {
+                window.location.href='/master/peg/dis/'
+            }
+        });
+    }
+    function updateNow() {
+        
+        csrf_token = $("input[name=csrfmiddlewaretoken]").val();
+        nama = $("input[name='pegawaiBaru']").val();
+        jabatan=$("#id_kode_jabatan").val();
+        golongan=$("#id_kode_golongan").val();
+        data={
+            kodePegawai:kodenya,
+            nama:nama,
+            jabatan:jabatan,
+            golongan:golongan,
+            method:'update',
+            csrfmiddlewaretoken:csrf_token
+        };
+        $.ajax({
+            type:'POST',
+            url:'/master/peg/upd/',
+            data:data,
+            success: ()=> {
+                window.location.href='/master/peg/dis/'
+            }
+        });
     }
 </script>
 

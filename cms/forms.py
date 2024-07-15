@@ -103,3 +103,15 @@ class inputPesertaTugas(forms.ModelForm):
 		widgets= {
 			'peserta': forms.Select(attrs={'required':'required','class':'form-control'}),			
 		}
+
+class updatePegawai(forms.ModelForm):
+	class Meta:
+		model = MasterPegawai
+		fields = ['nik','nama','kode_jabatan','kode_golongan','is_kepala']
+
+		widgets= {
+			'nik': forms.TextInput(attrs={'readonly':'readonly'}),
+			'nama':forms.TextInput(attrs={'required':'required'}),
+			'kode_jabatan': forms.Select(attrs={'required':'required'}),
+			'kode_golongan':forms.Select(attrs={'required':'required'})
+		}
