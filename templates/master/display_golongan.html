@@ -2,60 +2,8 @@
 {% load static %}
 
 {% block contents%}
-<!-- Modal trigger button -->
-<button
-    type="button"
-    class="btn btn-primary btn-lg"
-    data-bs-toggle="modal"
-    data-bs-target="#modalId"
->
-    Launch
-</button>
 
-<!-- Modal Body -->
-<!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
-<div
-    class="modal fade"
-    id="modalId"
-    tabindex="-1"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
-    
-    role="dialog"
-    aria-labelledby="modalTitleId"
-    aria-hidden="true"
->
-    <div
-        class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-        role="document"
-    >
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTitleId">
-                    Modal title
-                </h5>
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
-            </div>
-            <div class="modal-body">Body</div>
-            <div class="modal-footer">
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                >
-                    Close
-                </button>
-                <button type="button" class="btn btn-primary">Save</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+{% csrf_token%}
 <!-- Optional: Place to the bottom of scripts -->
 <script>
     const myModal = new bootstrap.Modal(
@@ -72,7 +20,7 @@
         <th style="width:300px">Keterangan</th>
         <th style="width:200px">Updated By</th>
         <th style="width:300px">Updated At</th>
-        <th style="width:200px"</th>
+        <th style="width:200px"></th>
     </thead>
     {% for list in lists%}
     <tr>
@@ -82,8 +30,8 @@
         <td>{{list.updatedBy}}</td>
         <td>{{list.updatedAt}}</td>
         <td>
-            <a class="btn" data-toggle="modal" data-target="#editModal"><i class="fa fa-user-edit"></i></a>
-            <a class="btn" data-toggle="modal"  onclick="deleteGolongan('{{list.kode_golongan}}','{{list.keterangan}}')"><i class="fa fa-trash"></i></a>
+            <a class="btn" data-toggle="modal" id="edit{{list.kode_golongan}}" data-bs-keterangan="{{list.keterangan}}" onclick="editGolongan('{{list.kode_golongan}}')"><i class="fa fa-user-edit"></i></a>
+            <a class="btn" data-toggle="modal" id="del{{list.kode_golongan}}" data-bs-keterangan="{{list.keterangan}}" onclick="deleteGolongan('{{list.kode_golongan}}')"><i class="fa fa-trash"></i></a>
         </td>
     </tr>
     {% endfor%}
@@ -97,59 +45,176 @@
 </div>
 
 <!-- Edit Modal-->
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Master Golongan</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Detail Master Golongan</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
-                </div>
+<!-- Modal Body -->
+<!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
+<div
+    class="modal fade"
+    id="editModal"
+    tabindex="-2"
+    
+    role="dialog"
+    aria-labelledby="Update Master Golongan"
+    aria-hidden="true"
+>
+    <div
+        class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg"
+        role="document"
+    >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h3" id="modalTitleId">
+                    Melakukan Edit Master Golongan
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <table style="width: 100%;">
+                    <thead>
+                        <th>Kode Master Golongan:</th>
+                        <th><span id="kodeEditGolongan"></span></th>
+                    </thead>
+                    <tr>
+                        <th>Keterangan Master Golongan Awal:</th>
+                        <td><span id="keteranganEditGolongan"></span></td>
+                    </tr>
+                    <tr>
+                        <th>Keterangan Baru:</th>
+                        <td><input type="text" name="keteranganEdit" class="form-control" maxlength="50" required></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Close
+                </button>
+                <button type="button" class="btn btn-success" onclick="updateNow()">Update</button>
             </div>
         </div>
     </div>
+</div>
+
 
 <!-- Delete Modal-->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Delete Master Golongan</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Apakah benar akan menghapus Data Master ini?</p>
-                    <p>Kode Golongan: <span id="del_kgol"></span></p>
-                    <p>Nama Golongan: <span id="del_ngol"></span></p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-danger" type="button" data-dismiss="modal"  onclick="delGolID()">Hapus</button>
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
-                </div>
+<!-- Modal Body -->
+<!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
+<div
+    class="modal fade"
+    id="deleteModal"
+    tabindex="-2"
+    
+    role="dialog"
+    aria-labelledby="Delete Master Golongan"
+    aria-hidden="true"
+>
+    <div
+        class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg"
+        role="document"
+    >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h3" id="modalTitleId">
+                    Melakukan Delete Master Golongan
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <p>Apakah yakin akan melakukan delete data:</p>
+                <table style="width: 100%;">
+                    <thead>
+                        <th>Kode Master Golongan:</th>
+                        <th><span id="kodeDeleteGolongan"></span></th>
+                    </thead>
+                    <tr>
+                        <th>Keterangan Master Golongan:</th>
+                        <td><span id="keteranganDeleteGolongan"></span></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Close
+                </button>
+                <button type="button" class="btn btn-danger" onclick="deleteNow()">Delete/ Hapus</button>
             </div>
         </div>
     </div>
+</div>
+
+
 
 <script>
     let kodenya=null;
-    function deleteGolongan(kode,nama) {
-        document.getElementById('del_kgol').innerText=kode;
-        document.getElementById('del_ngol').innerText=nama;
+    let keterangan=null;
+    let data={};
+    function editGolongan(kode) {
+        $("#kodeEditGolongan").text(kode);
+        keterangan = $("input[name='keteranganEdit']").val();
         kodenya=kode;
+        $("#keteranganEditGolongan").text(keterangan);
+        $("#editModal").modal('show');
+    }
+
+    function deleteGolongan(kode) {
+        $("#kodeDeleteGolongan").text(kode);
+        keterangan = $("#del" + kode).attr('data-bs-keterangan');
+        kodenya=kode;
+        $("#keteranganDeleteGolongan").text(keterangan);
         $("#deleteModal").modal('show');
     }
 
-    function delGolID() {
-        document.location.href="/master/gol/del/" +kodenya +"/";
+    function deleteNow() {
+        csrf_token = $("input[name=csrfmiddlewaretoken]").val()
+        data={
+            kodeGolongan:kodenya,
+            method:'delete',
+            csrfmiddlewaretoken:csrf_token
+        };
+        $.ajax({
+            type:'POST',
+            url:'/master/gol/upd/',
+            data:data,
+            success: ()=> {
+                window.location.href='/master/gol/dis/'
+            }
+        });
+    }
+    function updateNow() {
+        csrf_token = $("input[name=csrfmiddlewaretoken]").val();
+        keterangan = $("input[name='keteranganEdit']").val();
+        data={
+            kodeGolongan:kodenya,
+            keteranganGolongan:keterangan,
+            method:'update',
+            csrfmiddlewaretoken:csrf_token
+        };
+        $.ajax({
+            type:'POST',
+            url:'/master/gol/upd/',
+            data:data,
+            success: ()=> {
+                window.location.href='/master/gol/dis/'
+            }
+        });
     }
 </script>
 

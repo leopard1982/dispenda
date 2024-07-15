@@ -8,6 +8,7 @@ class MasterDasarST(models.Model):
     keterangan = models.CharField(max_length=50)
     updatedAt = models.DateTimeField(auto_now_add=True,null=True)
     updatedBy = models.CharField(max_length=20,blank=True,null=True)
+    is_update = models.BooleanField(default=False,blank=True,null=True)
 
     def __str__(self):
         return self.keterangan
@@ -17,16 +18,23 @@ class MasterGolongan(models.Model):
     keterangan = models.CharField(max_length=50)
     updatedAt = models.DateTimeField(auto_now_add=True,null=True)
     updatedBy = models.CharField(max_length=20,blank=True,null=True)
+    is_update = models.BooleanField(default=False,blank=True,null=True)
 
     def __str__(self):
         return self.keterangan
 
+    def save(self,*args,**kwargs):
+        self.keterangan=self.keterangan
+        print(self.keterangan)
+        super(MasterGolongan,self).save(*args,**kwargs)
+        print(self.keterangan)
 
 class MasterJabatan(models.Model):
     kode_jabatan = models.CharField(max_length=10,primary_key=True,unique=True,blank=True,default="")
     keterangan = models.CharField(max_length=50)
     updatedAt = models.DateTimeField(auto_now_add=True,null=True)
     updatedBy = models.CharField(max_length=20,blank=True,null=True)
+    is_update = models.BooleanField(default=False,blank=True,null=True)
 
     def __str__(self):
         return self.keterangan
@@ -39,6 +47,7 @@ class MasterPegawai(models.Model):
     updatedAt = models.DateTimeField(auto_now_add=True,null=True)
     is_kepala = models.BooleanField(default=False)  
     updatedBy = models.CharField(max_length=20,blank=True,null=True)
+    is_update = models.BooleanField(default=False,blank=True,null=True)
 
     def save(self,*args,**kwargs):
         if self.is_kepala == True:
@@ -97,6 +106,7 @@ class TrxSuratTugas(models.Model):
     updatedBy = models.CharField(max_length=20,blank=True,null=True)
     is_lhe = models.BooleanField(default=False)
     is_resume = models.BooleanField(default=False)
+    is_update = models.BooleanField(default=False,blank=True,null=True)
 
     def save(self,*args,**kwargs):
         if(ConfigDispenda.objects.all().count()>0):

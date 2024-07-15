@@ -190,16 +190,37 @@ def displayJabatan(request):
 	request.session['status']=""
 	return render(request,'master/display_jabatan.html',context)
 
-def delGolongan(request,id):
+def updateGolongan(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
-	try:
-		MasterGolongan.objects.filter(kode_golongan=id).delete()
-		addLogging(request.user.username,"master_golongan",f"berhasil - delete kode: {id}" )
-		request.session['status']="Master Golongan Berhasil dihapus!"
-	except:
-		addLogging(request.user.username,"master_golongan",f"Gagal[data sudah terpakai] - delete kode: {id}" )
-		request.session['status']="Master Golongan Gagal dihapus!"
+	
+	if request.method=="POST":
+		print(request)
+		methods = request.POST['method']
+		kode=request.POST['kodeGolongan']	
+		if(methods=="delete"):
+			print('delete')
+			try:
+				MasterGolongan.objects.filter(kode_golongan=kode).delete()
+				addLogging(request.user.username,"master_golongan",f"berhasil - delete kode: {id}" )
+				request.session['status']="Master Golongan Berhasil dihapus!"
+			except Exception as ex:
+				print(ex)
+				addLogging(request.user.username,"master_golongan",f"Gagal[data sudah terpakai] - delete kode: {id}" )
+				request.session['status']="Master Golongan Gagal dihapus!"
+		
+		elif(methods=="update"):
+			keterangan = request.POST['keteranganGolongan']
+			try:
+				golongan=MasterGolongan.objects.get(kode_golongan=kode)
+				golongan.keterangan=keterangan
+				golongan.save()
+				addLogging(request.user.username,"master_golongan",f"berhasil - update kode: {id}" )
+				request.session['status']="Master Golongan Berhasil Diupdate!"
+			except Exception as ex:
+				print(ex)
+				addLogging(request.user.username,"master_golongan",f"Gagal update - delete kode: {id}" )
+				request.session['status']="Master Golongan Gagal diupdate!"
 
 	return HttpResponseRedirect('/master/gol/dis/')
 
