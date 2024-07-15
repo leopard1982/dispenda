@@ -4,7 +4,7 @@ from cms.views import updateGolongan, updateJabatan, addPegawai, displayPegawai,
 from cms.views import displayPengguna, delPengguna, loginuser,logoutuser, displayLog 
 from cms.views import displayGolonganID, displayJabatanID, displayPegawaiID, displayPenggunaID, displayLogID
 from cms.views import addNomorSurat, displaySuratTugas, updateConfig
-from cms.views import addDasarSurat, displayMasterDasarSurat,displayMasterDasarSuratID, delMasterDasarSuratTugas
+from cms.views import addDasarSurat, displayMasterDasarSurat,displayMasterDasarSuratID, updateMasterDasarSuratTugas
 from cms.views import detailSuratTugas, detailSuratTugas_add_pegawai,detailSuratTugas_add_surat
 from cms.views import detailSuratTugas_del_pegawai, detailSuratTugas_del_surat, detailSuratTugas_submit
 from cms.views import delNomorSurat, Exportkan
@@ -37,7 +37,7 @@ urlpatterns = [
     path('master/sur/add/',addDasarSurat,name='addDasarSurat'),
     path('master/sur/dis/',displayMasterDasarSurat,name='displayMasterDasarSurat'),
     path('master/sur/dis/<str:id>/',displayMasterDasarSuratID,name='displayMasterDasarSuratID'),
-    path('master/sur/del/<str:id>/',delMasterDasarSuratTugas,name="delMasterDasarSuratTugas"),
+    path('master/sur/upd/',updateMasterDasarSuratTugas,name="updateMasterDasarSuratTugas"),
     path('conf/',updateConfig,name="updateConfig"),
     path('surat/add/<str:id>',detailSuratTugas,name='detailSuratTugas'),
     path('surat/add/dasar/',detailSuratTugas_add_surat,name='detailSuratTugas_add_surat'),

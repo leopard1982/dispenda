@@ -936,16 +936,38 @@ def displayMasterDasarSuratID(request,id):
 	request.session['status']=""
 	return render(request,'master/display_dasarst.html',context)
 
-def delMasterDasarSuratTugas(request,id):
+def updateMasterDasarSuratTugas(request):
 	if(request.user.is_authenticated != True):
 		return HttpResponseRedirect('/auth/')
-	try:
-		MasterDasarST.objects.filter(kode_dasar=id).delete()
-		addLogging(request.user.username,"master_dasarsurat",f"berhasil-delete kode: {id}" )
-		request.session['status']="Master Dasar Surat Tugas berhasil dihapus!"
-	except:
-		addLogging(request.user.username,"master_dasarsurat",f"gagal[data sudah dipakai]-delete kode: {id}" )
-		request.session['status']="Master Dasar Surat Tugas Gagal dihapus!"
+	
+	if request.method=="POST":
+		methods = request.POST['method']
+		kode=request.POST['kodeDasarST']	
+		if(methods=="delete"):
+			print('delete')
+			try:
+				MasterDasarST.objects.filter(kode_dasar=kode).delete()
+				addLogging(request.user.username,"master_dasar_surat_tugas",f"berhasil - delete kode: {kode}" )
+				request.session['status']="Master Dasar Surat Tugas Berhasil dihapus!"
+			except Exception as ex:
+				print(ex)
+				addLogging(request.user.username,"master_dasar_surat_tugas",f"Gagal[data sudah terpakai] - delete kode: {kode}" )
+				request.session['status']="Master Dasar Surat Tugas Gagal dihapus!"
+		
+		elif(methods=="update"):
+			try:
+				keterangan = request.POST['keteranganDasarST']
+				surat=MasterDasarST.objects.get(kode_dasar=kode)
+				surat.keterangan=keterangan
+				surat.updatedBy=request.user.username
+				surat.updatedAt=datetime.datetime.now()
+				surat.save()
+				addLogging(request.user.username,"master_dasar_surat_tugas",f"berhasil - update kode: {kode}" )
+				request.session['status']="Master Dasar Surat Tugas Berhasil Diupdate!"
+			except Exception as ex:
+				addLogging(request.user.username,"master_dasar_surat_tugas",f"Gagal update - delete kode: {kode}" )
+				request.session['status']="Master Dasar Surat Tugas Gagal diupdate!"
+
 	return HttpResponseRedirect('/master/sur/dis/')
 
 def updateConfig(request):
