@@ -168,7 +168,7 @@
     let data={};
     function editGolongan(kode) {
         $("#kodeEditGolongan").text(kode);
-        keterangan = $("input[name='keteranganEdit']").val();
+        keterangan = $("#edit" + kode).attr('data-bs-keterangan');
         kodenya=kode;
         $("#keteranganEditGolongan").text(keterangan);
         $("#editModal").modal('show');

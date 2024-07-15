@@ -1,6 +1,6 @@
 from django.urls import path
 from cms.views import dashboard,  addGolongan, addJabatan, displayGolongan, displayJabatan
-from cms.views import updateGolongan, delJabatan, addPegawai, displayPegawai, delPegawai, addPengguna
+from cms.views import updateGolongan, updateJabatan, addPegawai, displayPegawai, delPegawai, addPengguna
 from cms.views import displayPengguna, delPengguna, loginuser,logoutuser, displayLog 
 from cms.views import displayGolonganID, displayJabatanID, displayPegawaiID, displayPenggunaID, displayLogID
 from cms.views import addNomorSurat, displaySuratTugas, updateConfig
@@ -20,7 +20,7 @@ urlpatterns = [
     path('master/jab/add/',addJabatan,name='addJabatan'),
     path('master/jab/dis/',displayJabatan,name='displayJabatan'),
     path('master/jab/dis/<str:id>',displayJabatanID,name='displayJabatanID'),
-    path('master/jab/del/<str:id>/',delJabatan,name="delJabatan"),
+    path('master/jab/upd/',updateJabatan,name="updateJabatan"),
     path('master/peg/add/',addPegawai,name='addPegawai'),
     path('master/peg/dis/',displayPegawai,name='displayPegawai'),
     path('master/peg/dis/<str:id>',displayPegawaiID,name='displayPegawaiID'),
