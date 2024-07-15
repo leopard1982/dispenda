@@ -60,6 +60,9 @@ class MasterPegawai(models.Model):
                     kepala = MasterPegawai.objects.get(nik=self.nik),
                     updatedBy = self.updatedBy
                 )
+        elif self.is_update:
+            self.is_update=False
+            super(MasterPegawai,self).save(*args,**kwargs)
         else:
             if(ConfigDispenda.objects.all().count()>0):
                 if(ConfigDispenda.objects.all()[0].kepala.nik==self.nik):
