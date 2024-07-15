@@ -42,7 +42,8 @@
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">SURAT TUGAS DISPENDA</h1>
+                                        <div class="d-lg-none shadow" ><img style="width: 100%;border-radius: 10px;" src="{% static 'img/dispenda_kecil.png' %}" alt="Dispenda Semarang"></div>
+                                        <h1 class="h4  mb-4 my-3" style="font-weight: bold;color: black;">SURAT TUGAS DISPENDA</h1>
                                     </div>
                                     <form class="user" method="POST" action="/auth/">
                                         {% csrf_token %}
@@ -65,7 +66,7 @@
                                     
                                     <hr>
                                     <div class="text-center">
-                                        <a class="small" href="forgot-password.html">Forgot Password?</a>
+
                                     </div>
                                     
                                   </form>  
