@@ -12,6 +12,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
 import uuid
+import datetime
 
 def handler404(request):
 	return render(request,'404.html')
@@ -214,6 +215,8 @@ def updateGolongan(request):
 			try:
 				golongan=MasterGolongan.objects.get(kode_golongan=kode)
 				golongan.keterangan=keterangan
+				golongan.updatedBy=request.user.username
+				golongan.updatedAt=datetime.datetime.now()
 				golongan.save()
 				addLogging(request.user.username,"master_golongan",f"berhasil - update kode: {kode}" )
 				request.session['status']="Master Golongan Berhasil Diupdate!"
@@ -249,6 +252,7 @@ def updateJabatan(request):
 				jabatan=MasterJabatan.objects.get(kode_jabatan=kode)
 				jabatan.keterangan=keterangan
 				jabatan.updatedBy=request.user.username
+				jabatan.updatedAt=datetime.datetime.now()
 				jabatan.save()
 				addLogging(request.user.username,"master_jabatan",f"berhasil - update kode: {kode}" )
 				request.session['status']="Master Jabatan Berhasil Diupdate!"
