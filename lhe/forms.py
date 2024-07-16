@@ -57,6 +57,23 @@ class inputBab3BNKB(forms.ModelForm):
 			'keterangan':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'analisa penyebab naik dan turun'}),
 		}
 
+class inputBab3PAP(forms.ModelForm):
+	class Meta:
+		model = bab3_pap
+		fields = ['tahun1','bulan1_awal','bulan1_akhir','tahun2','bulan2_awal','bulan2_akhir','keterangan','jml_obj_pap_berijin','jml_obj_pap_nonijin','jml_obj_spbu']
+
+		widgets = {
+			'bulan1_awal': forms.Select(attrs={'class':'form-control'}),
+			'bulan1_akhir': forms.Select(attrs={'class':'form-control'}),
+			'bulan2_awal': forms.Select(attrs={'class':'form-control'}),
+			'bulan2_akhir': forms.Select(attrs={'class':'form-control'}),
+			'jml_obj_pap_berijin':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'min.1','type':'number','min':'1'}),
+			'jml_obj_pap_nonijin':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'min.1','type':'number','min':'1'}),
+			'jml_obj_spbu':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'min.1','type':'number','min':'1'}),			
+			'tahun1':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'mis.2022','type':'number'}),
+			'tahun2':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'mis.2024','type':'number'}),
+			'keterangan':forms.TextInput(attrs={'required':'required','class':'form-control','placeholder':'analisa penyebab naik dan turun'}),
+		}
 
 class inputDataPegawai(forms.ModelForm):
 	class Meta:

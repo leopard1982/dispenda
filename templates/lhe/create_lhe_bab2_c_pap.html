@@ -72,6 +72,7 @@
     let nilai_akhir_new="";
     let counter=0;
     let urutannya=0;
+    let nomor_lhe="";
 
     function setcounter(data,urutan) {
         counter=data;
@@ -109,6 +110,7 @@
     }
 
     function updatedata() {
+        nomor_lhe=$("#nomor_lhe");
         pembayaran=$("#pembayaran").val();
         penetapan=$('#penetapan').val();
         let csrf_token = $('input[name=csrfmiddlewaretoken]').val();
@@ -124,7 +126,7 @@
             url:'/lhe/add/b2/pap/'+urutannya+"/" + id_lhe + "/" +id_pkb_detail + "/",
             data:data,
             success: ()=> {
-                window.location.href=window.location.href;
+                window.location.href='/lhe/add/b2/a/' + nomor_lhe + "/";
             }
         });
         // $.post('/lhe/add/b2/pap/'+urutannya+"/" + id_lhe + "/" +id_pkb_detail + "/",data).//(window.location.href=window.location.href);//.done();
@@ -161,7 +163,7 @@
     // });
 </script>
 
-
+<input type="hidden" id="nomor_lhe" value="{{nomor_lhe}}"/>
 <h4>Nomor Laporan Hasil Evaluasi: <b>{{nomor_lhe}}</b></h4>
 <h5>Bab 2: Uraian Hasil Evaluasi dan Pembinaan</h5>
 <hr/>

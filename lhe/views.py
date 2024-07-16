@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from lhe.models import headerLHE, simpulanHasilValBin
-from lhe.forms import inputHeaderLHE, inputNormatifLHE, inputBab3PKB, inputBab3BNKB
+from lhe.forms import inputHeaderLHE, inputNormatifLHE, inputBab3PKB, inputBab3BNKB, inputBab3PAP
 from surat_tugas.models import TrxSuratTugas, ST_Peserta, MasterJabatan
 from lhe.models import bab2_sasaran_evaluasi_pembinaan, bab2_tujuan_evaluasi_pembinaan, bab2_data_umum
 from lhe.models import bab2_tatausaha_kepegawaian, bab2_tatausaha_kepegawaian_detail, bab2_tatausaha_kepegawaian_normatif
